@@ -21,12 +21,16 @@ export function calculateReadingTime(content: string): string {
   return `${minutes} min read`;
 }
 
-export function formatDate(date: string | Date) {
-  return new Date(date).toLocaleDateString("en-US", {
+export function formatDate(date: string | Date | undefined | null) {
+  if (!date) return "N/A";
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return "N/A";
+  return d.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
   });
 }
+
 
 export const ADMIN_EMAIL = "xyzg135@gmail.com";

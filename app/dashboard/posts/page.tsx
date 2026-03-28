@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Trash2, ExternalLink, FileText, EyeOff, Eye, Loader2, AlertTriangle, X } from "lucide-react";
+import { Trash2, ExternalLink, FileText, EyeOff, Eye, Loader2, AlertTriangle, X, Pencil } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { formatDate } from "@/lib/utils";
@@ -237,6 +237,11 @@ export default function DashboardPostsPage() {
                         <Link href={`/blog/${post.slug}`} target="_blank">
                           <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-white" title="View post">
                             <ExternalLink className="h-4 w-4" />
+                          </Button>
+                        </Link>
+                        <Link href={`/dashboard/edit/${post.slug}`}>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-blue-400" title="Edit post">
+                            <Pencil className="h-4 w-4" />
                           </Button>
                         </Link>
                         <Button

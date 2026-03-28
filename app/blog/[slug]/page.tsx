@@ -70,7 +70,7 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
             {post.category}
           </Badge>
           <div className="flex items-center gap-6 text-[11px] text-muted-foreground font-black uppercase tracking-widest bg-secondary/20 shadow-skeuo-in px-6 py-2 rounded-full">
-            <span className="flex items-center gap-2"><Calendar className="h-4 w-4 text-primary" /> {formatDate(post.created_at)}</span>
+            <span className="flex items-center gap-2"><Calendar className="h-4 w-4 text-primary" /> {formatDate(post.createdAt || post.published_at)}</span>
             <span className="flex items-center gap-2"><Clock className="h-4 w-4 text-primary" /> {readingTime}</span>
             <span className="flex items-center gap-2 text-white"><Eye className="h-4 w-4 text-primary" /> {post.views} Views</span>
           </div>
@@ -80,18 +80,7 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
           {post.title}
         </h1>
 
-        <div className="flex flex-col md:flex-row md:items-center justify-between py-10 border-y border-white/5 gap-8">
-          <div className="flex items-center gap-5 bg-secondary/20 p-4 rounded-3xl shadow-skeuo-in">
-            <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center shadow-skeuo-button border border-primary/20 rotate-3 transition-transform hover:rotate-0">
-              <User className="h-8 w-8 text-primary" />
-            </div>
-            <div>
-              <p className="font-black text-xl text-white leading-none italic uppercase">{authorName}</p>
-              <p className="text-[10px] text-muted-foreground mt-2 font-bold uppercase tracking-widest">{authorRole}</p>
-            </div>
-          </div>
-          <ShareButtons url={shareUrl} title={post.title} />
-        </div>
+
       </header>
 
       <div className="relative aspect-[16/8] rounded-[3rem] overflow-hidden mb-20 border border-white/5 bg-secondary/20 shadow-skeuo-float">
@@ -113,6 +102,20 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
 
       <div className="relative prose-container">
         <MarkdownRenderer content={post.content} className="max-w-none text-xl text-white/80 leading-relaxed font-medium" />
+      </div>
+
+      {/* Author & Share Bar Moved to Bottom */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between py-10 border-y border-white/5 gap-8 mt-20">
+        <div className="flex items-center gap-5 bg-secondary/20 p-4 rounded-3xl shadow-skeuo-in">
+          <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center shadow-skeuo-button border border-primary/20 rotate-3 transition-transform hover:rotate-0">
+            <User className="h-8 w-8 text-primary" />
+          </div>
+          <div>
+            <p className="font-black text-xl text-white leading-none italic uppercase">{authorName}</p>
+            <p className="text-[10px] text-muted-foreground mt-2 font-bold uppercase tracking-widest">{authorRole}</p>
+          </div>
+        </div>
+        <ShareButtons url={shareUrl} title={post.title} />
       </div>
 
       {post.tags && post.tags.length > 0 && (
