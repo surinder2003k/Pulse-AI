@@ -1,0 +1,130 @@
+import { NextResponse } from "next/server";
+import { currentUser } from "@clerk/nextjs/server";
+import connectDB from "@/lib/mongodb";
+import Post from "@/models/Post";
+import slugifyLib from "slugify";
+import { generateContentWithFallback } from "@/lib/ai-generator";
+
+// Keys from environment variables
+const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY;
+
+export async function POST(req: Request) {
+  const user = await currentUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const userId = user.id;
+
+  const body = await req.json();
+  const userPrompt = body.prompt;
+
+  if (!userPrompt) {
+    return NextResponse.json({ error: "No prompt provided" }, { status: 400 });
+  }
+
+  // Rate Limiting (5 per user/hour)
+  try {
+    await connectDB();
+    const oneHourAgo = new Date(Date.now() - 3600000);
+    const count = await Post.countDocuments({
+      user_id: userId,
+      is_ai_generated: true,
+      createdAt: { $gt: oneHourAgo }
+    });
+
+    if (count >= 5) {
+      return NextResponse.json({ error: "Rate limit exceeded (5/hour)" }, { status: 429 });
+    }
+  } catch (err: any) {
+    console.warn("Rate limit check failed, skipping limit:", err.message);
+  }
+  
+  try {
+    console.log("Step 1: Generating content directly from user prompt...");
+    let postData: any;
+
+    // DIRECT USER PROMPT: No personas, no hardcoded tone. Just the user's exact topic/instructions.
+    // We only append the format requirement so it returns usable JSON.
+    const directPrompt = `Write a highly optimized, fully SEO-friendly, comprehensive article based exactly on this topic:
+    "${userPrompt}"
+    
+    The article MUST be detailed and lengthy, approximately 2000 to 2500 words.
+    Use proper headings, bullet points, and structure for readability and SEO ranking.
+    
+    Format the response STRICTLY as a JSON object with these exact keys:
+    {
+      "title": "A highly engaging, SEO-optimized title for the topic",
+      "content": "Full lengthy markdown content (2000-2500 words) based directly on the prompt.",
+      "excerpt": "A powerful SEO meta description (max 160 chars)",
+      "category": "Technology, Business, News, or whichever fits best",
+      "tags": ["seo-tag1", "seo-tag2", "seo-tag3", "seo-tag4", "seo-tag5"],
+      "imageSearchKeyword": "A generic 1-2 word English keyword (like 'technology', 'nature', 'city') to find a high-quality relevant background image on Unsplash. DO NOT use specific brand names or acronyms."
+    }
+    
+    Important: Return ONLY the JSON object. NO markdown blocks or other text outside the JSON.`;
+
+    try {
+      console.log("Attempting generation using Multi-Provider Fallback...");
+      const text = await generateContentWithFallback(directPrompt);
+      
+      const jsonStart = text.indexOf('{');
+      const jsonEnd = text.lastIndexOf('}') + 1;
+      postData = JSON.parse(text.substring(jsonStart, jsonEnd));
+      
+      console.log("AI generated post successfully:", postData.title);
+    } catch (aiError: any) {
+      console.error("All AI Providers Failed:", aiError);
+      throw new Error("All AI Providers exhausted their quotas or failed. Please try again later.");
+    }
+
+    // Step 2: Unsplash Images
+    console.log("Step 2: Finding Visuals...");
+    let featureImage = "https://images.unsplash.com/photo-1677442136019-21780ecad995";
+    try {
+      const searchKeyword = postData.imageSearchKeyword || postData.category || "technology";
+      const imageRes = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(searchKeyword)}&orientation=landscape&order_by=relevant&per_page=1&client_id=${UNSPLASH_ACCESS_KEY}`);
+      if (imageRes.ok) {
+        const imageData = await imageRes.json();
+        featureImage = imageData?.results?.[0]?.urls?.regular || featureImage;
+      }
+    } catch (imgErr) {
+      console.warn("Unsplash fetching failed.");
+    }
+
+    // Step 3: Save to MongoDB
+    console.log("Step 3: Saving to DB...");
+    const slug = slugifyLib(postData.title, { lower: true, strict: true });
+    
+    try {
+      const newPost = await Post.create({
+        user_id: userId,
+        title: postData.title,
+        slug: slug,
+        excerpt: postData.excerpt,
+        content: postData.content,
+        category: postData.category,
+        tags: postData.tags,
+        feature_image_url: featureImage,
+        status: "published",
+        is_ai_generated: true,
+        published_at: new Date(),
+        views: 0
+      });
+
+      console.log("Generation Success! Post created:", newPost.slug);
+      return NextResponse.json(newPost);
+    } catch (dbError: any) {
+      console.warn("MongoDB Save Failed (Possible Duplicate):", dbError.message);
+      // If saving fails (e.g. duplicate slug), we still return the generated data so they can see it
+      return NextResponse.json({
+        ...postData,
+        _id: null,
+        feature_image_url: featureImage,
+        content: postData.content
+      });
+    }
+
+  } catch (error: any) {
+    console.error("FINAL GENERATION ERROR:", error.message);
+    // Explicitly fail to the frontend instead of sending dummy fallback text
+    return NextResponse.json({ error: error.message || "Failed to generate post" }, { status: 500 });
+  }
+}

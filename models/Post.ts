@@ -1,0 +1,26 @@
+import mongoose, { Schema, model, models } from 'mongoose';
+
+const PostSchema = new Schema({
+  user_id: { type: String, required: true },
+  title: { type: String, required: true },
+  slug: { type: String, required: true, unique: true },
+  excerpt: { type: String, required: true },
+  content: { type: String, required: true },
+  category: { type: String, required: true },
+  tags: [{ type: String }],
+  feature_image_url: { type: String },
+  status: { type: String, enum: ['draft', 'published'], default: 'published' },
+  is_ai_generated: { type: Boolean, default: false },
+  views: { type: Number, default: 0 },
+  published_at: { type: Date, default: Date.now },
+}, {
+  timestamps: true,
+});
+
+// Create index for search and filtering
+PostSchema.index({ title: 'text', content: 'text' });
+PostSchema.index({ user_id: 1 });
+
+const Post = models.Post || model('Post', PostSchema);
+
+export default Post;

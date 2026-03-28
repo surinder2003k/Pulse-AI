@@ -1,0 +1,133 @@
+import connectDB from "@/lib/mongodb";
+import Post from "@/models/Post";
+import { notFound } from "next/navigation";
+import Image from "next/image";
+import { formatDate, calculateReadingTime } from "@/lib/utils";
+import MarkdownRenderer from "@/components/MarkdownRenderer";
+import ShareButtons from "@/components/ShareButtons";
+import RelatedPosts from "@/components/RelatedPosts";
+import { Badge } from "@/components/ui/badge";
+import { Calendar, Eye, Clock, User, ChevronLeft, Sparkles } from "lucide-react";
+import Link from "next/link";
+import ViewsCounter from "@/components/ViewsCounter";
+import { clerkClient } from "@clerk/nextjs/server";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  await connectDB();
+  const post = await Post.findOne({ slug }).select("title excerpt").lean();
+
+  if (!post) return {};
+
+  return {
+    title: `${post.title} | Pulse AI`,
+    description: post.excerpt,
+  };
+}
+
+export default async function PostDetail({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  await connectDB();
+  const postRaw = await Post.findOne({ slug }).lean();
+
+  if (!postRaw) notFound();
+  
+  const post = JSON.parse(JSON.stringify(postRaw));
+
+  let authorName = "System AI";
+  let authorRole = "Automated Content Generator";
+
+  if (post.user_id && post.user_id !== "system_automation") {
+    try {
+      const client = await clerkClient();
+      const user = await client.users.getUser(post.user_id);
+      if (user) {
+        authorName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username || "Content Creator";
+        authorRole = "Author";
+      }
+    } catch (e) {
+      console.warn("Failed to fetch user from Clerk", e);
+      authorName = "Admin";
+      authorRole = "Content Creator";
+    }
+  }
+
+  const readingTime = calculateReadingTime(post.content);
+
+  return (
+    <article className="max-w-5xl mx-auto pb-20 pt-10 px-6">
+      {/* Views Counter (Client-side trigger) */}
+      <ViewsCounter slug={post.slug} />
+
+      <Link href="/blog" className="inline-flex items-center gap-2 text-muted-foreground hover:text-white transition-colors mb-12 group font-bold uppercase tracking-widest text-[10px]">
+        <ChevronLeft className="h-3 w-3 group-hover:-translate-x-1 transition-transform" /> Back to Archive
+      </Link>
+
+      <header className="space-y-8 mb-16">
+        <div className="flex flex-wrap items-center gap-4">
+          <Badge className="bg-secondary/40 text-primary border-primary/20 px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest shadow-skeuo-button">
+            {post.category}
+          </Badge>
+          <div className="flex items-center gap-6 text-[11px] text-muted-foreground font-black uppercase tracking-widest bg-secondary/20 shadow-skeuo-in px-6 py-2 rounded-full">
+            <span className="flex items-center gap-2"><Calendar className="h-4 w-4 text-primary" /> {formatDate(post.created_at)}</span>
+            <span className="flex items-center gap-2"><Clock className="h-4 w-4 text-primary" /> {readingTime}</span>
+            <span className="flex items-center gap-2 text-white"><Eye className="h-4 w-4 text-primary" /> {post.views} Views</span>
+          </div>
+        </div>
+
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight italic">
+          {post.title}
+        </h1>
+
+        <div className="flex flex-col md:flex-row md:items-center justify-between py-10 border-y border-white/5 gap-8">
+          <div className="flex items-center gap-5 bg-secondary/20 p-4 rounded-3xl shadow-skeuo-in">
+            <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center shadow-skeuo-button border border-primary/20 rotate-3 transition-transform hover:rotate-0">
+              <User className="h-8 w-8 text-primary" />
+            </div>
+            <div>
+              <p className="font-black text-xl text-white leading-none italic uppercase">{authorName}</p>
+              <p className="text-[10px] text-muted-foreground mt-2 font-bold uppercase tracking-widest">{authorRole}</p>
+            </div>
+          </div>
+          <ShareButtons url={`${typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_APP_URL || ''}/blog/${post.slug}`} title={post.title} />
+        </div>
+      </header>
+
+      <div className="relative aspect-[16/8] rounded-[3rem] overflow-hidden mb-20 border border-white/5 bg-secondary/20 shadow-skeuo-float">
+        <Image
+          src={post.feature_image_url || "https://images.unsplash.com/photo-1677442136019-21780ecad995"}
+          alt={post.title}
+          fill
+          className="object-cover"
+          priority
+          sizes="100vw"
+        />
+        {post.is_ai_generated && (
+          <div className="absolute top-8 right-8 backdrop-blur-xl bg-primary/20 border border-white/10 rounded-2xl px-6 py-3 flex items-center gap-3 animate-in fade-in zoom-in duration-700 shadow-skeuo-button">
+            <Sparkles className="h-5 w-5 text-primary animate-pulse" />
+            <span className="text-[11px] font-black text-white uppercase tracking-[0.2em]">AI Generated Passion</span>
+          </div>
+        )}
+      </div>
+
+      <div className="relative prose-container">
+        <MarkdownRenderer content={post.content} className="max-w-none text-xl text-white/80 leading-relaxed font-medium" />
+      </div>
+
+      {post.tags && post.tags.length > 0 && (
+        <div className="flex flex-wrap gap-3 mt-20 pt-10 border-t border-white/5">
+          {post.tags.map((tag: string) => (
+            <Badge key={tag} className="bg-secondary/30 border-white/10 text-muted-foreground hover:text-white hover:bg-white/10 transition-all cursor-default px-5 py-3 rounded-2xl text-xs font-bold shadow-skeuo-button hover:shadow-skeuo-button-pressed hover:-translate-y-0.5">
+              #{tag}
+            </Badge>
+          ))}
+        </div>
+      )}
+
+      {/* Related Content */}
+      <section className="mt-32">
+        <RelatedPosts currentSlug={post.slug} category={post.category} />
+      </section>
+    </article>
+  );
+}
