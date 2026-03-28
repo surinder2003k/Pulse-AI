@@ -32,6 +32,11 @@ export async function GET(req: Request) {
 
   try {
     await connectDB();
+    
+    // Fetch recent post titles to provide context to the AI (avoiding duplicates)
+    const recentPosts = await Post.find().sort({ createdAt: -1 }).limit(15).select('title').lean();
+    const recentTitles = recentPosts.map(p => p.title).join(", ");
+
     const Settings = (await import("@/models/Settings")).default;
     let settings = await Settings.findOne();
     
@@ -49,11 +54,14 @@ export async function GET(req: Request) {
     for (let i = 0; i < 2; i++) {
       console.log(`Automation iteration ${i + 1}/2...`);
       
-      // Step 1: Prompt Gemini to pick a trending topic and write a full article on it
+      // Step 1: Prompt Gemini to pick a trending topic
       const automationPrompt = `You are an expert AI journalist and SEO content creator.
       Identify a highly trending global news topic or major breakthrough from the last 24-48 hours specifically in the "${settings.automationCategory}" category.
-      ${i > 0 ? "Ensure this topic is DIFFERENT from the previous one you just wrote about." : ""}
-      Write a highly optimized, fully SEO-friendly, comprehensive article about this trending ${settings.automationCategory} topic.
+      
+      CRITICAL: DO NOT write about any of these recent topics: [${recentTitles}]. 
+      You MUST choose something unique and fresh that hasn't been covered in the list above.
+      
+      Write a highly optimized, fully SEO-friendly, comprehensive article about this NEW trending ${settings.automationCategory} topic.
       
       The article MUST be detailed and lengthy, approximately 2000 to 2500 words.
       Use proper headings, bullet points, and structure for readability and SEO ranking.
@@ -78,7 +86,7 @@ export async function GET(req: Request) {
         console.log(`Automation generation ${i + 1} succeeded.`);
       } catch (aiError: any) {
         console.error(`AI Provider failed in iteration ${i + 1}:`, aiError);
-        continue; // Try next iteration if one fails
+        continue;
       }
       
       try {
@@ -86,17 +94,26 @@ export async function GET(req: Request) {
         const jsonEnd = text.lastIndexOf('}') + 1;
         const postData = JSON.parse(text.substring(jsonStart, jsonEnd));
         
-        console.log(`Generated Trending Post ${i + 1}:`, postData.title);
+        // Safety check: Skip if title matches any existing post
+        const exists = await Post.findOne({ title: postData.title });
+        if (exists) {
+            console.log(`Skipping duplicate content: "${postData.title}"`);
+            continue;
+        }
+
+        console.log(`Generated Unique Trending Post ${i + 1}:`, postData.title);
 
         // Step 2: Unsplash Images
         console.log("Finding Visuals for automation...");
         let featureImage = "https://images.unsplash.com/photo-1677442136019-21780ecad995";
         try {
           const searchKeyword = `${postData.imageSearchKeyword || postData.category} ${postData.title.split(' ').slice(0, 3).join(' ')}`;
-          const imageRes = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(searchKeyword)}&orientation=landscape&per_page=10&client_id=${UNSPLASH_ACCESS_KEY}`);
+          // Adding random page to ensure variety even with similar keywords
+          const randomPage = Math.floor(Math.random() * 5) + 1;
+          const imageRes = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(searchKeyword)}&orientation=landscape&per_page=10&page=${randomPage}&client_id=${UNSPLASH_ACCESS_KEY}`);
+          
           if (imageRes.ok) {
             const imageData = await imageRes.json();
-            // Pick a random image from the top 10 results to ensure variety
             const results = imageData?.results || [];
             if (results.length > 0) {
               const randomIndex = Math.floor(Math.random() * Math.min(results.length, 5));
@@ -106,7 +123,6 @@ export async function GET(req: Request) {
         } catch (imgErr) {
           console.warn("Unsplash fetching failed in automation.", imgErr);
         }
-
 
         // Step 3: Save to MongoDB
         const slug = slugifyLib(postData.title, { lower: true, strict: true });
@@ -131,6 +147,7 @@ export async function GET(req: Request) {
         console.error(`Failed to parse or save post in iteration ${i + 1}:`, parseError);
       }
     }
+
 
     if (createdPosts.length === 0) {
       throw new Error("Failed to generate any posts in this automation run.");
