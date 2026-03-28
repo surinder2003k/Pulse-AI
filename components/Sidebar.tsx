@@ -30,6 +30,8 @@ const adminNav = [
   { name: "AI Post Manager", icon: ShieldCheck, href: "/admin" },
 ];
 
+import Image from "next/image";
+
 export default function Sidebar() {
   const pathname = usePathname();
   const { user } = useUser();
@@ -37,12 +39,16 @@ export default function Sidebar() {
 
   return (
     <aside className="hidden md:flex flex-col w-64 bg-secondary/30 border-r border-white/5 h-screen sticky top-0">
-      <div className="p-6">
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="p-2 bg-primary rounded-xl group-hover:rotate-12 transition-transform shadow-purple">
-            <BrainCircuit className="h-6 w-6 text-white" />
-          </div>
-          <span className="text-xl font-black tracking-tight text-white italic">Pulse AI</span>
+      <div className="p-8">
+        <Link href="/" className="group block">
+          <Image 
+            src="/logo.svg" 
+            alt="Pulse AI Logo" 
+            width={140} 
+            height={46} 
+            className="h-9 w-auto group-hover:scale-105 transition-transform duration-300"
+            priority
+          />
         </Link>
       </div>
 

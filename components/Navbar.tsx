@@ -6,6 +6,8 @@ import { Search, Bell, Sparkles, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+import Image from "next/image";
+
 export default function Navbar() {
   const { user } = useUser();
 
@@ -14,10 +16,14 @@ export default function Navbar() {
       <div className="container mx-auto max-w-7xl h-16 flex items-center justify-between px-6">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center group-hover:rotate-12 transition-transform shadow-purple">
-              <Sparkles className="h-5 w-5 text-white" />
-            </div>
-            <span className="font-black text-xl tracking-tight text-white uppercase italic">Pulse AI</span>
+            <Image 
+              src="/logo.svg" 
+              alt="Pulse AI Logo" 
+              width={120} 
+              height={40} 
+              className="h-8 w-auto group-hover:scale-105 transition-transform duration-300"
+              priority
+            />
           </Link>
 
           <div className="hidden md:flex items-center gap-6">

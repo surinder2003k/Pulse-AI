@@ -14,6 +14,11 @@ export const metadata: Metadata = {
   title: "Pulse AI | Premium Content Engine",
   description: "Experience the next generation of blogging with AI-powered trending stories and premium Indian aesthetics.",
   keywords: ["Pulse AI", "AI Blog", "Next.js", "Automation", "Premium Content", "Indian Tech Blog"],
+  icons: {
+    icon: "/logo.svg",
+    shortcut: "/logo.svg",
+    apple: "/logo.svg",
+  },
   verification: {
     google: "7DDDhNUg6jYfqTlpcjhcRviMdzzUvxJd2Y-rKmNEqdk",
   },
