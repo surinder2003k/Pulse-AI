@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin', '/dashboard', '/api/'],
     },
-    sitemap: 'https://ai-blog.vercel.app/sitemap.xml',
+    sitemap: 'https://pulse-blog-ai.vercel.app/sitemap.xml',
   };
 }

@@ -15,13 +15,43 @@ import { clerkClient } from "@clerk/nextjs/server";
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   await connectDB();
-  const post = await Post.findOne({ slug }).select("title excerpt").lean() as IPost | null;
+  const post = await Post.findOne({ slug }).select("title excerpt feature_image_url tags").lean() as IPost | null;
 
   if (!post) return { title: 'Post Not Found' };
+
+  const url = `${process.env.NEXT_PUBLIC_APP_URL || 'https://pulse-blog-ai.vercel.app'}/blog/${slug}`;
 
   return {
     title: `${post.title} | Pulse AI`,
     description: post.excerpt,
+    keywords: post.tags?.join(", ") || "Pulse AI, News, Technology",
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      url: url,
+      siteName: "Pulse AI",
+      images: [
+        {
+          url: post.feature_image_url || "/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+      type: "article",
+      publishedTime: post.createdAt?.toString(),
+      authors: ["Pulse AI"],
+      tags: post.tags,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
+      images: [post.feature_image_url || "/og-image.png"],
+    },
   };
 }
 

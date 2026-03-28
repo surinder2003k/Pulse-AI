@@ -27,13 +27,22 @@ export default async function AdminPage() {
   const totalUsers = await client.users.getCount();
   const usersRes = await client.users.getUserList({ limit: 100 });
   
-  const formattedUsers = usersRes.data.map(u => ({
-    id: u.id,
-    name: u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : 'No Name',
-    email: u.emailAddresses[0]?.emailAddress || 'No Email',
-    role: u.emailAddresses[0]?.emailAddress === ADMIN_EMAIL ? 'admin' : 'user',
-    created_at: new Date(u.createdAt).toISOString().split('T')[0]
-  }));
+  const currentUserId = user?.id;
+
+  const formattedUsers = usersRes.data.map(u => {
+    const email = u.emailAddresses[0]?.emailAddress || 'No Email';
+    // Priority: Primary Email Check -> Metadata Role -> Default 'user'
+    let role = u.publicMetadata.role as string || 'user';
+    if (email === ADMIN_EMAIL) role = 'admin';
+
+    return {
+      id: u.id,
+      name: u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : 'No Name',
+      email: email,
+      role: role,
+      created_at: new Date(u.createdAt).toISOString().split('T')[0]
+    };
+  });
 
   return (
     <div className="space-y-10 pb-20">
@@ -104,7 +113,7 @@ export default async function AdminPage() {
           </h2>
           <Badge variant="outline" className="text-muted-foreground">Admin-Only View</Badge>
         </div>
-        <AdminUserList initialUsers={formattedUsers} />
+        <AdminUserList initialUsers={formattedUsers} currentUserId={currentUserId} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

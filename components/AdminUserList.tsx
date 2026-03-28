@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Trash2, Shield, User as UserIcon, Loader2, AlertTriangle, X } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 export type AdminUser = {
   id: string;
@@ -22,17 +23,62 @@ export type AdminUser = {
   created_at: string;
 };
 
-export default function AdminUserList({ initialUsers }: { initialUsers: AdminUser[] }) {
+export default function AdminUserList({ 
+  initialUsers, 
+  currentUserId 
+}: { 
+  initialUsers: AdminUser[], 
+  currentUserId?: string 
+}) {
   const [users, setUsers] = useState<AdminUser[]>(initialUsers);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<AdminUser | null>(null);
 
   const handleDeleteClick = (user: AdminUser) => {
+    if (user.id === currentUserId) {
+      toast.error("You cannot delete your own account!");
+      return;
+    }
     if (user.email === "xyzg135@gmail.com") {
       toast.error("Cannot delete the primary admin!");
       return;
     }
     setDeleteTarget(user);
+  };
+
+  const toggleRole = async (user: AdminUser) => {
+    if (user.id === currentUserId) {
+      toast.error("You cannot change your own role!");
+      return;
+    }
+    if (user.email === "xyzg135@gmail.com") {
+      toast.error("Cannot change the primary admin's role!");
+      return;
+    }
+
+    const newRole = user.role === 'admin' ? 'user' : 'admin';
+    setUpdatingId(user.id);
+
+    try {
+      const res = await fetch('/api/admin/role', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id, role: newRole })
+      });
+
+      if (res.ok) {
+        setUsers(prev => prev.map(u => u.id === user.id ? { ...u, role: newRole } : u));
+        toast.success(`User ${newRole === 'admin' ? 'promoted to admin' : 'demoted to user'}!`);
+      } else {
+        const data = await res.json();
+        toast.error(data.error || "Failed to update role");
+      }
+    } catch {
+      toast.error("Error updating role");
+    } finally {
+      setUpdatingId(null);
+    }
   };
 
   const confirmDelete = async () => {
@@ -116,7 +162,7 @@ export default function AdminUserList({ initialUsers }: { initialUsers: AdminUse
               <TableHead className="text-muted-foreground uppercase text-[10px] tracking-widest font-bold">Email</TableHead>
               <TableHead className="text-muted-foreground uppercase text-[10px] tracking-widest font-bold">Role</TableHead>
               <TableHead className="text-muted-foreground uppercase text-[10px] tracking-widest font-bold">Joined</TableHead>
-              <TableHead className="text-right text-muted-foreground uppercase text-[10px] tracking-widest font-bold">Actions</TableHead>
+              <TableHead className="text-right text-muted-foreground uppercase text-[10px] tracking-widest font-bold px-6">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -136,16 +182,41 @@ export default function AdminUserList({ initialUsers }: { initialUsers: AdminUse
                   </Badge>
                 </TableCell>
                 <TableCell className="text-muted-foreground">{user.created_at}</TableCell>
-                <TableCell className="text-right">
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    disabled={deletingId === user.id}
-                    className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                    onClick={() => handleDeleteClick(user)}
-                  >
-                    {deletingId === user.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
-                  </Button>
+                <TableCell className="text-right px-6">
+                  <div className="flex items-center justify-end gap-2">
+                    {/* Role Toggle Button */}
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      disabled={updatingId === user.id || user.id === currentUserId || user.email === "xyzg135@gmail.com"}
+                      className={cn(
+                        "h-8 w-8 rounded-lg transition-all",
+                        user.role === 'admin' 
+                          ? "text-purple-400 hover:text-purple-300 hover:bg-purple-500/10" 
+                          : "text-muted-foreground hover:text-white hover:bg-white/10"
+                      )}
+                      onClick={() => toggleRole(user)}
+                    >
+                      {updatingId === user.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : user.role === 'admin' ? (
+                        <UserIcon className="h-4 w-4" />
+                      ) : (
+                        <Shield className="h-4 w-4" />
+                      )}
+                    </Button>
+
+                    {/* Delete Button */}
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      disabled={deletingId === user.id || user.id === currentUserId || user.email === "xyzg135@gmail.com"}
+                      className="h-8 w-8 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                      onClick={() => handleDeleteClick(user)}
+                    >
+                      {deletingId === user.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}

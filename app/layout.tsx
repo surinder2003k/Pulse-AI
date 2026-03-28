@@ -13,11 +13,17 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Pulse AI | Premium Content Engine",
   description: "Experience the next generation of blogging with AI-powered trending stories and premium Indian aesthetics.",
-  keywords: ["Pulse AI", "AI Blog", "Next.js", "Automation", "Premium Content"],
+  keywords: ["Pulse AI", "AI Blog", "Next.js", "Automation", "Premium Content", "Indian Tech Blog"],
+  verification: {
+    google: "7DDDhNUg6jYfqTlpcjhcRviMdzzUvxJd2Y-rKmNEqdk",
+  },
+  alternates: {
+    canonical: "https://pulse-blog-ai.vercel.app",
+  },
   openGraph: {
     title: "Pulse AI | Premium Content Engine",
     description: "Experience the next generation of blogging with AI-powered trending stories.",
-    url: "https://pulse-ai.vercel.app",
+    url: "https://pulse-blog-ai.vercel.app",
     siteName: "Pulse AI",
     images: [
       {
