@@ -240,10 +240,11 @@ export default function DashboardPostsPage() {
                           </Button>
                         </Link>
                         <Link href={`/dashboard/edit/${post.slug}`}>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-blue-400" title="Edit post">
+                          <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-400 bg-blue-500/10 hover:bg-blue-500/20 hover:text-blue-300" title="Edit post">
                             <Pencil className="h-4 w-4" />
                           </Button>
                         </Link>
+
                         <Button
                           variant="ghost" size="icon"
                           className="h-8 w-8 hover:text-yellow-400"

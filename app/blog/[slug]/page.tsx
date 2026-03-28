@@ -92,13 +92,8 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
           priority
           sizes="100vw"
         />
-        {post.is_ai_generated && (
-          <div className="absolute top-8 right-8 backdrop-blur-xl bg-primary/20 border border-white/10 rounded-2xl px-6 py-3 flex items-center gap-3 animate-in fade-in zoom-in duration-700 shadow-skeuo-button">
-            <Sparkles className="h-5 w-5 text-primary animate-pulse" />
-            <span className="text-[11px] font-black text-white uppercase tracking-[0.2em]">AI Generated Passion</span>
-          </div>
-        )}
       </div>
+
 
       <div className="relative prose-container">
         <MarkdownRenderer content={post.content} className="max-w-none text-xl text-white/80 leading-relaxed font-medium" />

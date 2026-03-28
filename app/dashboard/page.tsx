@@ -14,8 +14,10 @@ import {
   Eye, 
   ArrowUpRight,
   RefreshCw,
-  Loader2
+  Loader2,
+  Pencil
 } from "lucide-react";
+
 import Link from "next/link";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
@@ -233,13 +235,14 @@ export default function DashboardOverview() {
                     </CardContent>
                   </Card>
                 </Link>
-                {/* Edit Button overlay */}
-                <Link href={`/dashboard/edit/${post.slug}`} className="absolute top-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button size="icon" className="h-8 w-8 rounded-full bg-white text-black hover:bg-white/90 shadow-lg">
-                    <Edit2 className="h-4 w-4" />
+                {/* Edit Button overlay - Always visible for ease of use */}
+                <Link href={`/dashboard/edit/${post.slug}`} className="absolute top-4 right-4 z-20">
+                  <Button size="icon" className="h-8 w-8 rounded-full bg-primary text-white shadow-lg border border-white/20 hover:scale-110 transition-transform">
+                    <Pencil className="h-4 w-4" />
                   </Button>
                 </Link>
               </div>
+
             ))}
           </div>
         ) : (

@@ -92,15 +92,21 @@ export async function GET(req: Request) {
         console.log("Finding Visuals for automation...");
         let featureImage = "https://images.unsplash.com/photo-1677442136019-21780ecad995";
         try {
-          const searchKeyword = postData.imageSearchKeyword || postData.category || "breaking news";
-          const imageRes = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(searchKeyword)}&orientation=landscape&order_by=relevant&per_page=1&client_id=${UNSPLASH_ACCESS_KEY}`);
+          const searchKeyword = `${postData.imageSearchKeyword || postData.category} ${postData.title.split(' ').slice(0, 3).join(' ')}`;
+          const imageRes = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(searchKeyword)}&orientation=landscape&per_page=10&client_id=${UNSPLASH_ACCESS_KEY}`);
           if (imageRes.ok) {
             const imageData = await imageRes.json();
-            featureImage = imageData?.results?.[0]?.urls?.regular || featureImage;
+            // Pick a random image from the top 10 results to ensure variety
+            const results = imageData?.results || [];
+            if (results.length > 0) {
+              const randomIndex = Math.floor(Math.random() * Math.min(results.length, 5));
+              featureImage = results[randomIndex]?.urls?.regular || featureImage;
+            }
           }
         } catch (imgErr) {
-          console.warn("Unsplash fetching failed in automation.");
+          console.warn("Unsplash fetching failed in automation.", imgErr);
         }
+
 
         // Step 3: Save to MongoDB
         const slug = slugifyLib(postData.title, { lower: true, strict: true });

@@ -16,9 +16,12 @@ export interface IPost {
   author_name?: string;
   author_image?: string;
   published_at: Date;
-  created_at: Date;
-  updated_at: Date;
+  created_at?: Date;
+  updated_at?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
+
 
 const PostSchema = new Schema<IPost>({
   user_id: { type: String, required: true },
