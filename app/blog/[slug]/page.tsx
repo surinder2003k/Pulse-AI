@@ -10,7 +10,10 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, Eye, Clock, User, ChevronLeft, Sparkles } from "lucide-react";
 import Link from "next/link";
 import ViewsCounter from "@/components/ViewsCounter";
-import { clerkClient } from "@clerk/nextjs/server";
+import { clerkClient, auth } from "@clerk/nextjs/server";
+import { Pencil } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ADMIN_EMAIL } from "@/lib/utils";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -82,6 +85,28 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
     }
   }
 
+  const { userId: currentUserId } = await auth();
+  let canEdit = false;
+  
+  if (currentUserId) {
+    if (currentUserId === post.user_id) {
+      canEdit = true;
+    } else {
+      // Check if current user is admin
+      try {
+        const client = await clerkClient();
+        const user = await client.users.getUser(currentUserId);
+        const role = user?.publicMetadata?.role as string || 'user';
+        const email = user?.emailAddresses[0]?.emailAddress;
+        if (role === 'admin' || email === ADMIN_EMAIL) {
+          canEdit = true;
+        }
+      } catch (e) {
+        console.error("Failed to check admin status", e);
+      }
+    }
+  }
+
   const readingTime = calculateReadingTime(post.content);
   const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL || ''}/blog/${post.slug}`;
 
@@ -106,9 +131,20 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
           </div>
         </div>
 
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight italic">
-          {post.title}
-        </h1>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight italic max-w-4xl">
+            {post.title}
+          </h1>
+          
+          {canEdit && (
+            <Link href={`/dashboard/edit/${post.slug}`}>
+              <Button className="rounded-2xl h-14 px-8 bg-secondary/40 hover:bg-white/10 text-white shadow-skeuo-button active:shadow-skeuo-button-pressed border border-white/10 transition-all font-black uppercase tracking-widest text-[10px] flex items-center gap-3">
+                <Pencil className="h-4 w-4 text-primary" />
+                Edit Post
+              </Button>
+            </Link>
+          )}
+        </div>
 
 
       </header>

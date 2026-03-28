@@ -9,7 +9,7 @@ import { PostGridSkeleton } from "@/components/LoadingSkeleton";
 
 export const metadata = {
   title: "Blog Archive | Pulse AI",
-  description: "Browse our collection of passionately written AI blog posts across various categories.",
+  description: "Browse our collection of high-quality AI blog posts across various categories.",
 };
 
 export default async function BlogPage({
@@ -52,7 +52,7 @@ export default async function BlogPage({
     <div className="flex flex-col gap-16 pb-20 pt-10 px-6">
       <div className="flex flex-col gap-4 text-center items-center">
         <h1 className="text-4xl md:text-7xl font-black tracking-tighter italic">
-          The Passionate <span className="text-primary">Archive.</span>
+          The AI <span className="text-primary">Archive.</span>
         </h1>
         <p className="text-muted-foreground max-w-xl text-lg md:text-xl">
           Explore {count || 0} articles crafted with deep insights and modern AI.
