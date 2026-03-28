@@ -1,5 +1,5 @@
 import connectDB from "@/lib/mongodb";
-import Post from "@/models/Post";
+import Post, { IPost } from "@/models/Post";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { formatDate, calculateReadingTime } from "@/lib/utils";
@@ -15,9 +15,9 @@ import { clerkClient } from "@clerk/nextjs/server";
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   await connectDB();
-  const post = await Post.findOne({ slug }).select("title excerpt").lean();
+  const post = await Post.findOne({ slug }).select("title excerpt").lean() as IPost | null;
 
-  if (!post) return {};
+  if (!post) return { title: 'Post Not Found' };
 
   return {
     title: `${post.title} | Pulse AI`,
@@ -28,11 +28,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function PostDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   await connectDB();
-  const postRaw = await Post.findOne({ slug }).lean();
+  const postRaw = await Post.findOne({ slug }).lean() as IPost | null;
 
   if (!postRaw) notFound();
   
-  const post = JSON.parse(JSON.stringify(postRaw));
+  const post = JSON.parse(JSON.stringify(postRaw)) as IPost;
 
   let authorName = "System AI";
   let authorRole = "Automated Content Generator";
@@ -53,6 +53,7 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
   }
 
   const readingTime = calculateReadingTime(post.content);
+  const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL || ''}/blog/${post.slug}`;
 
   return (
     <article className="max-w-5xl mx-auto pb-20 pt-10 px-6">
@@ -89,7 +90,7 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
               <p className="text-[10px] text-muted-foreground mt-2 font-bold uppercase tracking-widest">{authorRole}</p>
             </div>
           </div>
-          <ShareButtons url={`${typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_APP_URL || ''}/blog/${post.slug}`} title={post.title} />
+          <ShareButtons url={shareUrl} title={post.title} />
         </div>
       </header>
 

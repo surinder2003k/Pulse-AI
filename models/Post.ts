@@ -1,6 +1,24 @@
 import mongoose, { Schema, model, models } from 'mongoose';
 
-const PostSchema = new Schema({
+export interface IPost {
+  _id: string;
+  user_id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  category: string;
+  tags: string[];
+  feature_image_url?: string;
+  status: 'draft' | 'published';
+  is_ai_generated: boolean;
+  views: number;
+  published_at: Date;
+  created_at: Date;
+  updated_at: Date;
+}
+
+const PostSchema = new Schema<IPost>({
   user_id: { type: String, required: true },
   title: { type: String, required: true },
   slug: { type: String, required: true, unique: true },
