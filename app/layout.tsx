@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/sonner";
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
 import NextTopLoader from "nextjs-toploader";
+import LoadingScreen from "@/components/LoadingScreen";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -59,6 +60,7 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <body className={`${inter.className} min-h-screen bg-background text-foreground antialiased`}>
           <NextTopLoader color="#a855f7" showSpinner={false} />
+          <LoadingScreen />
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"

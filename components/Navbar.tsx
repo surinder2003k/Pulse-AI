@@ -21,7 +21,7 @@ export default function Navbar() {
               alt="Pulse AI Logo" 
               width={120} 
               height={40} 
-              className="h-8 w-auto group-hover:scale-105 transition-transform duration-300"
+              className="h-8 w-auto transition-all duration-300"
               priority
             />
           </Link>

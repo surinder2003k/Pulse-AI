@@ -46,7 +46,7 @@ export default function Sidebar() {
             alt="Pulse AI Logo" 
             width={140} 
             height={46} 
-            className="h-9 w-auto group-hover:scale-105 transition-transform duration-300"
+            className="h-9 w-auto transition-all duration-300"
             priority
           />
         </Link>
