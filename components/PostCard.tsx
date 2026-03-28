@@ -18,6 +18,8 @@ interface PostCardProps {
     views: number;
     content: string;
     is_ai_generated: boolean;
+    author_name?: string;
+    author_image?: string;
   };
   isFeatured?: boolean;
 }
@@ -76,11 +78,17 @@ export default function PostCard({ post, isFeatured }: PostCardProps) {
           
           <div className="mt-auto pt-6 flex items-center justify-between border-t border-white/5">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center border border-primary/20 shadow-purple">
-                <User className="h-5 w-5 text-primary" />
+              <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center border border-primary/20 shadow-purple overflow-hidden">
+                {post.author_image ? (
+                  <img src={post.author_image} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <User className="h-5 w-5 text-primary" />
+                )}
               </div>
               <div className="flex flex-col">
-                <span className="text-xs font-black text-white uppercase tracking-tighter">Admin</span>
+                <span className="text-xs font-black text-white uppercase tracking-tighter line-clamp-1">
+                  {post.author_name || "Admin"}
+                </span>
                 <span className="text-[10px] text-muted-foreground font-bold">{readingTime} MIN READ</span>
               </div>
             </div>

@@ -58,31 +58,17 @@ export default function ShareButtons({ url, title }: ShareButtonsProps) {
       <Button
         onClick={handleNativeShare}
         variant="outline"
-        className="bg-primary/10 border-primary/20 text-primary hover:bg-primary hover:text-white rounded-full px-6 py-2 flex items-center gap-2 shadow-skeuo-button transition-all font-black uppercase tracking-widest text-[10px]"
+        className="bg-primary/10 border-primary/20 text-primary hover:bg-primary hover:text-white rounded-full px-6 h-10 flex items-center gap-2 shadow-skeuo-button active:shadow-skeuo-button-pressed transition-all font-black uppercase tracking-widest text-[10px] border border-white/10"
       >
-        <Share2 className="h-4 w-4" /> Share Now
+        <Share2 className="h-4 w-4" /> Share Post
       </Button>
 
-      <div className="h-6 w-px bg-white/10 mx-2" />
-
-      {shareLinks.map((link) => (
-        <Button
-          key={link.name}
-          variant="outline"
-          size="icon"
-          className={cn("h-9 w-9 bg-white/5 border-white/5 rounded-full transition-colors", link.color)}
-          asChild
-        >
-          <a href={link.href} target="_blank" rel="noopener noreferrer">
-            <link.icon className="h-4 w-4" />
-          </a>
-        </Button>
-      ))}
       <Button
         variant="outline"
         size="icon"
-        className="h-9 w-9 bg-white/5 border-white/5 rounded-full hover:text-primary transition-colors"
+        className="h-10 w-10 bg-secondary/30 border-white/10 rounded-full hover:text-primary shadow-skeuo-button active:shadow-skeuo-button-pressed transition-all"
         onClick={copyToClipboard}
+        title="Copy Link"
       >
         <LinkIcon className="h-4 w-4" />
       </Button>

@@ -13,6 +13,8 @@ export interface IPost {
   status: 'draft' | 'published';
   is_ai_generated: boolean;
   views: number;
+  author_name?: string;
+  author_image?: string;
   published_at: Date;
   created_at: Date;
   updated_at: Date;
@@ -30,6 +32,8 @@ const PostSchema = new Schema<IPost>({
   status: { type: String, enum: ['draft', 'published'], default: 'published' },
   is_ai_generated: { type: Boolean, default: false },
   views: { type: Number, default: 0 },
+  author_name: { type: String },
+  author_image: { type: String },
   published_at: { type: Date, default: Date.now },
 }, {
   timestamps: true,

@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
+import { currentUser } from "@clerk/nextjs/server";
 import connectDB from "@/lib/mongodb";
 import Post from "@/models/Post";
 import slugifyLib from "slugify";
 import { generateContentWithFallback } from "@/lib/ai-generator";
+import { ADMIN_EMAIL } from "@/lib/utils";
 
 // Keys from environment variables
 const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY;
@@ -12,7 +14,17 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 export async function GET(req: Request) {
   // Simple auth check for cron
   const authHeader = req.headers.get('authorization');
-  if (process.env.NODE_ENV === 'production' && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  const isCron = authHeader === `Bearer ${process.env.CRON_SECRET}`;
+  
+  // Check for Admin session if not a cron job
+  let isAdmin = false;
+  if (!isCron) {
+    const user = await currentUser();
+    const userEmail = user?.emailAddresses[0]?.emailAddress;
+    isAdmin = userEmail === ADMIN_EMAIL;
+  }
+
+  if (process.env.NODE_ENV === 'production' && !isCron && !isAdmin) {
     return new Response('Unauthorized', { status: 401 });
   }
 

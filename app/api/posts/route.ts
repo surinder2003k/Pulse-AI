@@ -16,6 +16,9 @@ export async function POST(req: Request) {
 
     const slug = slugifyLib(title, { lower: true, strict: true });
 
+    const authorName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username || "Anonymous";
+    const authorImage = user.imageUrl;
+    
     const post = await Post.create({
       user_id: user.id,
       title,
@@ -27,6 +30,8 @@ export async function POST(req: Request) {
       feature_image_url: featureImage,
       status: "published",
       is_ai_generated: body.is_ai_generated || false,
+      author_name: authorName,
+      author_image: authorImage,
       published_at: new Date(),
       views: 0
     });

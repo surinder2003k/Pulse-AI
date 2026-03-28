@@ -19,12 +19,17 @@ import {
 import Link from "next/link";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
+import { ADMIN_EMAIL } from "@/lib/utils";
+import { Edit2 } from "lucide-react";
 
 export default function DashboardOverview() {
   const { user } = useUser();
   const [userPosts, setUserPosts] = useState<any[]>([]);
   const [isAutomating, setIsAutomating] = useState(false);
   const [automationProgress, setAutomationProgress] = useState(0);
+  const [viewAll, setViewAll] = useState(false);
+
+  const isAdmin = user?.emailAddresses[0]?.emailAddress === ADMIN_EMAIL;
 
   const fetchPosts = () => {
     if (user) {
@@ -102,23 +107,25 @@ export default function DashboardOverview() {
             </div>
           )}
           <div className="flex items-center gap-3">
-            <Button 
-              variant="outline" 
-              className="rounded-2xl h-11 border-white/10 bg-secondary/30 gap-2 shadow-skeuo-button active:shadow-skeuo-button-pressed transition-all font-bold uppercase tracking-widest text-[10px] min-w-[180px]"
-              onClick={handleRunAutomation}
-              disabled={isAutomating}
-            >
-              {isAutomating ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin text-primary" /> 
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <RefreshCw className="h-4 w-4" /> Run AI Automation
-                </>
-              )}
-            </Button>
+            {isAdmin && (
+              <Button 
+                variant="outline" 
+                className="rounded-2xl h-11 border-white/10 bg-secondary/30 gap-2 shadow-skeuo-button active:shadow-skeuo-button-pressed transition-all font-bold uppercase tracking-widest text-[10px] min-w-[180px]"
+                onClick={handleRunAutomation}
+                disabled={isAutomating}
+              >
+                {isAutomating ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin text-primary" /> 
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className="h-4 w-4" /> Run AI Automation
+                  </>
+                )}
+              </Button>
+            )}
             <Link href="/dashboard/create">
               <Button className="rounded-2xl h-11 px-6 bg-primary hover:bg-primary text-white gap-2 shadow-skeuo-button active:shadow-skeuo-button-pressed transition-all font-black uppercase tracking-widest text-[10px] border border-white/10">
                 <PlusCircle className="h-4 w-4" /> New Post
@@ -175,25 +182,27 @@ export default function DashboardOverview() {
         </Card>
       </div>
 
-      {/* AI CTA Section */}
-      <Card className="bg-primary/10 border-primary/20 border p-10 rounded-[3rem] relative overflow-hidden group shadow-skeuo-float backdrop-blur-xl">
-        <div className="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-primary/20 to-transparent pointer-events-none" />
-        <div className="relative z-10 space-y-6">
-          <div className="space-y-2">
-            <h2 className="text-3xl font-black flex items-center gap-3">
-              New: AI Content Generation
-            </h2>
-            <p className="text-muted-foreground max-w-xl text-lg">
-              Out of ideas? Use our AI to draft a complete, SEO-friendly blog post in seconds.
-            </p>
+      {/* AI CTA Section - Admin only */}
+      {isAdmin && (
+        <Card className="bg-primary/10 border-primary/20 border p-10 rounded-[3rem] relative overflow-hidden group shadow-skeuo-float backdrop-blur-xl">
+          <div className="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-primary/20 to-transparent pointer-events-none" />
+          <div className="relative z-10 space-y-6">
+            <div className="space-y-2">
+              <h2 className="text-3xl font-black flex items-center gap-3">
+                New: AI Content Generation
+              </h2>
+              <p className="text-muted-foreground max-w-xl text-lg">
+                Out of ideas? Use our AI to draft a complete, SEO-friendly blog post in seconds.
+              </p>
+            </div>
+            <Link href="/dashboard/create">
+              <Button className="rounded-xl h-12 px-8 bg-primary hover:bg-primary/90 text-white font-bold shadow-purple-lg gap-2">
+                Try AI Generator <ArrowUpRight className="h-4 w-4" />
+              </Button>
+            </Link>
           </div>
-          <Link href="/dashboard/create">
-            <Button className="rounded-xl h-12 px-8 bg-primary hover:bg-primary/90 text-white font-bold shadow-purple-lg gap-2">
-              Try AI Generator <ArrowUpRight className="h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
-      </Card>
+        </Card>
+      )}
       
       {/* Quick view of posts */}
       <div className="space-y-6">
@@ -206,23 +215,31 @@ export default function DashboardOverview() {
         
         {userPosts && userPosts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {userPosts.slice(0, 3).map((post) => (
-              <Link key={post.slug} href={`/blog/${post.slug}`} className="block">
-                <Card className="bg-secondary/30 border-white/5 hover:border-primary/30 transition-all group cursor-pointer overflow-hidden h-full shadow-skeuo-out hover:shadow-skeuo-float rounded-[2rem]">
-                  <div className="aspect-video relative overflow-hidden">
-                     <img src={post.feature_image_url} alt="" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" />
-                     <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors" />
-                     <Badge className="absolute top-3 left-3 bg-primary text-white border-none">{post.category}</Badge>
-                  </div>
-                  <CardContent className="p-4 space-y-2">
-                     <h3 className="font-bold line-clamp-1">{post.title}</h3>
-                     <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                        <span className="flex items-center gap-1"><Eye className="h-3 w-3" /> {post.views} Views</span>
-                        <span>{new Date(post.createdAt || post.published_at || post.created_at || Date.now()).toLocaleDateString()}</span>
-                     </div>
-                  </CardContent>
-                </Card>
-              </Link>
+            {userPosts.slice(0, 6).map((post) => (
+              <div key={post.slug} className="group relative">
+                <Link href={`/blog/${post.slug}`} className="block">
+                  <Card className="bg-secondary/30 border-white/5 hover:border-primary/30 transition-all group cursor-pointer overflow-hidden h-full shadow-skeuo-out hover:shadow-skeuo-float rounded-[2rem]">
+                    <div className="aspect-video relative overflow-hidden">
+                       <img src={post.feature_image_url} alt="" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" />
+                       <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors" />
+                       <Badge className="absolute top-3 left-3 bg-primary text-white border-none">{post.category}</Badge>
+                    </div>
+                    <CardContent className="p-4 space-y-2">
+                       <h3 className="font-bold line-clamp-1">{post.title}</h3>
+                       <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                          <span className="flex items-center gap-1"><Eye className="h-3 w-3" /> {post.views} Views</span>
+                          <span>{new Date(post.createdAt || post.published_at || post.created_at || Date.now()).toLocaleDateString()}</span>
+                       </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+                {/* Edit Button overlay */}
+                <Link href={`/dashboard/edit/${post.slug}`} className="absolute top-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button size="icon" className="h-8 w-8 rounded-full bg-white text-black hover:bg-white/90 shadow-lg">
+                    <Edit2 className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
             ))}
           </div>
         ) : (
