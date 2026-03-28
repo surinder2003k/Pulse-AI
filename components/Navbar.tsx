@@ -73,7 +73,7 @@ export default function Navbar() {
           
           <SignedOut>
             <SignInButton mode="modal" fallbackRedirectUrl="/">
-              <Button size="sm" className="bg-primary text-white rounded-lg px-6 hover:bg-primary/90 font-bold transition-all shadow-purple">
+              <Button size="sm" className="bg-primary text-white rounded-lg px-6 hover:bg-primary/90 font-bold transition-all shadow-purple text-xs">
                 Sign In
               </Button>
             </SignInButton>
@@ -82,25 +82,28 @@ export default function Navbar() {
           <Button 
             variant="ghost" 
             size="icon" 
-            className="md:hidden text-white"
-            onClick={() => setIsMobileMenuOpen(true)}
+            className="md:hidden text-white hover:bg-white/10 flex items-center justify-center"
+            onClick={() => {
+              console.log("Mobile menu trigger clicked");
+              setIsMobileMenuOpen(true);
+            }}
           >
             <Menu className="h-6 w-6" />
           </Button>
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
+      {/* Mobile Menu Overlay - Outside the main nav content for better stacking */}
+      <AnimatePresence mode="wait">
         {isMobileMenuOpen && (
-          <>
+          <div className="fixed inset-0 z-[9999]">
             {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm md:hidden"
+              className="absolute inset-0 bg-black/80 backdrop-blur-md md:hidden"
             />
 
             {/* Drawer */}
@@ -108,25 +111,33 @@ export default function Navbar() {
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed inset-y-0 right-0 z-[101] w-[280px] bg-secondary border-l border-white/10 shadow-2xl p-6 md:hidden flex flex-col"
+              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              className="absolute inset-y-0 right-0 w-[300px] bg-[#0A0A0A] border-l border-white/10 shadow-2xl p-6 md:hidden flex flex-col"
             >
-              <div className="flex items-center justify-between mb-10">
-                <Image src="/logo.svg" alt="Pulse AI" width={100} height={32} className="h-7 w-auto" />
-                <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)} className="text-white hover:bg-white/5">
+              <div className="flex items-center justify-between mb-12">
+                <Image src="/logo.svg" alt="Pulse AI" width={110} height={36} className="h-8 w-auto" />
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => setIsMobileMenuOpen(false)} 
+                  className="text-white hover:bg-white/10 rounded-full h-10 w-10"
+                >
                   <X className="h-6 w-6" />
                 </Button>
               </div>
 
-              <div className="flex flex-col gap-2 flex-1">
+              <div className="flex flex-col gap-3 flex-1">
+                <p className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-4">Navigation</p>
                 {navLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors text-lg font-bold group"
+                    className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-all text-lg font-black italic group border border-white/5"
                   >
-                    <link.icon className="h-5 w-5 text-primary group-hover:scale-110 transition-transform" />
+                    <div className="h-10 w-10 rounded-xl bg-secondary flex items-center justify-center group-hover:bg-primary transition-colors">
+                      <link.icon className="h-5 w-5 text-white" />
+                    </div>
                     {link.name}
                   </Link>
                 ))}
@@ -135,34 +146,36 @@ export default function Navbar() {
                   <Link
                     href="/dashboard"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-4 p-4 rounded-2xl bg-primary/10 hover:bg-primary/20 transition-colors text-lg font-bold border border-primary/20 text-primary group"
+                    className="flex items-center gap-4 p-4 rounded-2xl bg-primary/10 hover:bg-primary/20 transition-all text-lg font-black italic border border-primary/30 text-primary group mt-4"
                   >
-                    <LayoutDashboard className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                    <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center">
+                      <LayoutDashboard className="h-5 w-5 text-white" />
+                    </div>
                     Dashboard
                   </Link>
                 </SignedIn>
               </div>
 
-              <div className="mt-auto pt-6 border-t border-white/5">
+              <div className="mt-auto pt-8 border-t border-white/10">
                 <SignedOut>
                   <SignInButton mode="modal" fallbackRedirectUrl="/">
-                    <Button className="w-full h-14 bg-primary text-white rounded-2xl font-black uppercase tracking-widest text-xs shadow-purple">
-                      Sign In Now
+                    <Button className="w-full h-16 bg-primary text-white rounded-2xl font-black uppercase tracking-[0.15em] text-xs shadow-purple active:scale-95 transition-transform">
+                      Get Started
                     </Button>
                   </SignInButton>
                 </SignedOut>
                 <SignedIn>
-                  <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5">
+                  <div className="flex items-center gap-4 p-5 rounded-2xl bg-white/5 border border-white/5">
                     <UserButton fallbackRedirectUrl="/" />
-                    <div className="flex flex-col">
-                      <span className="text-sm font-bold text-white truncate max-w-[150px]">{user?.fullName || "User"}</span>
-                      <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Active Profile</span>
+                    <div className="flex flex-col min-w-0">
+                      <span className="text-sm font-black text-white truncate italic">{user?.fullName || "User"}</span>
+                      <span className="text-[10px] text-primary uppercase font-black tracking-widest">Premium Member</span>
                     </div>
                   </div>
                 </SignedIn>
               </div>
             </motion.div>
-          </>
+          </div>
         )}
       </AnimatePresence>
     </nav>
