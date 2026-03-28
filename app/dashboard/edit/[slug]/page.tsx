@@ -12,7 +12,8 @@ import {
   Tag, 
   Layout, 
   MessageSquareShare,
-  ArrowLeft
+  ArrowLeft,
+  Search
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -37,6 +38,9 @@ export default function EditPostPage({ params }: EditPostPageProps) {
     tags: "",
     featureImage: ""
   });
+  const [imageSearchQuery, setImageSearchQuery] = useState("");
+  const [isSearchingImage, setIsSearchingImage] = useState(false);
+
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -92,6 +96,25 @@ export default function EditPostPage({ params }: EditPostPageProps) {
       setIsPublishing(false);
     }
   };
+
+  const handleImageSearch = async () => {
+    if (!imageSearchQuery) return toast.error("Please enter a search term.");
+    setIsSearchingImage(true);
+    
+    try {
+      const res = await fetch(`/api/images/search?q=${encodeURIComponent(imageSearchQuery)}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to find image");
+      
+      setFormData(prev => ({ ...prev, featureImage: data.url }));
+      toast.success("Feature image updated!");
+    } catch (error: any) {
+      toast.error(error.message || "Search failed.");
+    } finally {
+      setIsSearchingImage(false);
+    }
+  };
+
 
   if (isLoading) {
     return (
@@ -188,6 +211,27 @@ export default function EditPostPage({ params }: EditPostPageProps) {
             
             <div className="space-y-4">
               <div className="space-y-2">
+                <label className="text-xs font-bold text-muted-foreground uppercase">AI Image Search</label>
+                <div className="flex gap-2">
+                  <Input 
+                    placeholder="Search for photos..." 
+                    value={imageSearchQuery}
+                    onChange={(e) => setImageSearchQuery(e.target.value)}
+                    className="bg-background/50 border-white/5 rounded-xl h-11 shadow-skeuo-in"
+                  />
+                  <Button 
+                    type="button"
+                    onClick={handleImageSearch}
+                    disabled={isSearchingImage}
+                    size="icon"
+                    className="h-11 w-11 rounded-xl bg-primary shadow-skeuo-button shrink-0"
+                  >
+                    {isSearchingImage ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
+                  </Button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
                 <label className="text-xs font-bold text-muted-foreground uppercase">Category</label>
                 <select 
                   value={formData.category}
@@ -229,14 +273,15 @@ export default function EditPostPage({ params }: EditPostPageProps) {
               </div>
 
               {formData.featureImage && (
-                <div className="pt-4">
+                <div className="pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
                   <label className="text-xs font-bold text-muted-foreground uppercase mb-2 block">Preview</label>
-                  <div className="aspect-video rounded-xl overflow-hidden border border-white/10 shadow-skeuo-in">
+                  <div className="aspect-video rounded-xl overflow-hidden border border-white/10 shadow-skeuo-in bg-black/20">
                     <img src={formData.featureImage} alt="Preview" className="w-full h-full object-cover" />
                   </div>
                 </div>
               )}
             </div>
+
           </Card>
         </div>
       </div>

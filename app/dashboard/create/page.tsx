@@ -9,11 +9,12 @@ import {
   Sparkles, 
   Loader2, 
   Send, 
-  Image as ImageIcon, 
+  ImageIcon, 
   Tag, 
   Layout, 
   BrainCircuit,
-  MessageSquareShare
+  MessageSquareShare,
+  Search
 } from "lucide-react";
 import { useEffect } from "react";
 // @ts-ignore
@@ -28,6 +29,9 @@ export default function CreatePostPage() {
   const [prompt, setPrompt] = useState("");
   
   const [generatedPostId, setGeneratedPostId] = useState<string | null>(null);
+  const [imageSearchQuery, setImageSearchQuery] = useState("");
+  const [isSearchingImage, setIsSearchingImage] = useState(false);
+
   const [formData, setFormData] = useState({
     title: "",
     excerpt: "",
@@ -94,6 +98,25 @@ export default function CreatePostPage() {
       setIsGenerating(false);
     }
   };
+
+  const handleImageSearch = async () => {
+    if (!imageSearchQuery) return toast.error("Please enter a search term.");
+    setIsSearchingImage(true);
+    
+    try {
+      const res = await fetch(`/api/images/search?q=${encodeURIComponent(imageSearchQuery)}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to find image");
+      
+      setFormData(prev => ({ ...prev, featureImage: data.url }));
+      toast.success("Feature image updated!");
+    } catch (error: any) {
+      toast.error(error.message || "Search failed.");
+    } finally {
+      setIsSearchingImage(false);
+    }
+  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -233,6 +256,27 @@ export default function CreatePostPage() {
             
             <div className="space-y-4">
               <div className="space-y-2">
+                <label className="text-xs font-bold text-muted-foreground uppercase">AI Image Search</label>
+                <div className="flex gap-2">
+                  <Input 
+                    placeholder="Search for photos..." 
+                    value={imageSearchQuery}
+                    onChange={(e) => setImageSearchQuery(e.target.value)}
+                    className="bg-background/50 border-white/5 rounded-xl h-11 shadow-skeuo-in"
+                  />
+                  <Button 
+                    type="button"
+                    onClick={handleImageSearch}
+                    disabled={isSearchingImage}
+                    size="icon"
+                    className="h-11 w-11 rounded-xl bg-primary shadow-skeuo-button shrink-0"
+                  >
+                    {isSearchingImage ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
+                  </Button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
                 <label className="text-xs font-bold text-muted-foreground uppercase">Category</label>
                 <select 
                   value={formData.category}
@@ -272,7 +316,17 @@ export default function CreatePostPage() {
                   <ImageIcon className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
                 </div>
               </div>
+
+              {formData.featureImage && (
+                <div className="pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <label className="text-xs font-bold text-muted-foreground uppercase mb-2 block">Preview</label>
+                  <div className="aspect-video rounded-xl overflow-hidden border border-white/10 shadow-skeuo-in bg-black/20">
+                    <img src={formData.featureImage} alt="Preview" className="w-full h-full object-cover" />
+                  </div>
+                </div>
+              )}
             </div>
+
           </Card>
         </div>
       </div>
