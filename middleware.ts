@@ -8,6 +8,8 @@ const isPublicRoute = createRouteMatcher([
   "/api/generate", // Internal AI generation (rate limited in route)
   "/sign-in(.*)",
   "/sign-up(.*)",
+  "/sitemap.xml",
+  "/robots.txt",
 ]);
 
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);

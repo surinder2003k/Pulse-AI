@@ -3,7 +3,7 @@ import connectDB from '@/lib/mongodb';
 import Post from '@/models/Post';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://ai-blog.vercel.app';
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pulse-blog-ai.vercel.app';
   
   try {
     await connectDB();
