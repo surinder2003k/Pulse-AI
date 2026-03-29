@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: `${post.title} | Pulse AI`,
     description: post.excerpt,
-    keywords: post.tags?.join(", ") || "Pulse AI, News, Technology",
+    keywords: `${post.tags?.join(", ") || ""}, Pulse AI, AI Blog India, Automated Content, Trending News Artificial Intelligence, Future of Tech, Smart Blogging Engine`,
     alternates: {
       canonical: url,
     },
@@ -110,8 +110,39 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
   const readingTime = calculateReadingTime(post.content);
   const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL || ''}/blog/${post.slug}`;
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": post.title,
+    "description": post.excerpt,
+    "image": [post.feature_image_url || "https://pulse-blog-ai.vercel.app/og-image.png"],
+    "datePublished": post.createdAt?.toString() || post.published_at?.toString(),
+    "dateModified": post.updatedAt?.toString() || post.createdAt?.toString(),
+    "author": {
+      "@type": "Person",
+      "name": authorName,
+      "url": "https://pulse-blog-ai.vercel.app"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Pulse AI",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://pulse-blog-ai.vercel.app/logo.svg"
+      }
+    },
+    "mainEntityOfPage": {
+      "@id": shareUrl,
+      "@type": "WebPage"
+    }
+  };
+
   return (
     <article className="max-w-5xl mx-auto pb-20 pt-10 px-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Views Counter (Client-side trigger) */}
       <ViewsCounter slug={post.slug} />
 

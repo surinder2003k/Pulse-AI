@@ -4,8 +4,15 @@ import Post from "@/models/Post";
 import PostCard from "@/components/PostCard";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Sparkles, TrendingUp, ArrowRight } from "lucide-react";
+import { Sparkles, TrendingUp, ArrowRight, Github, Twitter } from "lucide-react";
 import AnimatedHero from "@/components/AnimatedHero";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Pulse AI | Discover Next-Gen AI Content & Stories",
+  description: "Dive into the future of blogging with Pulse AI. Explore high-quality, automated trending stories in technology, science, and artificial intelligence.",
+  keywords: ["AI trending stories", "automated tech blog", "next-gen content platform", "AI journalism India", "futuristic blogging experience"],
+};
 
 export const revalidate = 0;
 
@@ -71,6 +78,22 @@ export default async function HomePage() {
           <Link href="/" className="text-xs text-muted-foreground hover:text-white">Home</Link>
           <Link href="/blog" className="text-xs text-muted-foreground hover:text-white">Blog</Link>
           <Link href="/dashboard" className="text-xs text-muted-foreground hover:text-white">Dashboard</Link>
+        </div>
+        <div className="flex gap-5 mt-4 items-center">
+          <Link 
+            href="https://github.com/surinder2003k" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="h-10 w-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-muted-foreground hover:text-white hover:bg-white/10 hover:border-primary/50 transition-all group scale-90 hover:scale-100"
+          >
+            <Github className="h-5 w-5" />
+          </Link>
+          <Link 
+            href="#" 
+            className="h-10 w-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-muted-foreground hover:text-white hover:bg-white/10 hover:border-primary/50 transition-all group scale-90 hover:scale-100"
+          >
+            <Twitter className="h-5 w-5" />
+          </Link>
         </div>
         <p className="text-[10px] text-muted-foreground/50 mt-10 uppercase tracking-widest">
           © 2026 Pulse AI - Built with AI & Next.js
