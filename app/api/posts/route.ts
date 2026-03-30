@@ -32,8 +32,7 @@ export async function POST(req: Request) {
       is_ai_generated: body.is_ai_generated || false,
       author_name: authorName,
       author_image: authorImage,
-      published_at: new Date(),
-      views: 0
+      published_at: new Date()
     });
 
     return NextResponse.json(post);

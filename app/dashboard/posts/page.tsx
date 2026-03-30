@@ -19,7 +19,6 @@ interface Post {
   title: string;
   category: string;
   status: string;
-  views: number;
   created_at?: string;
   createdAt?: string;
   published_at?: string;
@@ -179,7 +178,6 @@ export default function DashboardPostsPage() {
               <TableHead className="py-4">Title</TableHead>
               <TableHead>Category</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Views</TableHead>
               <TableHead>Created</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -230,7 +228,6 @@ export default function DashboardPostsPage() {
                         {post.status}
                       </Badge>
                     </TableCell>
-                    <TableCell className="font-mono text-xs">{post.views || 0}</TableCell>
                     <TableCell className="text-xs text-muted-foreground">{formatDate((post.createdAt || post.published_at || post.created_at || "") as string)}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-1">

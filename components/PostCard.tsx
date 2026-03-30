@@ -15,7 +15,6 @@ interface PostCardProps {
     created_at?: string;
     createdAt?: string;
     published_at?: string;
-    views: number;
     content: string;
     is_ai_generated: boolean;
     author_name?: string;
@@ -59,7 +58,6 @@ export default function PostCard({ post, isFeatured }: PostCardProps) {
         )}>
           <div className="flex items-center gap-6 text-xs text-muted-foreground font-bold uppercase tracking-widest">
             <span className="flex items-center gap-2"><Calendar className="h-4 w-4 text-primary" /> {formatDate(post.published_at || post.createdAt || post.created_at || new Date())}</span>
-            <span className="flex items-center gap-2"><Eye className="h-4 w-4 text-primary" /> {post.views} Views</span>
             {isFeatured && <Badge variant="outline" className="text-primary border-primary/20 bg-primary/5">Must Read</Badge>}
           </div>
           

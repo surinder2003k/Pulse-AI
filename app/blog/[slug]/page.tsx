@@ -7,9 +7,9 @@ import MarkdownRenderer from "@/components/MarkdownRenderer";
 import ShareButtons from "@/components/ShareButtons";
 import RelatedPosts from "@/components/RelatedPosts";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Eye, Clock, User, ChevronLeft, Sparkles } from "lucide-react";
+import { Calendar, Clock, User, ChevronLeft, Sparkles } from "lucide-react";
 import Link from "next/link";
-import ViewsCounter from "@/components/ViewsCounter";
+
 import { clerkClient, auth } from "@clerk/nextjs/server";
 import { Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -180,8 +180,6 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
-      {/* Views Counter (Client-side trigger) */}
-      <ViewsCounter slug={post.slug} />
 
       <Link href="/blog" className="inline-flex items-center gap-2 text-muted-foreground hover:text-white transition-colors mb-12 group font-bold uppercase tracking-widest text-[10px]">
         <ChevronLeft className="h-3 w-3 group-hover:-translate-x-1 transition-transform" /> Back to Archive
@@ -195,7 +193,6 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
           <div className="flex items-center gap-6 text-[11px] text-muted-foreground font-black uppercase tracking-widest bg-secondary/20 shadow-skeuo-in px-6 py-2 rounded-full">
             <span className="flex items-center gap-2"><Calendar className="h-4 w-4 text-primary" /> {formatDate(post.createdAt || post.published_at)}</span>
             <span className="flex items-center gap-2"><Clock className="h-4 w-4 text-primary" /> {readingTime}</span>
-            <span className="flex items-center gap-2 text-white"><Eye className="h-4 w-4 text-primary" /> {post.views} Views</span>
           </div>
         </div>
 

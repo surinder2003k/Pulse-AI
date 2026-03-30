@@ -123,8 +123,7 @@ export async function GET(req: Request) {
           feature_image_url: featureImage,
           status: "published",
           is_ai_generated: true,
-          published_at: new Date(),
-          views: 0
+          published_at: new Date()
         });
 
         createdPosts.push(newPost);

@@ -105,8 +105,7 @@ export async function POST(req: Request) {
         feature_image_url: featureImage,
         status: "published",
         is_ai_generated: true,
-        published_at: new Date(),
-        views: 0
+        published_at: new Date()
       });
 
       console.log("Generation Success! Post created:", newPost.slug);

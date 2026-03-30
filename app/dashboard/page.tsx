@@ -11,7 +11,6 @@ import {
   FileText, 
   CheckCircle2, 
   Clock, 
-  Eye, 
   ArrowUpRight,
   RefreshCw,
   Loader2,
@@ -21,7 +20,7 @@ import {
 import Link from "next/link";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
-import { ADMIN_EMAIL } from "@/lib/utils";
+import { ADMIN_EMAIL, calculateReadingTime } from "@/lib/utils";
 import { Edit2 } from "lucide-react";
 
 export default function DashboardOverview() {
@@ -229,7 +228,7 @@ export default function DashboardOverview() {
                     <CardContent className="p-4 space-y-2">
                        <h3 className="font-bold line-clamp-1">{post.title}</h3>
                        <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                          <span className="flex items-center gap-1"><Eye className="h-3 w-3" /> {post.views} Views</span>
+                          <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {calculateReadingTime(post.content)}</span>
                           <span>{new Date(post.createdAt || post.published_at || post.created_at || Date.now()).toLocaleDateString()}</span>
                        </div>
                     </CardContent>

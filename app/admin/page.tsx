@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { ShieldCheck, Users, Activity, Settings, ListPlus } from "lucide-react";
 import AdminUserList from "@/components/AdminUserList";
 import AdminSettings from "@/components/AdminSettings";
+import ApiStatus from "@/components/ApiStatus";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ADMIN_EMAIL } from "@/lib/utils";
@@ -128,14 +129,10 @@ export default async function AdminPage() {
         
         <Card className="bg-secondary/20 border-white/5">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2"><Settings className="h-5 w-5 text-primary" /> API Log Stream</CardTitle>
+            <CardTitle className="flex items-center gap-2"><Activity className="h-5 w-5 text-primary" /> Live Service Monitor</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2 text-[10px] font-mono text-muted-foreground overflow-y-auto h-40 scrollbar-hide">
-            <p>[21:05:40] - INFO: Automation cron triggered for India News.</p>
-            <p>[21:05:55] - INFO: Grok brainstorming successful - "Chandigarh Metro Delay".</p>
-            <p>[21:06:12] - SUCCESS: Unsplash image fetched passionatly.</p>
-            <p>[21:07:01] - INFO: Punjabi Humanization complete (Score: 0.99).</p>
-            <p>[21:07:05] - SUCCESS: Post published to Supabase.</p>
+          <CardContent className="h-40 overflow-y-auto scrollbar-hide">
+            <ApiStatus />
           </CardContent>
         </Card>
       </div>
