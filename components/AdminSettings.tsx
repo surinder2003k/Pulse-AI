@@ -11,7 +11,7 @@ export default function AdminSettings() {
   const [enabled, setEnabled] = useState(true);
   const [category, setCategory] = useState("Technology");
 
-  const categories = ["Technology", "Global News", "Sports", "Entertainment", "Auto", "Health", "Finance", "Science"];
+  const categories = ["Technology", "Global News", "Sports", "Entertainment", "Auto", "Health", "Finance", "Science", "India", "Pakistan"];
 
   useEffect(() => {
     fetch('/api/admin/settings')

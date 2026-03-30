@@ -18,9 +18,16 @@ export async function POST(req: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Create a unique filename
+    // Ensure uploads directory exists
+    const uploadsDir = join(process.cwd(), "public", "uploads");
+    try {
+      await import("fs/promises").then(fs => fs.mkdir(uploadsDir, { recursive: true }));
+    } catch (e) {
+      console.error("Directory Creation Error:", e);
+    }
+
     const filename = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
-    const path = join(process.cwd(), "public", "uploads", filename);
+    const path = join(uploadsDir, filename);
 
     await writeFile(path, buffer);
     const url = `/uploads/${filename}`;

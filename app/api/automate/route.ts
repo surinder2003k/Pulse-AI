@@ -63,20 +63,20 @@ export async function GET(req: Request) {
       
       Write a highly optimized, fully SEO-friendly, comprehensive article about this NEW trending ${settings.automationCategory} topic.
       
-      The article MUST be detailed and lengthy, approximately 2000 to 2500 words.
+      The article MUST be detailed and long-form, approximately 1000 to 1200 words.
       Use proper headings, bullet points, and structure for readability and SEO ranking.
       
       Format the response STRICTLY as a JSON object with these exact keys:
       {
         "title": "A highly engaging, SEO-optimized title for the trending news",
-        "content": "Full lengthy markdown content (2000-2500 words) discussing the news.",
+        "content": "Full Markdown content (1000-1200 words) discussing the news.",
         "excerpt": "A powerful SEO meta description (max 160 chars)",
         "category": "${settings.automationCategory}",
         "tags": ["trending", "${settings.automationCategory.toLowerCase()}", "seo-tag1", "seo-tag2"],
         "imageSearchKeyword": "A generic 1-2 word English keyword (like 'technology', 'nature', 'city') to find a high-quality relevant background image on Unsplash. DO NOT use specific brand names or acronyms."
       }
       
-      Important: Return ONLY the JSON object. NO markdown blocks or other text outside the JSON.`;
+      Important: Return ONLY the JSON object. NO markdown blocks or other text outside the JSON. Ensure the JSON is valid and minified.`;
 
       console.log(`Requesting trending article ${i + 1} from Multi-Provider AI Fallback...`);
       let text = "";
@@ -107,7 +107,8 @@ export async function GET(req: Request) {
         console.log("Finding Visuals for automation...");
         const { searchImage } = await import("@/lib/image-search");
         const searchKeyword = `${postData.imageSearchKeyword || postData.category} ${postData.title.split(' ').slice(0, 3).join(' ')}`;
-        const featureImage = await searchImage(searchKeyword) || "https://images.unsplash.com/photo-1677442136019-21780ecad995";
+        const images = await searchImage(searchKeyword);
+        const featureImage = (Array.isArray(images) ? images[0] : images) || "https://images.unsplash.com/photo-1677442136019-21780ecad995";
 
 
         // Step 3: Save to MongoDB

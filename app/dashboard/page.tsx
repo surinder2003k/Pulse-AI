@@ -27,6 +27,7 @@ export default function DashboardOverview() {
   const { user } = useUser();
   const [userPosts, setUserPosts] = useState<any[]>([]);
   const [isAutomating, setIsAutomating] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [automationProgress, setAutomationProgress] = useState(0);
   const [viewAll, setViewAll] = useState(false);
 
@@ -34,14 +35,19 @@ export default function DashboardOverview() {
 
   const fetchPosts = () => {
     if (user) {
+      setIsLoading(true);
       fetch("/api/posts")
         .then(res => res.json())
-        .then(data => setUserPosts(data || []));
+        .then(data => {
+          setUserPosts(data || []);
+          setIsLoading(false);
+        })
+        .catch(() => setIsLoading(false));
     }
   };
 
   useEffect(() => {
-    fetchPosts();
+    if (user) fetchPosts();
   }, [user]);
 
   const handleRunAutomation = async () => {
@@ -146,41 +152,29 @@ export default function DashboardOverview() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <Card className="bg-secondary/30 border-white/5 shadow-skeuo-out hover:shadow-skeuo-float rounded-[2rem] transition-all group overflow-hidden relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
-          <CardHeader className="pb-2 flex flex-row items-center justify-between relative z-10">
-            <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Total Posts</CardTitle>
-            <div className="p-3 bg-blue-500/10 rounded-2xl shadow-skeuo-in"><FileText className="h-5 w-5 text-blue-500" /></div>
-          </CardHeader>
-          <CardContent className="relative z-10">
-            <p className="text-4xl font-black drop-shadow-md">{totalPosts}</p>
-            <p className="text-xs text-muted-foreground mt-2 font-medium">Articles in your library</p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-secondary/30 border-white/5 shadow-skeuo-out hover:shadow-skeuo-float rounded-[2rem] transition-all group overflow-hidden relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
-          <CardHeader className="pb-2 flex flex-row items-center justify-between relative z-10">
-            <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Published</CardTitle>
-            <div className="p-3 bg-green-500/10 rounded-2xl shadow-skeuo-in"><CheckCircle2 className="h-5 w-5 text-green-500" /></div>
-          </CardHeader>
-          <CardContent className="relative z-10">
-            <p className="text-4xl font-black drop-shadow-md">{publishedPosts}</p>
-            <p className="text-xs text-muted-foreground mt-2 font-medium">Live on the platform</p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-secondary/30 border-white/5 shadow-skeuo-out hover:shadow-skeuo-float rounded-[2rem] transition-all group overflow-hidden relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
-          <CardHeader className="pb-2 flex flex-row items-center justify-between relative z-10">
-            <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Drafts</CardTitle>
-            <div className="p-3 bg-orange-500/10 rounded-2xl shadow-skeuo-in"><Clock className="h-5 w-5 text-orange-500" /></div>
-          </CardHeader>
-          <CardContent className="relative z-10">
-            <p className="text-4xl font-black drop-shadow-md">{draftPosts}</p>
-            <p className="text-xs text-muted-foreground mt-2 font-medium">Pending review/post</p>
-          </CardContent>
-        </Card>
+        {[
+          { label: "Total Posts", value: totalPosts, icon: FileText, color: "blue", sub: "Articles in your library" },
+          { label: "Published", value: publishedPosts, icon: CheckCircle2, color: "green", sub: "Live on the platform" },
+          { label: "Drafts", value: draftPosts, icon: Clock, color: "orange", sub: "Pending review/post" }
+        ].map((stat, idx) => (
+          <Card key={idx} className="bg-secondary/30 border-white/5 shadow-skeuo-out hover:shadow-skeuo-float rounded-[2rem] transition-all group overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+            <CardHeader className="pb-2 flex flex-row items-center justify-between relative z-10">
+              <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{stat.label}</CardTitle>
+              <div className={`p-3 bg-${stat.color}-500/10 rounded-2xl shadow-skeuo-in`}>
+                <stat.icon className={`h-5 w-5 text-${stat.color}-500`} />
+              </div>
+            </CardHeader>
+            <CardContent className="relative z-10">
+              {isLoading ? (
+                <div className="h-10 w-16 bg-white/5 animate-pulse rounded-lg mb-2" />
+              ) : (
+                <p className="text-4xl font-black drop-shadow-md">{stat.value}</p>
+              )}
+              <p className="text-xs text-muted-foreground mt-2 font-medium">{stat.sub}</p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {/* AI CTA Section - Admin only */}
@@ -214,7 +208,13 @@ export default function DashboardOverview() {
           </Link>
         </div>
         
-        {userPosts && userPosts.length > 0 ? (
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-secondary/20 h-64 rounded-[2rem] animate-pulse border border-white/5" />
+            ))}
+          </div>
+        ) : userPosts && userPosts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {userPosts.slice(0, 6).map((post) => (
               <div key={post.slug} className="group relative">
@@ -241,7 +241,6 @@ export default function DashboardOverview() {
                   </Button>
                 </Link>
               </div>
-
             ))}
           </div>
         ) : (

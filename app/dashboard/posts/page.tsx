@@ -241,7 +241,7 @@ export default function DashboardPostsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {isLoading ? (
+            {isLoading || !user ? (
               <TableRow>
                 <TableCell colSpan={6} className="text-center py-40 text-white/20 animate-pulse font-black tracking-[0.5em] uppercase text-xs">
                   SYNCHRONIZING WITH SERVER...
