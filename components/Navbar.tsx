@@ -3,16 +3,18 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { UserButton, useUser, SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
-import { Search, Bell, Sparkles, Menu, X, Home, BookOpen, LayoutDashboard } from "lucide-react";
+import { Search, Bell, Sparkles, Menu, X, Home, BookOpen, LayoutDashboard, ShieldCheck } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { cn, ADMIN_EMAIL } from "@/lib/utils";
 
 export default function Navbar() {
   const { user } = useUser();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const isAdmin = user?.primaryEmailAddress?.emailAddress === ADMIN_EMAIL;
 
   // Close menu on resize to desktop
   useEffect(() => {
@@ -67,13 +69,21 @@ export default function Navbar() {
 
           <div className="flex items-center gap-4">
             <SignedIn>
+              {isAdmin && (
+                <Link href="/admin" className="hidden lg:block pointer-events-auto">
+                  <Button variant="ghost" size="sm" className="text-primary hover:text-primary hover:bg-primary/10 font-bold flex items-center gap-2">
+                    <Sparkles className="h-4 w-4" /> AI Dashboard
+                  </Button>
+                </Link>
+              )}
               <Link href="/dashboard" className="hidden sm:block pointer-events-auto">
                 <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-white hover:bg-white/5">
                   Dashboard
                 </Button>
               </Link>
+
               <div className="pointer-events-auto">
-                <UserButton fallbackRedirectUrl="/" />
+                <UserButton afterSignOutUrl="/" />
               </div>
             </SignedIn>
             
@@ -92,8 +102,8 @@ export default function Navbar() {
               type="button"
               className="md:hidden text-white hover:bg-white/10 p-2 rounded-xl flex items-center justify-center transition-all bg-white/5 border border-white/10 active:scale-90 relative z-[101] pointer-events-auto"
               onClick={() => {
-                console.log("MOBILE MENU CLICKED - STATE CHANGING");
-                setIsMobileMenuOpen(true);
+                console.log("MOBILE MENU CLICKED - TOGGLING");
+                setIsMobileMenuOpen(!isMobileMenuOpen);
               }}
               style={{ minWidth: '44px', minHeight: '44px' }}
               aria-label="Toggle mobile menu"
@@ -151,12 +161,24 @@ export default function Navbar() {
                 ))}
                 
                 <SignedIn>
+                  {isAdmin && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-5 p-5 rounded-3xl bg-primary/20 hover:bg-primary/30 transition-all text-xl font-black italic border border-primary/30 text-primary group mt-2 shadow-[0_0_20px_rgba(168,85,247,0.2)]"
+                    >
+                      <div className="h-12 w-12 rounded-2xl bg-primary flex items-center justify-center shadow-[0_10px_20px_-10px_rgba(168,85,247,0.5)]">
+                        <ShieldCheck className="h-6 w-6 text-white" />
+                      </div>
+                      AI Dashboard
+                    </Link>
+                  )}
                   <Link
                     href="/dashboard"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-5 p-5 rounded-3xl bg-primary/10 hover:bg-primary/20 transition-all text-xl font-black italic border border-primary/20 text-primary group mt-2"
+                    className="flex items-center gap-5 p-5 rounded-3xl bg-white/5 hover:bg-white/10 transition-all text-xl font-black italic border border-white/[0.03] group mt-2"
                   >
-                    <div className="h-12 w-12 rounded-2xl bg-primary flex items-center justify-center shadow-[0_10px_20px_-10px_rgba(168,85,247,0.5)]">
+                    <div className="h-12 w-12 rounded-2xl bg-secondary/80 flex items-center justify-center group-hover:bg-primary transition-all border border-white/5 shadow-inner">
                       <LayoutDashboard className="h-6 w-6 text-white" />
                     </div>
                     Dashboard
@@ -174,7 +196,7 @@ export default function Navbar() {
                 </SignedOut>
                 <SignedIn>
                   <div className="flex items-center gap-5 p-6 rounded-[2.5rem] bg-white/5 border border-white/10 shadow-inner">
-                    <UserButton fallbackRedirectUrl="/" />
+                    <UserButton />
                     <div className="flex flex-col min-w-0">
                       <span className="text-base font-black text-white truncate italic tracking-tight">{user?.fullName || "Pulse AI User"}</span>
                       <span className="text-[10px] text-primary uppercase font-black tracking-widest mt-0.5">Verified Profile</span>

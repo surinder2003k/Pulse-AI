@@ -138,7 +138,7 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
   };
 
   return (
-    <article className="max-w-5xl mx-auto pb-20 pt-10 px-6">
+    <article className="max-w-4xl mx-auto pb-32 pt-16 px-6">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -193,7 +193,7 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
 
 
       <div className="relative prose-container">
-        <MarkdownRenderer content={post.content} className="max-w-none text-xl text-white/80 leading-relaxed font-medium" />
+        <MarkdownRenderer content={post.content} className="max-w-none" />
       </div>
 
       {/* Author & Share Bar Moved to Bottom */}
