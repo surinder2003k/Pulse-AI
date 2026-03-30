@@ -109,11 +109,11 @@ export default function AnimatedHero() {
       <div className="hero-subtitle opacity-0 mt-16 flex items-center gap-12 text-white/20 uppercase tracking-[0.3em] text-[10px] font-bold">
         <span>Integrated with:</span>
         <div className="flex items-center gap-8 grayscale opacity-50">
-          <span className="hover:grayscale-0 hover:opacity-100 transition-all cursor-crosshair">OpenAI</span>
-          <span className="hover:grayscale-0 hover:opacity-100 transition-all cursor-crosshair">Figma</span>
-          <span className="hover:grayscale-0 hover:opacity-100 transition-all cursor-crosshair">React</span>
+          <span className="hover:grayscale-0 hover:opacity-100 transition-all cursor-crosshair">Groq AI</span>
+          <span className="hover:grayscale-0 hover:opacity-100 transition-all cursor-crosshair">MongoDB</span>
+          <span className="hover:grayscale-0 hover:opacity-100 transition-all cursor-crosshair">Clerk</span>
+          <span className="hover:grayscale-0 hover:opacity-100 transition-all cursor-crosshair">Pexels</span>
           <span className="hover:grayscale-0 hover:opacity-100 transition-all cursor-crosshair">Vercel</span>
-          <span className="hover:grayscale-0 hover:opacity-100 transition-all cursor-crosshair">Stripe</span>
         </div>
       </div>
     </section>
