@@ -176,7 +176,7 @@ export default function AdminUserList({
                 </TableCell>
                 <TableCell className="text-muted-foreground">{user.email}</TableCell>
                 <TableCell>
-                  <Badge variant={user.role === "admin" ? "purple" : "secondary"}>
+                  <Badge variant={user.role === "admin" ? "accent" : "secondary"}>
                     {user.role === "admin" && <Shield className="h-3 w-3 mr-1" />}
                     {user.role}
                   </Badge>
@@ -192,7 +192,7 @@ export default function AdminUserList({
                       className={cn(
                         "h-8 w-8 rounded-lg transition-all",
                         user.role === 'admin' 
-                          ? "text-purple-400 hover:text-purple-300 hover:bg-purple-500/10" 
+                          ? "text-primary hover:text-primary/80 hover:bg-primary/10" 
                           : "text-muted-foreground hover:text-white hover:bg-white/10"
                       )}
                       onClick={() => toggleRole(user)}

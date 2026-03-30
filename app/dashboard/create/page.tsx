@@ -14,13 +14,17 @@ import {
   Layout, 
   BrainCircuit,
   MessageSquareShare,
-  Search
+  Search,
+  Trash2
 } from "lucide-react";
 import { useEffect } from "react";
 // @ts-ignore
 import anime from "animejs";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import PremiumAlert from "@/components/PremiumAlert";
+
+import Dropzone from "@/components/Dropzone";
 
 export default function CreatePostPage() {
   const router = useRouter();
@@ -30,7 +34,21 @@ export default function CreatePostPage() {
   
   const [generatedPostId, setGeneratedPostId] = useState<string | null>(null);
   const [imageSearchQuery, setImageSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<string[]>([]);
   const [isSearchingImage, setIsSearchingImage] = useState(false);
+
+  // Alert State
+  const [alert, setAlert] = useState<{
+    isVisible: boolean;
+    type: "success" | "error" | "info";
+    title: string;
+    message: string;
+  }>({
+    isVisible: false,
+    type: "success",
+    title: "",
+    message: ""
+  });
 
   const [formData, setFormData] = useState({
     title: "",
@@ -41,34 +59,14 @@ export default function CreatePostPage() {
     featureImage: ""
   });
 
-  useEffect(() => {
-    if (isGenerating) {
-      anime({
-        targets: '.gen-glow',
-        scale: [1, 1.05],
-        opacity: [0.8, 1],
-        boxShadow: ['0 0 20px rgba(168, 85, 247, 0.2)', '0 0 40px rgba(168, 85, 247, 0.6)'],
-        direction: 'alternate',
-        loop: true,
-        easing: 'easeInOutSine',
-        duration: 800
-      });
-    } else {
-      anime.remove('.gen-glow');
-      anime({
-        targets: '.gen-glow',
-        scale: 1,
-        opacity: 1,
-        boxShadow: '0 0 20px rgba(168, 85, 247, 0.4)',
-        duration: 300
-      });
-    }
-  }, [isGenerating]);
+  const showAlert = (type: "success" | "error" | "info", title: string, message: string) => {
+    setAlert({ isVisible: true, type, title, message });
+  };
 
   const handleGenerate = async () => {
-    if (!prompt) return toast.error("Please enter a topic or prompt first.");
+    if (!prompt) return toast.error("Please enter a topic first.");
     setIsGenerating(true);
-    toast.info("Grok is drafting your masterpiece...", { icon: <Loader2 className="animate-spin" /> });
+    const toastId = toast.loading("AI is generating content...");
     
     try {
       const res = await fetch("/api/generate", { 
@@ -76,10 +74,7 @@ export default function CreatePostPage() {
         body: JSON.stringify({ prompt })
       });
       const data = await res.json();
-      if (!res.ok) {
-        console.error("Server Error:", data.error);
-        throw new Error(data.error || "AI Generation failed");
-      }
+      if (!res.ok) throw new Error(data.error || "Generation failed");
       
       setGeneratedPostId(data._id || null);
       setFormData({
@@ -90,36 +85,39 @@ export default function CreatePostPage() {
         tags: Array.isArray(data.tags) ? data.tags.join(", ") : data.tags,
         featureImage: data.feature_image_url || data.featureImage || ""
       });
-      toast.success("Content generated! Review and publish.");
+      toast.dismiss(toastId);
+      showAlert("success", "Content Ready", "AI has successfully generated the draft.");
     } catch (error: any) {
-      console.error("Generation Error Details:", error);
-      toast.error(error.message || "Generation failed. Check API keys and try again.");
+      toast.dismiss(toastId);
+      showAlert("error", "Error", error.message);
     } finally {
       setIsGenerating(false);
     }
   };
 
   const handleImageSearch = async () => {
-    if (!imageSearchQuery) return toast.error("Please enter a search term.");
+    if (!imageSearchQuery) return toast.error("Search term required.");
     setIsSearchingImage(true);
     
     try {
       const res = await fetch(`/api/images/search?q=${encodeURIComponent(imageSearchQuery)}`);
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to find image");
+      if (!res.ok) throw new Error(data.error || "Image lookup failed");
       
-      setFormData(prev => ({ ...prev, featureImage: data.url }));
-      toast.success("Feature image updated!");
+      setSearchResults(data.urls || []);
+      if (!data.urls || data.urls.length === 0) {
+        toast.info("No images found for this query.");
+      }
     } catch (error: any) {
-      toast.error(error.message || "Search failed.");
+      showAlert("error", "Error", error.message);
     } finally {
       setIsSearchingImage(false);
     }
   };
 
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.title) return toast.error("Title is required.");
     setIsPublishing(true);
     
     try {
@@ -129,204 +127,207 @@ export default function CreatePostPage() {
         status: "published"
       };
 
-      if (generatedPostId) {
-        // Post already exists in DB (created by /api/generate) — just update it
-        const res = await fetch(`/api/posts/${generatedPostId}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(postPayload)
-        });
-        if (!res.ok) throw new Error("Failed to update post");
-      } else {
-        // Manual post — create new
-        const res = await fetch("/api/posts", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(postPayload)
-        });
-        if (!res.ok) throw new Error("Failed to publish post");
-      }
+      const endpoint = generatedPostId ? `/api/posts/${generatedPostId}` : "/api/posts";
+      const method = generatedPostId ? "PATCH" : "POST";
 
-      toast.success("Blog post published successfully!");
-      router.push("/dashboard");
-    } catch (error) {
-      toast.error("Error publishing post.");
+      const res = await fetch(endpoint, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(postPayload)
+      });
+      
+      if (!res.ok) throw new Error("Failed to save post.");
+
+      showAlert("success", "Success", "Post has been published successfully.");
+      setTimeout(() => router.push("/dashboard/posts"), 2000);
+    } catch (error: any) {
+      showAlert("error", "Error", error.message);
     } finally {
       setIsPublishing(false);
     }
   };
 
   return (
-    <div className="space-y-8 pb-20">
-      <div>
+    <div className="container mx-auto max-w-6xl py-12 px-6">
+      <PremiumAlert 
+        isVisible={alert.isVisible}
+        type={alert.type}
+        title={alert.title}
+        message={alert.message}
+        onClose={() => setAlert(prev => ({ ...prev, isVisible: false }))}
+      />
+
+      <div className="mb-10">
         <h1 className="text-3xl font-bold tracking-tight">Create New Post</h1>
-        <p className="text-muted-foreground mt-2">Draft your next masterpiece or let AI help you out.</p>
+        <p className="text-muted-foreground mt-2">Write manually or use AI to generate your next big story.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-        {/* Main Form */}
-        <div className="lg:col-span-2 space-y-6">
-          <Card className="bg-secondary/20 border-white/5 p-6 shadow-skeuo-out rounded-[2rem]">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 mb-4">
-                  <Layout className="h-5 w-5 text-primary" />
-                  <h2 className="text-lg font-bold">General Information</h2>
-                </div>
-                
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>Post Content</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-muted-foreground">Title</label>
+                  <label className="text-sm font-medium">Post Title</label>
                   <Input 
-                    placeholder="Enter a catchy title" 
+                    placeholder="Enter post title..." 
                     value={formData.title}
                     onChange={(e) => setFormData({...formData, title: e.target.value})}
-                    className="bg-background/50 border-white/5 h-14 rounded-xl shadow-skeuo-in focus-visible:ring-primary/50 text-white font-medium px-4"
+                    className="h-12 text-lg font-semibold"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-muted-foreground">Excerpt (SEO Description)</label>
+                  <label className="text-sm font-medium">Excerpt (Summary)</label>
                   <Textarea 
-                    placeholder="A short summary for search engines..." 
+                    placeholder="Briefly describe what this post is about..." 
                     value={formData.excerpt}
                     onChange={(e) => setFormData({...formData, excerpt: e.target.value})}
-                    className="bg-background/50 border-white/5 min-h-[100px] rounded-xl shadow-skeuo-in focus-visible:ring-primary/50 text-white p-4 leading-relaxed"
+                    className="min-h-[80px]"
                   />
                 </div>
 
-                <div className="space-y-2 pt-4">
-                  <label className="text-sm font-medium text-muted-foreground">Markdown Content</label>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Content</label>
                   <Textarea 
-                    placeholder="Write your story in Markdown..." 
+                    placeholder="Write your story here..." 
                     value={formData.content}
                     onChange={(e) => setFormData({...formData, content: e.target.value})}
-                    className="bg-background/50 border-white/5 min-h-[400px] rounded-xl shadow-skeuo-in focus-visible:ring-primary/50 font-mono text-sm leading-relaxed p-6"
+                    className="min-h-[400px] leading-relaxed text-base"
                   />
                 </div>
-              </div>
 
-              <div className="flex justify-end gap-4 pt-6">
-                <Button variant="outline" className="rounded-2xl h-14 px-8 shadow-skeuo-button active:shadow-skeuo-button-pressed border-white/10 font-bold uppercase tracking-widest text-xs">Save Draft</Button>
-                <Button 
-                  disabled={isPublishing} 
-                  className="rounded-2xl h-14 px-10 bg-primary hover:bg-primary text-white shadow-skeuo-button active:shadow-skeuo-button-pressed transition-all duration-150 font-black uppercase tracking-widest text-xs border border-white/10"
-                >
-                  {isPublishing ? <Loader2 className="animate-spin mr-2" /> : <Send className="mr-2 h-4 w-4" />}
-                  Publish Post
-                </Button>
-              </div>
-            </form>
+                <div className="flex justify-end gap-4 pt-6 border-t">
+                  <Button variant="outline" onClick={() => router.back()}>
+                    Cancel
+                  </Button>
+                  <Button 
+                    type="submit"
+                    disabled={isPublishing} 
+                    className="bg-primary hover:bg-primary/90 text-white min-w-[150px]"
+                  >
+                    {isPublishing ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : <Send className="mr-2 h-4 w-4" />}
+                    Publish Post
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
           </Card>
         </div>
 
-        {/* Sidebar Controls */}
         <div className="space-y-6">
-          {/* AI Assistant */}
-          <Card className="gen-glow relative overflow-hidden bg-primary/10 border border-primary/30 p-8 shadow-skeuo-float rounded-[2rem] backdrop-blur-3xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent pointer-events-none" />
-            <div className="relative z-10">
-            <div className="flex items-center gap-2 mb-4">
-              <Sparkles className="h-5 w-5 text-primary" />
-              <h2 className="text-lg font-bold">AI Assistant</h2>
-            </div>
-            <p className="text-sm text-muted-foreground mb-4">Enter a topic and AI will generate a full blog post for you.</p>
-            <Textarea 
-              placeholder="e.g. Benefits of Next.js 15, My trip to Himalayas..." 
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              className="bg-background/80 border-white/10 mb-6 h-36 rounded-2xl shadow-skeuo-in p-5 leading-relaxed focus-visible:ring-primary/50 text-white font-medium"
-            />
-            <Button 
-              onClick={handleGenerate}
-              disabled={isGenerating}
-              className="w-full bg-primary hover:bg-primary hover:brightness-110 active:brightness-90 rounded-2xl h-16 font-black tracking-widest uppercase text-xs shadow-skeuo-button active:shadow-skeuo-button-pressed transition-all border border-white/20"
-            >
-              {isGenerating ? <Loader2 className="animate-spin mr-2" /> : <BrainCircuit className="mr-2 h-4 w-4" />}
-              Generate with AI
-            </Button>
-            </div>
+          {/* AI Helper Card */}
+          <Card className="border-primary/20 bg-primary/5">
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-primary" />
+                <CardTitle className="text-lg">AI Integration</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Textarea 
+                placeholder="What should I write about?" 
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                className="bg-background min-h-[100px]"
+              />
+              <Button 
+                onClick={handleGenerate}
+                disabled={isGenerating}
+                className="w-full"
+              >
+                {isGenerating ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : <BrainCircuit className="mr-2 h-4 w-4" />}
+                Generate Draft
+              </Button>
+            </CardContent>
           </Card>
 
-          {/* Post Settings */}
-          <Card className="bg-secondary/30 border-white/5 p-6 shadow-skeuo-out rounded-[2rem]">
-            <div className="flex items-center gap-2 mb-4">
-              <MessageSquareShare className="h-5 w-5 text-primary" />
-              <h2 className="text-lg font-bold">Post Settings</h2>
-            </div>
-            
-            <div className="space-y-4">
+          {/* Settings & Image Card */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Post Settings</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-muted-foreground uppercase">AI Image Search</label>
+                <label className="text-sm font-medium">Feature Image</label>
+                <Dropzone 
+                  onUpload={(url) => setFormData({...formData, featureImage: url})} 
+                  currentImage={formData.featureImage} 
+                />
+              </div>
+
+              <div className="pt-4 border-t space-y-4">
+                <label className="text-sm font-medium">Search Library</label>
                 <div className="flex gap-2">
                   <Input 
-                    placeholder="Search for photos..." 
+                    placeholder="Search images..." 
                     value={imageSearchQuery}
                     onChange={(e) => setImageSearchQuery(e.target.value)}
-                    className="bg-background/50 border-white/5 rounded-xl h-11 shadow-skeuo-in"
+                    onKeyDown={(e) => e.key === 'Enter' && handleImageSearch()}
+                    className="flex-1"
                   />
                   <Button 
-                    type="button"
                     onClick={handleImageSearch}
                     disabled={isSearchingImage}
-                    size="icon"
-                    className="h-11 w-11 rounded-xl bg-primary shadow-skeuo-button shrink-0"
+                    variant="secondary"
+                    className="px-3"
                   >
                     {isSearchingImage ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
                   </Button>
                 </div>
+
+                {searchResults.length > 0 && (
+                  <div className="grid grid-cols-2 gap-2 mt-4 max-h-[300px] overflow-y-auto p-2 border rounded-md bg-secondary/20">
+                    {searchResults.map((url, i) => (
+                      <div 
+                        key={i}
+                        onClick={() => {
+                          setFormData({...formData, featureImage: url});
+                          setSearchResults([]);
+                          toast.success("Image selected.");
+                        }}
+                        className="relative aspect-video cursor-pointer overflow-hidden rounded border border-white/10 hover:border-primary/50 transition-all group"
+                      >
+                        <img 
+                          src={url} 
+                          alt={`Result ${i}`} 
+                          className="object-cover w-full h-full grayscale group-hover:grayscale-0 transition-opacity opacity-80 group-hover:opacity-100" 
+                        />
+                        <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <span className="text-[10px] uppercase font-bold tracking-tighter bg-black/80 px-2 py-1 rounded">Select</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-muted-foreground uppercase">Category</label>
+              <div className="pt-4 border-t space-y-2">
+                <label className="text-sm font-medium">Category</label>
                 <select 
                   value={formData.category}
                   onChange={(e) => setFormData({...formData, category: e.target.value})}
-                  className="w-full bg-background border border-white/5 rounded-xl h-12 px-4 text-sm outline-none focus:ring-2 focus:ring-primary/50 shadow-skeuo-in"
+                  className="w-full bg-background border rounded-md h-10 px-3 text-sm focus:ring-1 focus:ring-primary/40 outline-none"
                 >
                   <option>Technology</option>
-                  <option>India News</option>
-                  <option>Business</option>
-                  <option>Science</option>
-                  <option>Global</option>
+                  <option>Design</option>
+                  <option>Intelligence</option>
+                  <option>Future</option>
                 </select>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-muted-foreground uppercase">Tags</label>
-                <div className="relative">
-                  <Input 
-                    placeholder="nextjs, react, ai" 
-                    value={formData.tags}
-                    onChange={(e) => setFormData({...formData, tags: e.target.value})}
-                    className="bg-background/50 border-white/5 pr-10 rounded-xl h-12 shadow-skeuo-in"
-                  />
-                  <Tag className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                </div>
+              <div className="pt-4 border-t space-y-2">
+                <label className="text-sm font-medium">Tags</label>
+                <Input 
+                  placeholder="e.g. ai, tech, future" 
+                  value={formData.tags}
+                  onChange={(e) => setFormData({...formData, tags: e.target.value})}
+                />
               </div>
-
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-muted-foreground uppercase">Feature Image URL</label>
-                <div className="relative">
-                  <Input 
-                    placeholder="https://unsplash.com/..." 
-                    value={formData.featureImage}
-                    onChange={(e) => setFormData({...formData, featureImage: e.target.value})}
-                    className="bg-background/50 border-white/5 pr-10 rounded-xl h-12 shadow-skeuo-in"
-                  />
-                  <ImageIcon className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                </div>
-              </div>
-
-              {formData.featureImage && (
-                <div className="pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                  <label className="text-xs font-bold text-muted-foreground uppercase mb-2 block">Preview</label>
-                  <div className="aspect-video rounded-xl overflow-hidden border border-white/10 shadow-skeuo-in bg-black/20">
-                    <img src={formData.featureImage} alt="Preview" className="w-full h-full object-cover" />
-                  </div>
-                </div>
-              )}
-            </div>
-
+            </CardContent>
           </Card>
         </div>
       </div>

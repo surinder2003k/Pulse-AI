@@ -11,14 +11,14 @@ export default function NotFound() {
       </div>
       
       <div className="space-y-4">
-        <h2 className="text-3xl font-bold">Arre Yaar! Galti Ho Gayi.</h2>
+        <h2 className="text-3xl font-bold">Story Not Found.</h2>
         <p className="text-muted-foreground max-w-md mx-auto">
-          The page you are looking for has either been deleted by the passionate Punjabi Admin or it never existed in the first place.
+          This page doesn't exist — or it was quietly retired from the archive. Either way, there's plenty more to explore.
         </p>
       </div>
 
       <Link href="/">
-        <Button size="lg" className="rounded-full px-8 h-12 shadow-purple">
+        <Button size="lg" className="rounded-full px-8 h-12 shadow-cyan-soft text-primary-foreground">
           <Home className="h-4 w-4 mr-2" /> Back to Home Base
         </Button>
       </Link>

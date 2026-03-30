@@ -12,7 +12,7 @@ interface MarkdownRendererProps {
 export default function MarkdownRenderer({ content, className }: MarkdownRendererProps) {
   return (
     <div className={cn(
-      "prose prose-invert prose-purple max-w-none",
+      "prose prose-invert prose-cyan max-w-none",
       // Headings - Bold, Italic, and spaced out
       "prose-headings:scroll-mt-20 prose-headings:font-black prose-headings:italic prose-headings:tracking-tight",
       "prose-h1:text-4xl md:prose-h1:text-6xl prose-h1:mb-12",

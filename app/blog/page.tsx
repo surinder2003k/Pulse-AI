@@ -11,15 +11,15 @@ export async function generateMetadata({ searchParams }: { searchParams: Promise
   const { category, q } = await searchParams;
   const baseUrl = "https://pulse-blog-ai.vercel.app";
   
-  let title = "Blog Archive | Pulse AI";
-  let description = "Browse our collection of high-quality AI blog posts across various categories.";
+  let title = "The Pulse Archive | Deep Dives & Stories";
+  let description = "Browse our collection of high-octane reports and stories across F1, Tech, and Global Sports.";
   
   if (category && category !== "All") {
-    title = `${category} Articles | Pulse AI`;
-    description = `Explore the latest ${category} stories and insights powered by Pulse AI.`;
+    title = `${category} | The Pulse Archive`;
+    description = `Explore our expert-curated ${category} stories and tactical insights.`;
   } else if (q) {
-    title = `Search results for "${q}" | Pulse AI`;
-    description = `Search results for ${q} on Pulse AI content engine.`;
+    title = `Search: "${q}" | Pulse AI`;
+    description = `Results for your deep dive into ${q} on Pulse AI.`;
   }
 
   return {
@@ -117,10 +117,10 @@ export default async function BlogPage({
       />
       <div className="flex flex-col gap-4 text-center items-center">
         <h1 className="text-4xl md:text-7xl font-black tracking-tighter italic">
-          The AI <span className="text-primary">Archive.</span>
+          Editorial <span className="text-primary">Archive.</span>
         </h1>
-        <p className="text-muted-foreground max-w-xl text-lg md:text-xl">
-          Explore {count || 0} articles crafted with deep insights and modern AI.
+        <p className="text-muted-foreground max-w-xl text-lg md:text-xl font-medium">
+          Explore {count || 0} stories curated with a pulse and powered by intelligence.
         </p>
       </div>
 
@@ -138,9 +138,9 @@ export default async function BlogPage({
           ))}
         </div>
       ) : (
-        <div className="text-center py-40 border-2 border-dashed border-white/5 rounded-[3rem] bg-secondary/10">
-          <h3 className="text-2xl font-black mb-2 italic">Nothing found.</h3>
-          <p className="text-muted-foreground">The AI is still thinking about this one.</p>
+        <div className="text-center py-40 border-2 border-dashed border-white/5 rounded-[3rem] bg-secondary/10 shadow-skeuo-in">
+          <h3 className="text-2xl font-black mb-2 italic">Quiet on the front.</h3>
+          <p className="text-muted-foreground font-black uppercase tracking-widest text-[10px]">Our writers are chasing the next big story.</p>
         </div>
       )}
 

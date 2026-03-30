@@ -26,13 +26,13 @@ export default function AIJobStatus() {
   };
 
   return (
-    <Card className="border-primary/20 bg-primary/5 shadow-purple">
+    <Card className="border-primary/20 bg-primary/5 shadow-cyan-soft">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <CardTitle className="text-lg font-bold flex items-center gap-2">
           <Sparkles className="h-5 w-5 text-primary" />
           AI Automation Engine
         </CardTitle>
-        <Badge variant="purple" className="animate-pulse">Active</Badge>
+        <Badge variant="accent" className="animate-pulse">Active</Badge>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between text-sm">
@@ -49,7 +49,7 @@ export default function AIJobStatus() {
         <Button 
           onClick={handleManualTrigger} 
           disabled={isGenerating}
-          className="w-full bg-primary hover:bg-primary/90 text-white rounded-2xl h-12 flex gap-2 font-bold shadow-purple-lg"
+          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl h-12 flex gap-2 font-bold shadow-cyan-glow"
         >
           {isGenerating ? (
             <><Loader2 className="h-4 w-4 animate-spin" /> Humanizing Content...</>

@@ -56,3 +56,31 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+export async function DELETE(req: Request) {
+  const user = await currentUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const userEmail = user.emailAddresses[0]?.emailAddress;
+  const isAdmin = userEmail === ADMIN_EMAIL;
+
+  try {
+    await connectDB();
+    const { ids } = await req.json();
+
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return NextResponse.json({ error: "Invalid IDs" }, { status: 400 });
+    }
+
+    const query = isAdmin 
+      ? { _id: { $in: ids } } 
+      : { _id: { $in: ids }, user_id: user.id };
+
+    const result = await Post.deleteMany(query);
+
+    return NextResponse.json({ 
+      success: true, 
+      deletedCount: result.deletedCount 
+    });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}

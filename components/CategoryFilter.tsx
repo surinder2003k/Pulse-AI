@@ -40,7 +40,7 @@ export default function CategoryFilter() {
               className={cn(
                 "px-4 py-1.5 cursor-pointer rounded-full transition-all duration-300",
                 activeCategory === cat 
-                  ? "bg-primary text-white scale-105 shadow-purple" 
+                  ? "bg-primary text-primary-foreground scale-105 shadow-cyan-soft" 
                   : "bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-white"
               )}
             >

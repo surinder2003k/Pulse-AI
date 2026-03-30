@@ -4,30 +4,29 @@ import PostCard from "@/components/PostCard";
 import Link from "next/link";
 import { Sparkles, ArrowRight, Github, Twitter, Zap, Brain, Globe, TrendingUp } from "lucide-react";
 import AnimatedHero from "@/components/AnimatedHero";
+import { Badge } from "@/components/ui/badge";
 import type { Metadata } from "next";
 import { calculateReadingTime } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Pulse AI | Skeuomorphic AI Stories & Premium Content Engine",
-  description: "Experience next-gen Skeuomorphic AI with Pulse AI. Read premium stories on F1, football, cricket, tech & more in stunning 3D. Discover the future of AI content.",
+  title: "Pulse AI | Stories That Move You. F1, Tech, & Global Sports.",
+  description: "Dive into the pulse of global stories. From high-octane F1 race reports to the deep tactical world of football and the latest in AI innovation, we bring you storytelling with a soul.",
   keywords: [
-    "Skeuomorphic AI", "AI content engine", "premium AI stories", "F1 news AI",
-    "football AI blog", "cricket AI content", "tech blog AI", "automated content platform",
-    "AI journalism India", "next-gen blogging", "AI storytelling", "Pulse AI blog",
-    "artificial intelligence stories", "trending news AI", "smart content generation"
+    "Pulse AI", "F1 race analysis", "Football tactical deep dives", "AI research stories",
+    "Skeuomorphic design", "Premium tech blog", "Cricket match insights", "Digital magazine"
   ],
   openGraph: {
-    title: "Pulse AI | Skeuomorphic AI Stories & Premium Content Engine",
-    description: "Experience next-gen Skeuomorphic AI with Pulse AI. Read premium stories on F1, football, cricket, tech & more in stunning 3D.",
+    title: "Pulse AI | Stories That Move You.",
+    description: "High-octane F1, Football, and Tech stories delivered with a premium skeuomorphic experience.",
     url: "https://pulse-blog-ai.vercel.app",
     siteName: "Pulse AI",
     type: "website",
-    images: [{ url: "https://pulse-blog-ai.vercel.app/og-image.png", width: 1200, height: 630, alt: "Pulse AI – Skeuomorphic AI Content Engine" }],
+    images: [{ url: "https://pulse-blog-ai.vercel.app/og-image.png", width: 1200, height: 630, alt: "Pulse AI – Stories with a Soul" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Pulse AI | Skeuomorphic AI Stories & Premium Content Engine",
-    description: "Experience next-gen Skeuomorphic AI with Pulse AI. Read premium stories on F1, football, cricket, tech & more.",
+    title: "Pulse AI | Stories That Move You.",
+    description: "Experience the adrenaline of F1, Football and Tech with Pulse AI's premium storytelling.",
     images: ["https://pulse-blog-ai.vercel.app/og-image.png"],
   },
   alternates: {
@@ -135,59 +134,57 @@ export default async function HomePage() {
       {/* Hero Section */}
       <AnimatedHero />
 
-      {/* SEO Intro Content Section */}
+      {/* Editorial Mission / Intro Section */}
       <section className="container mx-auto max-w-5xl px-6">
-        <div className="relative rounded-[2.5rem] bg-secondary/10 border border-white/5 p-10 md:p-16 space-y-8 overflow-hidden">
+        <div className="relative rounded-[2.5rem] bg-secondary/10 border border-white/5 p-10 md:p-16 space-y-8 overflow-hidden shadow-skeuo-out">
           {/* Subtle glow accent */}
-          <div className="absolute -top-20 -right-20 w-60 h-60 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+          {/* Premium Ambient Light */}
+          <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
 
-          <h2 className="text-3xl md:text-4xl font-black italic tracking-tight text-white relative z-10">
-            Welcome to the Future of <span className="text-primary">AI-Powered Content</span>
-          </h2>
+          <div className="space-y-4 relative z-10">
+            <Badge variant="outline" className="text-primary border-primary/20 bg-primary/5 uppercase tracking-widest text-[10px] px-3 py-1 font-black mb-2">The Editorial Pulse</Badge>
+            <h2 className="text-3xl md:text-5xl font-black italic tracking-tight text-white leading-tight">
+              Where Technology Meets the <span className="text-primary underline decoration-primary/30 underline-offset-8">Human Spirit</span>
+            </h2>
+          </div>
 
-          <div className="space-y-6 text-white/70 text-base md:text-lg leading-[1.85] font-medium relative z-10">
+          <div className="space-y-6 text-white/80 text-base md:text-xl leading-[1.75] font-medium relative z-10 max-w-4xl">
             <p>
-              Pulse AI is the next-generation <strong className="text-white font-bold">Skeuomorphic AI content engine</strong> that transforms how
-              you discover, read, and engage with premium stories. Built at the intersection of cutting-edge artificial intelligence
-              and stunning 3D visual design, Pulse AI delivers an immersive reading experience unlike anything else on the web.
+              We believe that every story has a soul. Pulse AI isn&apos;t just another site — it&apos;s a next-generation 
+              <strong className="text-white font-bold"> Content Engine</strong> obsessed with the details that matter. 
+              By blending high-octane artificial intelligence with premium design, we&apos;ve built a space where 
+              <strong className="text-white font-bold">Skeuomorphic AI storytelling</strong> feels tactile, immersive, and 
+              honestly, a bit insane.
             </p>
             <p>
-              Whether you&apos;re a die-hard <strong className="text-white font-bold">F1 racing enthusiast</strong> tracking the latest season
-              developments from Bahrain to Monza, a <strong className="text-white font-bold">football fan</strong> following every goal Erling
-              Haaland scores, or a <strong className="text-white font-bold">cricket lover</strong> keeping up with IPL action and international
-              tournaments — Pulse AI curates, generates, and presents content tailored to your passions. Our AI engine processes
-              thousands of data points in real-time to craft articles that are accurate, well-researched, and engaging.
+              Whether you&apos;re chasing the adrenaline of the <strong className="text-white font-bold">F1 paddock</strong> during race week, 
+              tracking every tactical masterclass on the <strong className="text-white font-bold">football pitch</strong>, or 
+              staying up for the final over of a <strong className="text-white font-bold">cricket classic</strong> — we&apos;re right there with you. 
+              Our engine curates the world&apos;s data to bring you stories that aren&apos;t just fast, they&apos;re deep. 
+              From clinical tech analysis to the raw emotion of global sports, we deliver truth, beautifully.
             </p>
             <p>
-              But Pulse AI isn&apos;t just about sports. Dive into the world of <strong className="text-white font-bold">technology and innovation</strong>,
-              where we cover everything from the latest breakthroughs in artificial intelligence and machine learning to the newest
-              consumer gadgets, startup stories, and the future of the tech industry. Every story is enriched with smart summaries,
-              structured insights, and beautiful imagery — all generated and curated by our proprietary AI pipeline.
-            </p>
-            <p>
-              What makes Pulse AI truly special is the <strong className="text-white font-bold">Skeuomorphic design philosophy</strong> that
-              powers every pixel of this platform. Inspired by real-world textures, depth, and physicality, our interface brings
-              a tactile, premium feel to digital content. From embossed buttons to glossy overlays and subtle shadow play, every
-              element is designed to feel alive. This isn&apos;t your ordinary blog — it&apos;s a <strong className="text-white font-bold">premium content experience</strong>{" "}
-              built for the modern reader.
+              This is the intersection of <strong className="text-white font-bold">design and data</strong>. 
+              We&apos;ve traded flat, boring interfaces for a world of depth, shadows, and textures. When you read a story here, 
+              you aren&apos;t just scrolling — you&apos;re experiencing a premium digital magazine crafted for those who 
+              demand more from their screen.
             </p>
           </div>
 
-          {/* Feature highlights */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-8 relative z-10">
+          {/* Feature Highlights - Refined Icons & Labels */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-10 relative z-10 border-t border-white/5">
             {[
-              { icon: Brain, label: "AI-Generated Stories", desc: "Smart, accurate content crafted by advanced AI models" },
-              { icon: Zap, label: "Real-Time Trending", desc: "Stay ahead with stories powered by live data analysis" },
-              { icon: Globe, label: "Global Coverage", desc: "F1, football, cricket, tech — stories from around the world" },
-              { icon: TrendingUp, label: "SEO Optimized", desc: "Every article is structured for maximum discoverability" },
+              { icon: Brain, label: "Smart Narratives", desc: "AI-powered, but human-focused stories." },
+              { icon: Zap, label: "Instant Insight", desc: "Live-data tracking for the trending moment." },
+              { icon: Globe, label: "Pure Variety", desc: "F1, Tech, & Sports from a global lens." },
+              { icon: TrendingUp, label: "High-Octane SEO", desc: "Stories built to be discovered and shared." },
             ].map((feature) => (
-              <div key={feature.label} className="flex flex-col gap-3 p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.06] transition-colors">
+              <div key={feature.label} className="flex flex-col gap-3 p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] transition-all hover:-translate-y-1">
                 <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
                   <feature.icon className="h-5 w-5 text-primary" />
                 </div>
-                <h3 className="text-sm font-black text-white uppercase tracking-wide">{feature.label}</h3>
-                <p className="text-xs text-white/50 leading-relaxed">{feature.desc}</p>
+                <h3 className="text-sm font-black text-white uppercase tracking-wider">{feature.label}</h3>
+                <p className="text-[11px] text-white/50 leading-relaxed font-bold italic">{feature.desc}</p>
               </div>
             ))}
           </div>
@@ -198,9 +195,10 @@ export default async function HomePage() {
       {featuredPost && (
         <section className="container mx-auto max-w-7xl px-6 space-y-10">
           <div className="flex items-center justify-between border-b border-white/5 pb-6">
-            <h2 className="text-3xl font-black flex items-center gap-3 italic">
-              Featured Story
+            <h2 className="text-3xl font-black flex items-center gap-3 italic tracking-tight">
+              The Editor&apos;s Pick
             </h2>
+            <Badge variant="outline" className="border-primary/20 text-primary uppercase font-black text-[10px] tracking-widest bg-primary/5">Featured</Badge>
           </div>
           <PostCard post={featuredPost} isFeatured={true} />
         </section>
@@ -209,9 +207,9 @@ export default async function HomePage() {
       {/* Grid Section */}
       <section className="container mx-auto max-w-7xl px-6 space-y-10">
         <div className="flex items-center justify-between border-b border-white/5 pb-6">
-          <h2 className="text-3xl font-black italic">Latest Stories</h2>
-          <Link href="/blog" className="text-primary font-bold flex items-center gap-2 hover:underline group">
-            View All Articles <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+          <h2 className="text-3xl font-black italic tracking-tight">Latest Stories</h2>
+          <Link href="/blog" className="text-primary font-black uppercase tracking-widest text-[11px] flex items-center gap-2 hover:opacity-80 group">
+            Explore All <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
         
@@ -222,35 +220,39 @@ export default async function HomePage() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 border-2 border-dashed border-white/5 rounded-3xl bg-secondary/10">
-            <p className="text-muted-foreground italic">No posts found. Grok is brewing something special!</p>
+          <div className="text-center py-24 border-2 border-dashed border-white/5 rounded-[3rem] bg-secondary/10 shadow-skeuo-in">
+            <p className="text-muted-foreground font-black italic tracking-widest uppercase text-sm animate-pulse">Brewing new stories...</p>
           </div>
         )}
       </section>
 
-      {/* Why Pulse AI Section - Extra SEO content */}
+      {/* Editorial Rationale Section */}
       <section className="container mx-auto max-w-5xl px-6">
-        <div className="rounded-[2.5rem] bg-secondary/10 border border-white/5 p-10 md:p-16 space-y-8">
+        <div className="rounded-[2.5rem] bg-secondary/10 border border-white/5 p-10 md:p-16 space-y-8 shadow-skeuo-in relative overflow-hidden">
+           {/* Subtle glow accent */}
+           {/* Precision Accent Line */}
+           <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+
           <h2 className="text-3xl md:text-4xl font-black italic tracking-tight text-white">
-            Why Readers Choose <span className="text-primary">Pulse AI</span>
+            Why We <span className="text-primary">Obsess</span> Over Quality
           </h2>
-          <div className="space-y-6 text-white/70 text-base md:text-lg leading-[1.85] font-medium">
+          <div className="space-y-6 text-white/80 text-base md:text-xl leading-[1.8] font-medium">
             <p>
-              In a world saturated with low-quality, clickbait content, Pulse AI stands apart. Our AI content engine doesn&apos;t
-              just scrape and regurgitate — it <strong className="text-white font-bold">understands context, analyzes trends, and generates original narratives</strong>{" "}
-              that inform and inspire. Every article goes through multiple AI-driven quality checks to ensure factual accuracy,
-              readability, and engagement.
+              Most sites just regurgitate the same news. We don&apos;t. Every word on Pulse AI is generated with a focus on 
+              <strong className="text-white font-bold"> deep context, narrative flow, and factual precision</strong>. 
+              We don&apos;t just report on Erling Haaland scoring a hat-trick; we analyze the tactical shift that allowed 
+              him to ghost behind the defenders. 
             </p>
             <p>
-              The Pulse AI platform is built on <strong className="text-white font-bold">Next.js 15</strong> with server-side rendering for
-              lightning-fast page loads, optimized Core Web Vitals, and a seamless reading experience across all devices. Whether
-              you&apos;re reading on your phone during a commute or on a 4K monitor at home, every story looks and feels premium.
+              Our tech is modern, but our heart is classic. Using <strong className="text-white font-bold">Next.js 15</strong> 
+              means we&apos;re fast, but our skeuomorphic design means we&apos;re human. This is data with a pulse — 
+              a premium experience for readers who want to stay ahead of the curve, from 
+              <strong className="text-white font-bold"> F1 race analysis</strong> to the latest breakthroughs in 
+              <strong className="text-white font-bold"> AI research</strong>.
             </p>
             <p>
-              Join thousands of readers who have already discovered a better way to consume content. From daily tech roundups
-              to in-depth <strong className="text-white font-bold">F1 race analysis</strong>, from <strong className="text-white font-bold">cricket match previews</strong> to
-              the latest in <strong className="text-white font-bold">AI and machine learning research</strong> — Pulse AI is your one-stop
-              destination for stories that matter, told beautifully.
+              Join the ride. This is the future of storytelling, hand-crafted with code and driven by the best 
+              artificial intelligence. Welcome home.
             </p>
           </div>
         </div>

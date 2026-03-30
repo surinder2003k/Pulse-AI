@@ -1,7 +1,8 @@
 /**
  * Unified image search function with fallbacks (Unsplash -> Pexels -> Pixabay)
+ * Returns an array of URLs.
  */
-export async function searchImage(query: string): Promise<string | null> {
+export async function searchImage(query: string): Promise<string[]> {
   const UNSPLASH_KEY = process.env.UNSPLASH_ACCESS_KEY;
   const PEXELS_KEY = process.env.PEXELS_API_KEY;
   const PIXABAY_KEY = process.env.PIXABAY_API_KEY;
@@ -11,15 +12,13 @@ export async function searchImage(query: string): Promise<string | null> {
   // 1. Try Unsplash (High Quality)
   if (UNSPLASH_KEY) {
     try {
-      const randomPage = Math.floor(Math.random() * 5) + 1;
-      const res = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&orientation=landscape&per_page=10&page=${randomPage}&client_id=${UNSPLASH_KEY}`);
+      const res = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&orientation=landscape&per_page=12&client_id=${UNSPLASH_KEY}`);
       if (res.ok) {
         const data = await res.json();
         const results = data?.results || [];
         if (results.length > 0) {
-          const randomIndex = Math.floor(Math.random() * Math.min(results.length, 5));
-          console.log("Found image on Unsplash");
-          return results[randomIndex]?.urls?.regular;
+          console.log(`Found ${results.length} images on Unsplash`);
+          return results.map((img: any) => img.urls.regular);
         }
       }
     } catch (e) {
@@ -30,16 +29,15 @@ export async function searchImage(query: string): Promise<string | null> {
   // 2. Fallback to Pexels
   if (PEXELS_KEY) {
     try {
-      const res = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=10`, {
+      const res = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=12`, {
         headers: { Authorization: PEXELS_KEY }
       });
       if (res.ok) {
         const data = await res.json();
         const results = data?.photos || [];
         if (results.length > 0) {
-          const randomIndex = Math.floor(Math.random() * Math.min(results.length, 5));
-          console.log("Found image on Pexels");
-          return results[randomIndex]?.src?.large2x || results[randomIndex]?.src?.large;
+          console.log(`Found ${results.length} images on Pexels`);
+          return results.map((img: any) => img.src.large2x || img.src.large);
         }
       }
     } catch (e) {
@@ -50,14 +48,13 @@ export async function searchImage(query: string): Promise<string | null> {
   // 3. Fallback to Pixabay
   if (PIXABAY_KEY) {
     try {
-      const res = await fetch(`https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${encodeURIComponent(query)}&image_type=photo&orientation=horizontal&per_page=10`);
+      const res = await fetch(`https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${encodeURIComponent(query)}&image_type=photo&orientation=horizontal&per_page=12`);
       if (res.ok) {
         const data = await res.json();
         const results = data?.hits || [];
         if (results.length > 0) {
-          const randomIndex = Math.floor(Math.random() * Math.min(results.length, 5));
-          console.log("Found image on Pixabay");
-          return results[randomIndex]?.largeImageURL || results[randomIndex]?.webformatURL;
+          console.log(`Found ${results.length} images on Pixabay`);
+          return results.map((img: any) => img.largeImageURL || img.webformatURL);
         }
       }
     } catch (e) {
@@ -66,5 +63,5 @@ export async function searchImage(query: string): Promise<string | null> {
   }
 
   console.error("No images found across all providers for:", query);
-  return null;
+  return [];
 }

@@ -20,14 +20,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   await connectDB();
   const post = await Post.findOne({ slug }).select("title excerpt feature_image_url tags").lean() as IPost | null;
 
-  if (!post) return { title: 'Post Not Found' };
+  if (!post) return { title: 'Story Missing' };
 
   const url = `${process.env.NEXT_PUBLIC_APP_URL || 'https://pulse-blog-ai.vercel.app'}/blog/${slug}`;
 
   return {
     title: `${post.title} | Pulse AI`,
     description: post.excerpt,
-    keywords: `${post.tags?.join(", ") || ""}, Pulse AI, AI Blog India, Automated Content, Trending News Artificial Intelligence, Future of Tech, Smart Blogging Engine`,
+    keywords: `${post.tags?.join(", ") || ""}, Pulse Editorial, F1 Reports, Football Deep Dives, Real-time Stories, Premium Content`,
     alternates: {
       canonical: url,
     },
@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       ],
       type: "article",
       publishedTime: post.createdAt?.toString(),
-      authors: ["Pulse AI"],
+      authors: ["Pulse AI Editorial"],
       tags: post.tags,
     },
     twitter: {
@@ -67,21 +67,21 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
   
   const post = JSON.parse(JSON.stringify(postRaw)) as IPost;
 
-  let authorName = "System AI";
-  let authorRole = "Automated Content Generator";
+  let authorName = "Digital Editor";
+  let authorRole = "Pulse AI Systems";
 
   if (post.user_id && post.user_id !== "system_automation") {
     try {
       const client = await clerkClient();
       const user = await client.users.getUser(post.user_id);
       if (user) {
-        authorName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username || "Content Creator";
-        authorRole = "Author";
+        authorName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username || "Storyteller";
+        authorRole = "Verified Creator";
       }
     } catch (e) {
       console.warn("Failed to fetch user from Clerk", e);
-      authorName = "Admin";
-      authorRole = "Content Creator";
+      authorName = "Pulse Admin";
+      authorRole = "Editor-in-Chief";
     }
   }
 
@@ -182,7 +182,7 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
       />
 
       <Link href="/blog" className="inline-flex items-center gap-2 text-muted-foreground hover:text-white transition-colors mb-12 group font-bold uppercase tracking-widest text-[10px]">
-        <ChevronLeft className="h-3 w-3 group-hover:-translate-x-1 transition-transform" /> Back to Archive
+        <ChevronLeft className="h-3 w-3 group-hover:-translate-x-1 transition-transform" /> Back to Deep Dives
       </Link>
 
       <header className="space-y-8 mb-16">

@@ -10,12 +10,12 @@ export async function GET(req: Request) {
   }
 
   try {
-    const imageUrl = await searchImage(q);
-    if (!imageUrl) {
+    const imageUrls = await searchImage(q);
+    if (!imageUrls || imageUrls.length === 0) {
       return NextResponse.json({ error: "No images found" }, { status: 404 });
     }
 
-    return NextResponse.json({ url: imageUrl });
+    return NextResponse.json({ urls: imageUrls });
   } catch (error: any) {
     console.error("Image Search API Error:", error.message);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

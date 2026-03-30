@@ -5,57 +5,108 @@
 @layer base {
   :root {
     --background: 0 0% 0%;
-    --foreground: 0 0% 100%;
-    --card: 0 0% 7%;
-    --card-foreground: 0 0% 100%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 98%;
     --popover: 0 0% 0%;
-    --popover-foreground: 0 0% 100%;
-    --primary: 271 91% 65%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 100% 60%; /* Vibrant Red/Coral #FF3333 */
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 7%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 15%;
+    --secondary: 0 0% 8%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 12%;
     --muted-foreground: 0 0% 65%;
-    --accent: 271 91% 65%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 62.8% 30.6%;
+    --accent: 0 100% 60%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 15%;
     --input: 0 0% 15%;
-    --ring: 271 91% 65%;
-    --radius: 1.5rem;
+    --ring: 0 100% 60%;
+    --radius: 0.5rem;
   }
-}
 
-@layer base {
   * {
-    border-color: hsl(var(--border));
+    @apply border-border selection:bg-primary selection:text-white;
   }
+
   body {
-    @apply bg-background text-foreground selection:bg-primary selection:text-primary-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02";
+  }
+
+  /* Professional Precision Scrollbar - Superdesign Spec */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #000000;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #222222;
+    border-radius: 100px;
+    border: 2px solid #000000;
+    transition: all 0.3s ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #FF3333;
   }
 }
 
-.glass {
-  @apply bg-card/50 backdrop-blur-xl border border-white/5;
+@layer components {
+  .glass {
+    @apply bg-black/60 backdrop-blur-2xl border border-white/5;
+  }
+
+  .glass-premium {
+    @apply bg-black/40 backdrop-blur-[40px] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)];
+  }
+
+  .glow-card {
+    @apply transition-all duration-500 hover:shadow-[0_0_50px_rgba(255,51,51,0.25)] border border-white/5 hover:border-primary/60;
+  }
+
+  .glow-red {
+    @apply shadow-[0_0_40px_rgba(255,51,51,0.5)] border-primary/50;
+  }
+
+  .glow-red-hover {
+    @apply hover:shadow-[0_0_40px_rgba(255,51,51,0.6)] hover:border-primary/70 transition-all duration-300;
+  }
+
+  .red-gradient {
+    @apply bg-gradient-to-br from-primary via-primary to-orange-700;
+  }
+
+  .grid-bg {
+    background-image: linear-gradient(rgba(255, 51, 51, 0.03) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255, 51, 51, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .echo-text {
+    @apply relative font-black uppercase tracking-tighter mix-blend-difference;
+    text-shadow: 0 15px 40px rgba(255, 51, 51, 0.4);
+  }
+
+  .brutalist-card {
+    @apply bg-black border border-white/10 hover:border-primary/80 transition-all duration-700 shadow-2xl;
+  }
+
+  .brutalist-button {
+    @apply bg-white text-black font-black uppercase tracking-[0.2em] text-[10px] px-8 py-4 rounded-none hover:bg-primary hover:text-white transition-all duration-300 active:scale-95;
+  }
 }
 
-.glow-card {
-  @apply transition-all duration-300 hover:shadow-purple-lg border border-white/5 hover:border-primary/50;
+/* Typography Overrides */
+h1, h2, h3, h4, h5, h6 {
+  @apply tracking-tight font-bold uppercase;
 }
 
-.purple-gradient {
-  @apply bg-gradient-to-br from-primary via-purple-600 to-indigo-800;
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  @apply bg-background;
-}
-::-webkit-scrollbar-thumb {
-  @apply bg-muted rounded-full hover:bg-muted-foreground transition-colors;
+.text-editorial {
+  @apply font-medium leading-relaxed text-white/70;
 }

@@ -23,11 +23,11 @@ export default function LoadingScreen() {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#030303] overflow-hidden"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-background overflow-hidden"
         >
           <div className="relative flex flex-col items-center gap-8">
-            {/* Background blur/glow effect */}
-            <div className="absolute inset-0 bg-primary/20 blur-[100px] rounded-full scale-150 animate-pulse" />
+            {/* Premium Ambient Light */}
+            <div className="absolute inset-0 bg-primary/10 blur-[120px] rounded-full scale-[2] animate-pulse" />
             
             {/* Logo with pulsing animation */}
             <motion.div

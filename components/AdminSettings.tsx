@@ -57,7 +57,7 @@ export default function AdminSettings() {
       <div className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
         <span>Automatic AI Post Daily (Cron)</span>
         <div className="flex items-center gap-3">
-          <Badge variant={enabled ? "purple" : "secondary"}>
+          <Badge variant={enabled ? "accent" : "secondary"}>
             {enabled ? "ENABLED" : "DISABLED"}
           </Badge>
           <button 
@@ -88,8 +88,8 @@ export default function AdminSettings() {
       </div>
       
       <div className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
-        <span>Humanization Intensity</span>
-        <span className="font-bold">Punjabi High</span>
+        <span>Editorial Depth</span>
+        <span className="font-black text-primary uppercase tracking-widest text-[10px] bg-primary/10 px-3 py-1 rounded-full animate-pulse border border-primary/20">Deep Resonance</span>
       </div>
     </div>
   );

@@ -42,7 +42,7 @@ export default function Pagination({ totalPages }: PaginationProps) {
             onClick={() => handlePageChange(i + 1)}
             className={cn(
               "h-9 w-9 rounded-full",
-              currentPage === i + 1 ? "bg-primary text-white shadow-purple" : "text-muted-foreground hover:text-white"
+              currentPage === i + 1 ? "bg-primary text-primary-foreground shadow-cyan-soft" : "text-muted-foreground hover:text-white"
             )}
           >
             {i + 1}

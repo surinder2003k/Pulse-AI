@@ -197,7 +197,7 @@ export default function DashboardOverview() {
               </p>
             </div>
             <Link href="/dashboard/create">
-              <Button className="rounded-xl h-12 px-8 bg-primary hover:bg-primary/90 text-white font-bold shadow-purple-lg gap-2">
+              <Button className="rounded-xl h-12 px-8 bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-cyan-glow gap-2">
                 Try AI Generator <ArrowUpRight className="h-4 w-4" />
               </Button>
             </Link>
