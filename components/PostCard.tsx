@@ -39,11 +39,12 @@ export default function PostCard({ post, isFeatured }: PostCardProps) {
         )}>
           <Image
             src={post.feature_image_url || "https://images.unsplash.com/photo-1677442136019-21780ecad995"}
-            alt={post.title}
+            alt={`${post.title} - ${post.category} article on Pulse AI`}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-500"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             priority={isFeatured}
+            loading={isFeatured ? "eager" : "lazy"}
           />
           <div className="absolute top-4 right-4 animate-in fade-in zoom-in duration-500">
             <Badge className="bg-white/20 backdrop-blur-xl border-white/20 text-white font-bold text-xs py-1.5 px-4 rounded-full shadow-lg">
@@ -80,7 +81,7 @@ export default function PostCard({ post, isFeatured }: PostCardProps) {
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center border border-primary/20 shadow-purple overflow-hidden">
                 {post.author_image ? (
-                  <img src={post.author_image} alt="" className="w-full h-full object-cover" />
+                  <img src={post.author_image} alt={`${post.author_name || "Author"} - Pulse AI writer`} className="w-full h-full object-cover" />
                 ) : (
                   <User className="h-5 w-5 text-primary" />
                 )}
