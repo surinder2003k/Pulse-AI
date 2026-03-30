@@ -7,10 +7,36 @@ import Pagination from "@/components/Pagination";
 import { Suspense } from "react";
 import { PostGridSkeleton } from "@/components/LoadingSkeleton";
 
-export const metadata = {
-  title: "Blog Archive | Pulse AI",
-  description: "Browse our collection of high-quality AI blog posts across various categories.",
-};
+export async function generateMetadata({ searchParams }: { searchParams: Promise<{ category?: string; q?: string }> }) {
+  const { category, q } = await searchParams;
+  const baseUrl = "https://pulse-blog-ai.vercel.app";
+  
+  let title = "Blog Archive | Pulse AI";
+  let description = "Browse our collection of high-quality AI blog posts across various categories.";
+  
+  if (category && category !== "All") {
+    title = `${category} Articles | Pulse AI`;
+    description = `Explore the latest ${category} stories and insights powered by Pulse AI.`;
+  } else if (q) {
+    title = `Search results for "${q}" | Pulse AI`;
+    description = `Search results for ${q} on Pulse AI content engine.`;
+  }
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `${baseUrl}/blog${category ? `?category=${category}` : ""}`,
+    },
+    openGraph: {
+      title,
+      description,
+      url: `${baseUrl}/blog`,
+      siteName: "Pulse AI",
+      type: "website",
+    }
+  };
+}
 
 export default async function BlogPage({
   searchParams,
@@ -48,8 +74,47 @@ export default async function BlogPage({
   const posts = JSON.parse(JSON.stringify(postsRaw));
   const totalPages = Math.ceil(count / pageSize);
 
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pulse-blog-ai.vercel.app"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog",
+        "item": "https://pulse-blog-ai.vercel.app/blog"
+      }
+    ]
+  };
+
+  const collectionLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": category && category !== "All" ? `${category} articles` : "Blog Archive",
+    "description": "Browse our collection of high-quality AI blog posts.",
+    "url": `https://pulse-blog-ai.vercel.app/blog${category ? `?category=${category}` : ""}`,
+    "publisher": {
+      "@type": "Organization",
+      "name": "Pulse AI"
+    }
+  };
+
   return (
     <div className="flex flex-col gap-16 pb-20 pt-10 px-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionLd) }}
+      />
       <div className="flex flex-col gap-4 text-center items-center">
         <h1 className="text-4xl md:text-7xl font-black tracking-tighter italic">
           The AI <span className="text-primary">Archive.</span>

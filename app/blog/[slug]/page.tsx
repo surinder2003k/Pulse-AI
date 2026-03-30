@@ -110,6 +110,37 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
   const readingTime = calculateReadingTime(post.content);
   const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL || ''}/blog/${post.slug}`;
 
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pulse-blog-ai.vercel.app"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog",
+        "item": "https://pulse-blog-ai.vercel.app/blog"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": post.category,
+        "item": `https://pulse-blog-ai.vercel.app/blog?category=${post.category}`
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": post.title,
+        "item": shareUrl
+      }
+    ]
+  };
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -134,7 +165,9 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
     "mainEntityOfPage": {
       "@id": shareUrl,
       "@type": "WebPage"
-    }
+    },
+    "keywords": post.tags?.join(", "),
+    "articleSection": post.category
   };
 
   return (
@@ -142,6 +175,10 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
       {/* Views Counter (Client-side trigger) */}
       <ViewsCounter slug={post.slug} />
@@ -183,7 +220,7 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
       <div className="relative aspect-[16/8] rounded-[3rem] overflow-hidden mb-20 border border-white/5 bg-secondary/20 shadow-skeuo-float">
         <Image
           src={post.feature_image_url || "https://images.unsplash.com/photo-1677442136019-21780ecad995"}
-          alt={post.title}
+          alt={`${post.title} - ${post.category} article on Pulse AI`}
           fill
           className="object-cover"
           priority
