@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Upload, X, Loader2, ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 
@@ -13,6 +13,11 @@ export default function Dropzone({ onUpload, currentImage }: DropzoneProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [preview, setPreview] = useState(currentImage || "");
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Sync with parent state if currentImage updates externally (e.g. from search)
+  useEffect(() => {
+    setPreview(currentImage || "");
+  }, [currentImage]);
 
   const handleFile = async (file: File) => {
     if (!file.type.startsWith("image/")) {

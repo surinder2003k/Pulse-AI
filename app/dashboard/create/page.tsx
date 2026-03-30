@@ -15,7 +15,8 @@ import {
   BrainCircuit,
   MessageSquareShare,
   Search,
-  Trash2
+  Trash2,
+  X
 } from "lucide-react";
 import { useEffect } from "react";
 // @ts-ignore
@@ -260,7 +261,19 @@ export default function CreatePostPage() {
               </div>
 
               <div className="pt-4 border-t space-y-4">
-                <label className="text-sm font-medium">Search Library</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium">Search Library</label>
+                  {searchResults.length > 0 && (
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => setSearchResults([])}
+                      className="h-7 px-2 text-xs text-muted-foreground hover:text-white"
+                    >
+                      <X className="h-3 w-3 mr-1" /> Clear
+                    </Button>
+                  )}
+                </div>
                 <div className="flex gap-2">
                   <Input 
                     placeholder="Search images..." 
@@ -286,18 +299,25 @@ export default function CreatePostPage() {
                         key={i}
                         onClick={() => {
                           setFormData({...formData, featureImage: url});
-                          setSearchResults([]);
                           toast.success("Image selected.");
                         }}
-                        className="relative aspect-video cursor-pointer overflow-hidden rounded border border-white/10 hover:border-primary/50 transition-all group"
+                        className={`relative aspect-video cursor-pointer overflow-hidden rounded border transition-all group ${formData.featureImage === url ? 'ring-2 ring-primary border-primary' : 'border-white/10 hover:border-primary/50'}`}
                       >
                         <img 
                           src={url} 
                           alt={`Result ${i}`} 
-                          className="object-cover w-full h-full grayscale group-hover:grayscale-0 transition-opacity opacity-80 group-hover:opacity-100" 
+                          className={`object-cover w-full h-full transition-all duration-500
+                            ${formData.featureImage === url ? 'grayscale-0 opacity-100' : 'grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100'}
+                          `}
                         />
-                        <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <span className="text-[10px] uppercase font-bold tracking-tighter bg-black/80 px-2 py-1 rounded">Select</span>
+                        <div className={`absolute inset-0 transition-opacity flex items-center justify-center
+                          ${formData.featureImage === url ? 'bg-primary/20 opacity-100' : 'bg-primary/10 opacity-0 group-hover:opacity-100'}
+                        `}>
+                          <span className={`text-[10px] uppercase font-bold tracking-tighter px-2 py-1 rounded
+                            ${formData.featureImage === url ? 'bg-primary text-white shadow-lg' : 'bg-black/80'}
+                          `}>
+                            {formData.featureImage === url ? 'Selected' : 'Select'}
+                          </span>
                         </div>
                       </div>
                     ))}
