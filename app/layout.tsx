@@ -13,6 +13,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space" });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://pulse-blog-ai.vercel.app"),
   title: "Pulse AI | Stories That Move You. F1, Tech, & Sports.",
   description: "Dive into the pulse of global stories. From high-octane F1 race reports to tactical football deep dives and the latest in AI innovation, see the world through a human lens.",
   keywords: [

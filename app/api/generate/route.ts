@@ -89,9 +89,22 @@ export async function POST(req: Request) {
       console.warn("Unsplash fetching failed.");
     }
 
-    // Step 3: Save to MongoDB
+    // Step 3: Saving to DB...
     console.log("Step 3: Saving to DB...");
-    const slug = slugifyLib(postData.title, { lower: true, strict: true });
+    
+    let slug = slugifyLib(postData.title, { lower: true, strict: true });
+    
+    let existingPost = await Post.findOne({ slug }).lean();
+    let counter = 1;
+    while (existingPost) {
+      const newSlug = `${slug}-${counter}`;
+      existingPost = await Post.findOne({ slug: newSlug }).lean();
+      if (!existingPost) {
+        slug = newSlug;
+        break;
+      }
+      counter++;
+    }
     
     try {
       const newPost = await Post.create({

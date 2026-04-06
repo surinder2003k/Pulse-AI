@@ -26,6 +26,8 @@ import { useRouter } from "next/navigation";
 import PremiumAlert from "@/components/PremiumAlert";
 
 import Dropzone from "@/components/Dropzone";
+import RichTextEditor from "@/components/RichTextEditor";
+import SEOAnalyzer from "@/components/SEOAnalyzer";
 
 export default function CreatePostPage() {
   const router = useRouter();
@@ -57,6 +59,7 @@ export default function CreatePostPage() {
     content: "",
     category: "Technology",
     tags: "",
+    seoKeywords: "",
     featureImage: ""
   });
 
@@ -84,6 +87,7 @@ export default function CreatePostPage() {
         content: data.content,
         category: data.category,
         tags: Array.isArray(data.tags) ? data.tags.join(", ") : data.tags,
+        seoKeywords: "",
         featureImage: data.feature_image_url || data.featureImage || ""
       });
       toast.dismiss(toastId);
@@ -191,13 +195,18 @@ export default function CreatePostPage() {
                   />
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-4">
                   <label className="text-sm font-medium">Content</label>
-                  <Textarea 
-                    placeholder="Write your story here..." 
+                  
+                  <SEOAnalyzer 
+                    title={formData.title} 
+                    content={formData.content} 
+                    seoKeywords={formData.seoKeywords} 
+                  />
+
+                  <RichTextEditor 
                     value={formData.content}
-                    onChange={(e) => setFormData({...formData, content: e.target.value})}
-                    className="min-h-[400px] leading-relaxed text-base"
+                    onChange={(val) => setFormData({...formData, content: val})}
                   />
                 </div>
 
@@ -346,6 +355,16 @@ export default function CreatePostPage() {
                   value={formData.tags}
                   onChange={(e) => setFormData({...formData, tags: e.target.value})}
                 />
+              </div>
+
+              <div className="pt-4 border-t space-y-2">
+                <label className="text-sm font-medium">Focus SEO Keywords</label>
+                <Input 
+                  placeholder="e.g. best ai tools, future of groq" 
+                  value={formData.seoKeywords}
+                  onChange={(e) => setFormData({...formData, seoKeywords: e.target.value})}
+                />
+                <p className="text-[10px] text-muted-foreground">Separate keywords with commas.</p>
               </div>
             </CardContent>
           </Card>

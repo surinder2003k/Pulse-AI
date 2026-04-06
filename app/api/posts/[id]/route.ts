@@ -57,7 +57,7 @@ export async function PATCH(
   try {
     await connectDB();
     const body = await req.json();
-    const { title, excerpt, content, category, tags, featureImage, status } = body;
+    const { title, excerpt, content, category, tags, featureImage, status, seoKeywords } = body;
 
     // Admin can update any post; regular users only their own
     const filter = isAdmin ? { _id: id } : { _id: id, user_id: user.id };
@@ -71,6 +71,7 @@ export async function PATCH(
         category,
         tags: Array.isArray(tags) ? tags : [],
         feature_image_url: featureImage,
+        seoKeywords: seoKeywords || "",
         status: status || "published",
         published_at: new Date(),
       },

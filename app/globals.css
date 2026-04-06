@@ -111,3 +111,127 @@ h1, h2, h3, h4, h5, h6 {
 .text-editorial {
   @apply font-medium leading-relaxed text-white/70;
 }
+
+/* Rich Text Output - Styles for HTML content from the editor */
+.rich-text-output h1 {
+  font-size: 2.5rem;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  margin-bottom: 2rem;
+  margin-top: 0;
+}
+
+.rich-text-output h2 {
+  font-size: 1.875rem;
+  font-weight: 800;
+  color: #ffffff;
+  border-left: 4px solid #FF3333;
+  padding-left: 1.25rem;
+  margin-top: 3.5rem;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+  letter-spacing: -0.02em;
+}
+
+.rich-text-output h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.9);
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+.rich-text-output h4, .rich-text-output h5, .rich-text-output h6 {
+  font-weight: 700;
+  color: rgba(255,255,255,0.85);
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.rich-text-output p {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 1.75rem;
+  font-weight: 500;
+}
+
+.rich-text-output a {
+  color: #FF3333;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.rich-text-output a:hover {
+  text-decoration: underline;
+}
+
+.rich-text-output ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.rich-text-output ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.rich-text-output li {
+  color: rgba(255,255,255,0.7);
+  line-height: 1.75;
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+}
+
+.rich-text-output blockquote {
+  border-left: 4px solid #FF3333;
+  background-color: rgba(255,51,51,0.05);
+  padding: 1.5rem 2rem;
+  border-radius: 1rem;
+  font-style: italic;
+  color: rgba(255,255,255,0.9);
+  margin: 2.5rem 0;
+}
+
+.rich-text-output strong {
+  color: #ffffff;
+  font-weight: 900;
+}
+
+.rich-text-output em {
+  color: rgba(255,255,255,0.85);
+  font-style: italic;
+}
+
+.rich-text-output img {
+  max-width: 100%;
+  border-radius: 1.5rem;
+  margin: 3rem 0;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+  display: block;
+}
+
+.rich-text-output pre {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  overflow-x: auto;
+  margin: 2rem 0;
+}
+
+.rich-text-output code {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.9em;
+  background: rgba(255,255,255,0.08);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  color: #FF3333;
+}
+

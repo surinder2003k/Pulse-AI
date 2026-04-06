@@ -18,6 +18,8 @@ import {
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import RichTextEditor from "@/components/RichTextEditor";
+import SEOAnalyzer from "@/components/SEOAnalyzer";
 
 interface EditPostPageProps {
   params: Promise<{ slug: string }>;
@@ -36,6 +38,7 @@ export default function EditPostPage({ params }: EditPostPageProps) {
     content: "",
     category: "Technology",
     tags: "",
+    seoKeywords: "",
     featureImage: ""
   });
   const [imageSearchQuery, setImageSearchQuery] = useState("");
@@ -56,6 +59,7 @@ export default function EditPostPage({ params }: EditPostPageProps) {
           content: data.content,
           category: data.category,
           tags: Array.isArray(data.tags) ? data.tags.join(", ") : data.tags,
+          seoKeywords: data.seoKeywords || "",
           featureImage: data.feature_image_url || ""
         });
       } catch (error) {
@@ -169,13 +173,18 @@ export default function EditPostPage({ params }: EditPostPageProps) {
                   />
                 </div>
 
-                <div className="space-y-2 pt-4">
-                  <label className="text-sm font-medium text-muted-foreground">Markdown Content</label>
-                  <Textarea 
-                    placeholder="Write your story in Markdown..." 
+                <div className="space-y-4 pt-4">
+                  <label className="text-sm font-medium text-muted-foreground">Content</label>
+
+                  <SEOAnalyzer
+                    title={formData.title}
+                    content={formData.content}
+                    seoKeywords={formData.seoKeywords}
+                  />
+
+                  <RichTextEditor
                     value={formData.content}
-                    onChange={(e) => setFormData({...formData, content: e.target.value})}
-                    className="bg-background/50 border-white/5 min-h-[400px] rounded-xl shadow-skeuo-in focus-visible:ring-primary/50 font-mono text-sm leading-relaxed p-6"
+                    onChange={(val) => setFormData({...formData, content: val})}
                   />
                 </div>
               </div>
@@ -257,6 +266,17 @@ export default function EditPostPage({ params }: EditPostPageProps) {
                   />
                   <Tag className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-muted-foreground uppercase">Focus SEO Keywords</label>
+                <Input 
+                  placeholder="e.g. best ai tools, groq" 
+                  value={formData.seoKeywords}
+                  onChange={(e) => setFormData({...formData, seoKeywords: e.target.value})}
+                  className="bg-background/50 border-white/5 rounded-xl h-12 shadow-skeuo-in"
+                />
+                <p className="text-[10px] text-muted-foreground">Separate keywords with commas.</p>
               </div>
 
               <div className="space-y-2">

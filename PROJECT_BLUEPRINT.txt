@@ -1,0 +1,114 @@
+# Pulse AI - Project Blueprint & Implementation Guide
+
+This document provides a comprehensive technical breakdown of the **Pulse AI** project. It is designed to act as a "Source of Truth" for an AI to recreate the exact same system from scratch.
+
+---
+
+## 1. Project Overview
+Pulse AI is an automated AI blogging platform built with Next.js 15. It handles content discovery, image search, and SEO-optimized long-form article generation automatically via scheduled cron jobs or manual triggers.
+
+### Core Tech Stack:
+- **Framework:** Next.js 15 (App Router, TypeScript)
+- **Database:** MongoDB (using Mongoose ODM)
+- **Auth:** Clerk (@clerk/nextjs)
+- **Styling:** Tailwind CSS + Shadcn UI + Framer Motion
+- **AI Models:** Groq (LLaMA-3.3-70B), OpenAI (GPT-4o-mini), Gemini (2.0 Flash), Together AI
+- **Images:** Unsplash API, Pexels API, Pixabay API
+- **State:** Zustand
+
+---
+
+## 2. Core Logic Implementation
+
+### A. AI Generation Engine (`lib/ai-generator.ts`)
+The system uses a **Fallback Multi-Model Strategy** to handle API rate limits and failures. 
+
+**Order of execution:**
+1. **Groq (Primary):** Fastest and cheapest.
+2. **OpenAI:** Reliable backup.
+3. **Gemini:** Great for long-form content.
+4. **Together AI:** Final safeguard.
+
+**Logic Flow:**
+- Each provider is tried in sequence inside a `try-catch` block.
+- Input: Category, Topic/Prompt, and Recent Titles (to avoid duplicates).
+- Output: Validated JSON object.
+
+### B. Automated Blogging (Cron Job) Detail (`app/api/automate/route.ts`)
+This is the heart of Pulse AI. It ensures a self-sustaining ecosystem.
+
+**Workflow in Detail:**
+1. **Trigger:** Can be triggered via a GET request with a secret `CRON_SECRET` header (Vercel Cron) or manually from the Admin panel.
+2. **Configuration Fetch:** Reads `automationEnabled` and `automationCategory` from the Database. If disabled, execution stops.
+3. **Context Injection:** It queries the last 15 posts to get their titles. This list is passed to the AI to prevent repetitive content.
+4. **The "Research" Prompt:** The AI is instructed to act as a world-class journalist. It is given the `automationCategory` and the list of recent titles. It is asked to identify a *new* trending topic from the last 24-48 hours.
+5. **Content Generation:** The AI generates a 1000-1200 word article in Markdown. It must provide:
+   - Valid SEO `title`
+   - `content` (Markdown)
+   - `excerpt` (Meta description)
+   - `imageSearchKeyword` (Optimized keyword for Unsplash/Pexels search)
+6. **Smart Image Pairing:** The `imageSearchKeyword` is sent to `lib/image-search.ts`. If no image is found, a default category-based fallback image is used.
+7. **SEO Slug Generation:** A URL-friendly slug is created from the title.
+8. **Final Save:** The post is committed to MongoDB with `user_id: "system_automation"`.
+
+### C. Image Search Service Logic (`lib/image-search.ts`)
+The system never fails to find an image due to its **Tiered Search Strategy**:
+1. **Primary:** Unsplash API (Landscape filter applied for wide blog headers).
+2. **Secondary:** Pexels API (Searches if Unsplash returns zero results).
+3. **Tertiary:** Pixabay API (Last resort for rare keywords).
+4. **Safety:** If all three APIs return no results, the automation route uses a hardcoded placeholder based on the category.
+
+---
+
+## 3. Database Models (Mongoose)
+
+### Post Model (`models/Post.ts`)
+```typescript
+{
+  user_id: { type: String, required: true }, // Clerk user ID or 'system_automation'
+  title: { type: String, required: true },
+  slug: { type: String, unique: true, required: true },
+  content: { type: String, required: true }, // Markdown formatted
+  excerpt: { type: String },
+  category: { type: String },
+  tags: [{ type: String }],
+  header_image: { type: String },
+  status: { type: String, enum: ['draft', 'published'], default: 'published' },
+  is_ai_generated: { type: Boolean, default: false },
+  views: { type: Number, default: 0 },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+}
+```
+
+### Settings Model (`models/Settings.ts`)
+```typescript
+{
+  automationEnabled: { type: Boolean, default: true },
+  automationCategory: { type: String, default: 'Technology' },
+  lastAutomationRun: { type: Date }
+}
+```
+
+---
+
+## 4. Key API Endpoints & Security
+
+- **`/api/generate`**: Manual UI-triggered post generation. Includes a **Rate Limit** of 5 posts per hour per user (tracked via MongoDB/IP).
+- **`/api/posts`**: Handles fetching all posts (with pagination) and individual post details.
+- **`/api/admin/settings`**: Restricted to `ADMIN_EMAIL` (defined in `utils.ts`). Allows toggling automation.
+- **`/api/admin/health`**: Checks if all API keys (Groq, Clerk, Unsplash, Mongo) are valid and responding.
+
+---
+
+## 5. UI/UX Components
+- **Dashboard:** A clean management interface for all posts.
+- **Admin Panel:** Separate protected section for site-wide settings.
+- **Markdown Renderer:** A custom component using `react-markdown` and `rehype-highlight` for beautiful article formatting.
+- **Animations:** `ParticleBackground.tsx` and `AnimatedHero.tsx` use Framer Motion for a premium AI feel.
+
+---
+
+## 6. How to recreate this (Prompt for AI)
+To build an exact copy, use this prompt:
+"Build a Next.js 15 AI Blogging platform called Pulse AI. Use MongoDB for storage, Clerk for Auth, and Shadcn UI for components. Implement a multi-AI fallback system (Groq -> OpenAI -> Gemini) for generating long-form Markdown posts. Add a cron-based automated system that researches trending news in a specific category, generates a 1200-word SEO article, finds a matching image via Unsplash API, and publishes it automatically. Ensure the UI is highly animated with Framer Motion and includes an admin dashboard for settings and post management."

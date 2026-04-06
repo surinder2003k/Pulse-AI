@@ -112,11 +112,24 @@ export async function GET(req: Request) {
 
 
         // Step 3: Save to MongoDB
-        const slug = slugifyLib(postData.title, { lower: true, strict: true });
+        let slug = slugifyLib(postData.title, { lower: true, strict: true });
+        
+        let existingPost = await Post.findOne({ slug }).lean();
+        let counter = 1;
+        while (existingPost) {
+          const newSlug = `${slug}-${counter}`;
+          existingPost = await Post.findOne({ slug: newSlug }).lean();
+          if (!existingPost) {
+            slug = newSlug;
+            break;
+          }
+          counter++;
+        }
+
         const newPost = await Post.create({
           user_id: "system_automation",
           title: postData.title,
-          slug: `${slug}-${Math.floor(Math.random() * 1000)}`,
+          slug: slug,
           excerpt: postData.excerpt,
           content: postData.content,
           category: postData.category,

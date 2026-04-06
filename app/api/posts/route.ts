@@ -12,9 +12,22 @@ export async function POST(req: Request) {
   try {
     await connectDB();
     const body = await req.json();
-    const { title, excerpt, content, category, tags, featureImage } = body;
+    const { title, excerpt, content, category, tags, featureImage, seoKeywords } = body;
 
-    const slug = slugifyLib(title, { lower: true, strict: true });
+    let slug = slugifyLib(title, { lower: true, strict: true });
+    
+    // Ensure slug uniqueness without random numbers
+    let existingPost = await Post.findOne({ slug }).lean();
+    let counter = 1;
+    while (existingPost) {
+      const newSlug = `${slug}-${counter}`;
+      existingPost = await Post.findOne({ slug: newSlug }).lean();
+      if (!existingPost) {
+        slug = newSlug;
+        break;
+      }
+      counter++;
+    }
 
     const authorName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username || "Anonymous";
     const authorImage = user.imageUrl;
@@ -28,6 +41,7 @@ export async function POST(req: Request) {
       category,
       tags: Array.isArray(tags) ? tags : [],
       feature_image_url: featureImage,
+      seoKeywords: seoKeywords || "",
       status: "published",
       is_ai_generated: body.is_ai_generated || false,
       author_name: authorName,
