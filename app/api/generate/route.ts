@@ -43,23 +43,29 @@ export async function POST(req: Request) {
 
     // DIRECT USER PROMPT: No personas, no hardcoded tone. Just the user's exact topic/instructions.
     // We only append the format requirement so it returns usable JSON.
-    const directPrompt = `Write a highly optimized, fully SEO-friendly, comprehensive article based exactly on this topic:
+    const directPrompt = `You are an expert technical editorial writer. Write a highly optimized, fully SEO-friendly, comprehensive article based exactly on this topic:
     "${userPrompt}"
     
-    The article MUST be detailed and lengthy, approximately 2000 to 2500 words.
-    Use proper HTML formatting for readability and SEO ranking.
+    The article MUST be detailed and lengthy, approximately 1500 to 2000 words.
     
-    Format the response STRICTLY as a JSON object with these exact lowercase keys:
+    IMPORTANT FORMATTING RULES:
+    1. You MUST format the "content" value as rich HTML.
+    2. You MUST wrap EVERY paragraph in <p> tags.
+    3. You MUST use <h2> and <h3> for headings.
+    4. You MUST use <ul>, <ol>, and <li> for lists.
+    5. CRITICAL: DO NOT use Markdown (like # or **). Every piece of text must be properly nested inside an HTML tag.
+    
+    Format the response STRICTLY as a JSON object with these exact keys:
     {
-      "title": "A highly engaging, SEO-optimized title for the topic",
-      "content": "Full lengthy HTML content based directly on the prompt. Use valid HTML tags like <h2>, <h3>, <p>, <strong>, <em>, <ul>, <li>. DO NOT USE MARKDOWN. Do not wrap this value in markdown codeblocks like \`\`\`html.",
+      "title": "A highly engaging, SEO-optimized title",
+      "content": "<h2>Introduction</h2><p>First paragraph here...</p><p>Second paragraph...</p><h3>Key Benefits</h3><ul><li>Point 1</li><li>Point 2</li></ul><p>Conclusion paragraph...</p>",
       "excerpt": "A powerful SEO meta description (max 160 chars)",
       "category": "Technology, Business, News, or whichever fits best",
       "tags": ["seo-tag1", "seo-tag2", "seo-tag3", "seo-tag4", "seo-tag5"],
-      "imageSearchKeyword": "A generic 1-2 word English keyword (like 'technology', 'nature', 'city') to find a high-quality relevant background image on Unsplash. DO NOT use specific brand names or acronyms."
+      "imageSearchKeyword": "A generic 1-2 word English keyword (like 'technology', 'city') for Unsplash"
     }
     
-    Important: Return ONLY the JSON object. NO markdown blocks or other text outside the JSON.`;
+    Return ONLY JSON. No external markdown, no conversational text.`;
 
     try {
       console.log("Attempting generation using Multi-Provider Fallback...");

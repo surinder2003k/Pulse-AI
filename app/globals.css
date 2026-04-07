@@ -134,6 +134,13 @@
   @apply text-white/70 leading-[1.8] mb-8 text-xl;
 }
 
+/* Fix for legacy posts containing only <br> instead of <p> */
+.rich-text-output br {
+  display: block;
+  content: "";
+  margin-bottom: 1.5em;
+}
+
 .rich-text-output strong {
   @apply text-white font-black;
 }
