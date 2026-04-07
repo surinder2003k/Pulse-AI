@@ -127,15 +127,15 @@
 
 /* Rich Text Styling */
 .rich-text-output h1, .rich-text-output h2, .rich-text-output h3 {
-  @apply font-black tracking-tighter text-white uppercase italic mb-8 mt-12 leading-none;
+  @apply font-black tracking-tight text-white mb-8 mt-12 leading-tight;
 }
 
 .rich-text-output p {
-  @apply text-muted-foreground leading-relaxed mb-8 text-lg font-medium;
+  @apply text-white/70 leading-[1.8] mb-8 text-xl;
 }
 
 .rich-text-output strong {
-  @apply text-primary font-black uppercase tracking-tight;
+  @apply text-white font-black;
 }
 
 .rich-text-output blockquote {

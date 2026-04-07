@@ -129,15 +129,15 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
             </div>
           </div>
 
-          <div className="flex flex-col gap-8">
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[0.95] uppercase italic text-white decoration-primary/20 decoration-[10px] group">
+          <div className="flex flex-col gap-6">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-white">
               {post.title}
             </h1>
             
-            <div className="flex items-center justify-between">
-               <div className="flex items-center gap-4">
-                  <div className="h-1 bg-primary w-20 shadow-skeuo-button" />
-                  <p className="text-lg text-white/40 font-medium uppercase tracking-tight max-w-xl italic">
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-8">
+               <div className="flex gap-5">
+                  <div className="w-1.5 rounded-full bg-primary shadow-skeuo-button shrink-0 hidden md:block" />
+                  <p className="text-xl md:text-2xl text-white/60 font-medium leading-relaxed max-w-3xl">
                      {post.excerpt}
                   </p>
                </div>
