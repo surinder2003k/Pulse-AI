@@ -25,13 +25,12 @@ export default function Logo({ className, size = "md", showText = true }: LogoPr
   };
 
   return (
-    <div className={cn("flex items-center gap-3 select-none group", className)}>
+    <div className={cn("flex items-center gap-4 select-none group leading-none", className)}>
       <div className={cn("relative flex items-center justify-center", sizes[size])}>
         {/* Diamond Shape */}
         <motion.div
           animate={{
-            rotate: [45, 45, 45],
-            scale: [1, 1.1, 1],
+            scale: [1, 1.05, 1],
           }}
           transition={{
             duration: 4,
@@ -39,40 +38,42 @@ export default function Logo({ className, size = "md", showText = true }: LogoPr
             ease: "easeInOut",
           }}
           className={cn(
-            "border-2 border-primary rotate-45 flex items-center justify-center bg-black transition-colors group-hover:bg-primary/10",
+            "border-2 border-primary rotate-45 flex items-center justify-center bg-black transition-all group-hover:glow-red shadow-skeuo-button",
             size === "sm" ? "h-5 w-5 border" : 
-            size === "md" ? "h-6 w-6" : 
-            size === "lg" ? "h-10 w-10" : "h-16 w-16 border-[3px]"
+            size === "md" ? "h-7 w-7" : 
+            size === "lg" ? "h-12 w-12 border-[3px]" : "h-20 w-20 border-[4px]"
           )}
         >
           {/* Inner Pulse Dot */}
-          <div className="relative flex">
+          <div className="relative flex -rotate-45">
             <span className={cn("animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60")}></span>
-            <span className={cn("relative inline-flex rounded-full bg-primary shadow-[0_0_15px_rgba(255,51,51,0.8)]", dotSizes[size])}></span>
+            <span className={cn("relative inline-flex rounded-full bg-primary shadow-[0_0_20px_rgba(255,51,51,1)]", dotSizes[size])}></span>
           </div>
         </motion.div>
 
         {/* Outer Echo Rings */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: [0, 0.3, 0], scale: [0.8, 1.5, 2] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
-          className="absolute inset-0 border border-primary/30 rounded-full"
+          animate={{ opacity: [0, 0.4, 0], scale: [0.8, 1.8, 2.2] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeOut" }}
+          className="absolute inset-0 border border-primary/20 rounded-full pointer-events-none"
         />
       </div>
 
       {showText && (
-        <div className="flex flex-col leading-none">
+        <div className="flex flex-col gap-0.5">
           <span className={cn(
             "font-black tracking-tighter uppercase italic",
-            size === "sm" ? "text-lg" : 
-            size === "md" ? "text-2xl" : 
-            size === "lg" ? "text-4xl" : "text-6xl"
+            size === "sm" ? "text-xl" : 
+            size === "md" ? "text-3xl" : 
+            size === "lg" ? "text-5xl" : "text-7xl"
           )}>
-            Pulse<span className="text-primary">AI</span>
+            Pulse<span className="text-primary italic">AI</span>
           </span>
           {size !== "sm" && (
-            <span className="text-[8px] font-bold tracking-[0.4em] uppercase text-muted-foreground mt-0.5 ml-0.5">
+            <span className={cn(
+              "font-black uppercase tracking-[0.5em] text-white/40 leading-none",
+              size === "md" ? "text-[8px]" : size === "lg" ? "text-[12px]" : "text-[16px]"
+            )}>
               Design Intelligence
             </span>
           )}

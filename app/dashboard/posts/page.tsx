@@ -7,10 +7,10 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Trash2, ExternalLink, FileText, EyeOff, Eye, Loader2, AlertTriangle, X, Pencil, Plus } from "lucide-react";
+import { Trash2, ExternalLink, FileText, EyeOff, Eye, Loader2, Pencil, Plus, Zap, Globe, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { formatDate } from "@/lib/utils";
+import { formatDate, cn } from "@/lib/utils";
 import { toast } from "sonner";
 import PremiumAlert from "@/components/PremiumAlert";
 
@@ -169,15 +169,14 @@ export default function DashboardPostsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title: post.title, excerpt: post.excerpt, content: post.content,
-          category: post.category, tags: post.tags || [],
-          featureImage: post.feature_image_url, status: newStatus
+          category: post.category, status: newStatus
         }),
       });
       if (res.ok) {
-        toast.success(`STATUS: ${newStatus.toUpperCase()}`);
+        toast.success(`PROTOCAL UPDATE: ${newStatus.toUpperCase()}`);
         setPosts(prev => prev.map(p => (p._id || p.id) === postId ? { ...p, status: newStatus } : p));
       } else {
-        toast.error("PROTOCOL FAILURE: STATUS NOT UPDATED");
+        toast.error("PROTOCOL FAILURE");
       }
     } catch {
       toast.error("TERMINAL ERROR");
@@ -197,60 +196,72 @@ export default function DashboardPostsPage() {
         onConfirm={alert.onConfirm}
       />
 
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-white/5 pb-10">
+      {/* Page Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 border-b border-white/5 pb-10">
         <div>
-          <h1 className="text-6xl font-black italic tracking-tighter uppercase leading-none">Content <span className="text-primary tracking-normal italic">Library</span></h1>
-          <p className="text-white/40 mt-4 font-black text-[10px] tracking-[0.4em] uppercase">Network Management Terminal 2.0</p>
+          <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter uppercase leading-none text-primary">Content <span className="text-white italic">Library</span></h1>
+          <div className="flex items-center gap-3 mt-4">
+             <div className="w-8 h-[2px] bg-primary" />
+             <p className="text-white/40 font-black text-[10px] tracking-[0.6em] uppercase">Network Management Terminal 2.0</p>
+          </div>
         </div>
+        
         <div className="flex items-center gap-4">
           {selectedIds.size > 0 && (
             <Button 
               onClick={handleBulkDelete}
               disabled={isBulkDeleting}
-              className="rounded-full h-14 px-8 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 font-black flex items-center gap-2 uppercase tracking-widest text-[10px] transition-all"
+              className="rounded-[1.5rem] h-16 px-10 bg-primary hover:glow-red-strong text-white font-black uppercase tracking-widest text-[10px] shadow-skeuo-float transition-all"
             >
-              {isBulkDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
-              Purge ({selectedIds.size})
+              {isBulkDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4 mr-2" />}
+              Execute Purge ({selectedIds.size})
             </Button>
           )}
           <Link href="/dashboard/create">
-            <Button className="rounded-full h-14 px-8 bg-white text-black hover:bg-white/90 gap-3 font-black uppercase tracking-widest text-[10px] shadow-2xl transition-all active:scale-95">
-              <Plus className="h-4 w-4" /> New Asset
+            <Button className="rounded-[1.5rem] h-16 px-10 bg-secondary/10 hover:bg-white/5 text-white border border-white/10 font-black uppercase tracking-widest text-[10px] shadow-skeuo-button transition-all active:shadow-skeuo-button-pressed">
+              <Plus className="h-5 w-5 mr-3 text-primary" /> Initiate New Asset
             </Button>
           </Link>
         </div>
       </div>
 
-      <div className="rounded-[2.5rem] border border-white/5 bg-black/40 overflow-hidden glass-premium shadow-2xl">
+      {/* Asset Table */}
+      <div className="rounded-[3rem] border border-white/5 bg-secondary/5 overflow-hidden shadow-skeuo-float">
         <Table>
-          <TableHeader className="bg-white/5">
-            <TableRow className="border-none hover:bg-transparent uppercase tracking-[0.3em] text-[9px] font-black italic opacity-60">
-              <TableHead className="w-16 py-6 px-10">
+          <TableHeader className="bg-black/40">
+            <TableRow className="border-white/5 hover:bg-transparent uppercase tracking-[0.4em] text-[10px] font-black italic text-white/30">
+              <TableHead className="w-16 py-8 px-10">
                 <input 
                   type="checkbox" 
                   checked={selectedIds.size === posts.length && posts.length > 0} 
                   onChange={toggleSelectAll}
-                  className="h-5 w-5 rounded-none border-2 border-white/20 bg-transparent checked:bg-primary checked:border-primary appearance-none cursor-pointer transition-all relative overflow-hidden after:content-[''] after:absolute after:inset-0 after:bg-primary after:scale-0 checked:after:scale-100 after:transition-transform"
+                  className="h-6 w-6 rounded-lg border-2 border-white/10 bg-black appearance-none cursor-pointer checked:bg-primary checked:border-primary transition-all relative overflow-hidden shadow-skeuo-in"
                 />
               </TableHead>
-              <TableHead>Asset Title</TableHead>
-              <TableHead>Domain</TableHead>
-              <TableHead>Frequency</TableHead>
-              <TableHead>Logged</TableHead>
-              <TableHead className="text-right px-10">Protocols</TableHead>
+              <TableHead className="py-8">Asset Title / Identifier</TableHead>
+              <TableHead className="py-8">Domain</TableHead>
+              <TableHead className="py-8 text-center">Frequency</TableHead>
+              <TableHead className="py-8">Logged At</TableHead>
+              <TableHead className="text-right px-10 py-8">Protocols</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading || !user ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-40 text-white/20 animate-pulse font-black tracking-[0.5em] uppercase text-xs">
-                  SYNCHRONIZING WITH SERVER...
+                <TableCell colSpan={6} className="text-center py-40">
+                   <div className="flex flex-col items-center gap-6 animate-pulse">
+                      <Zap className="h-10 w-10 text-primary animate-bounce" />
+                      <span className="font-black tracking-[0.5em] uppercase text-xs text-white/20">Establishing Satellite Link...</span>
+                   </div>
                 </TableCell>
               </TableRow>
             ) : posts.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-40 italic text-white/30 font-bold uppercase tracking-widest text-xs">
-                  LIBRARY EMPTY. INITIATE FIRST SEQUENCE.
+                <TableCell colSpan={6} className="text-center py-40">
+                   <div className="max-w-xs mx-auto space-y-4 opacity-30">
+                      <FileText className="h-12 w-12 mx-auto" />
+                      <p className="font-black uppercase tracking-widest text-sm italic">Library Empty</p>
+                   </div>
                 </TableCell>
               </TableRow>
             ) : (
@@ -261,66 +272,72 @@ export default function DashboardPostsPage() {
                 const isTogglingStatus = actionLoading === postId + "_status";
                 return (
                   <TableRow key={postId} className={`border-white/5 transition-all group ${isSelected ? 'bg-primary/5' : 'hover:bg-white/[0.02]'}`}>
-                    <TableCell className="px-10">
+                    <TableCell className="px-10 py-8">
                       <input 
                         type="checkbox" 
                         checked={isSelected}
                         onChange={() => toggleSelect(postId)}
-                        className="h-5 w-5 rounded-none border-2 border-white/10 bg-transparent checked:bg-primary checked:border-primary appearance-none cursor-pointer transition-all"
+                        className="h-6 w-6 rounded-lg border-2 border-white/10 bg-black appearance-none cursor-pointer checked:bg-primary checked:border-primary transition-all shadow-skeuo-in"
                       />
                     </TableCell>
-                    <TableCell className="max-w-[400px] py-8">
-                      <div className="flex items-center gap-6">
-                        <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded-xl border border-white/5 bg-white/5">
+                    <TableCell className="max-w-[400px] py-10">
+                      <div className="flex items-center gap-8">
+                        <div className="relative h-20 w-32 shrink-0 overflow-hidden rounded-2xl border border-white/5 bg-secondary/20 shadow-skeuo-out">
                           <Image 
                             src={post.feature_image_url || "https://images.unsplash.com/photo-1677442136019-21780ecad995"} 
                             alt={post.title} 
                             fill 
-                            className="object-cover group-hover:scale-110 transition-transform duration-700" 
+                            className="object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700" 
                           />
                         </div>
-                        <span className="font-black text-lg tracking-tight uppercase group-hover:text-primary transition-colors cursor-default">{post.title}</span>
+                        <div className="space-y-2">
+                           <span className="font-black text-xl tracking-tight uppercase italic group-hover:text-primary transition-colors block leading-none">{post.title}</span>
+                           <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest block">{post.slug}</span>
+                        </div>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline" className="text-[9px] font-black border-white/10 text-white/60 uppercase tracking-widest px-3 py-1 rounded-full">{post.category}</Badge>
+                      <Badge variant="outline" className="text-[10px] font-black border-white/10 text-white/40 uppercase tracking-[0.2em] px-4 py-1.5 rounded-full bg-black/40">
+                         {post.category || "General"}
+                      </Badge>
                     </TableCell>
-                    <TableCell>
-                      <Badge className={`text-[9px] font-black uppercase border-none px-3 py-1 rounded-full ${post.status === "published" ? "bg-primary text-white glow-red" : "bg-white/10 text-white/40"}`}>
+                    <TableCell className="text-center">
+                      <Badge className={cn(
+                        "text-[10px] font-black uppercase border-none px-4 py-1.5 rounded-full shadow-skeuo-button transition-all",
+                        post.status === "published" ? "bg-primary text-white glow-red" : "bg-white/10 text-white/40"
+                      )}>
                         {post.status}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-[10px] text-white/30 font-bold uppercase tracking-tighter italic">
-                      {formatDate((post.createdAt || post.published_at || post.created_at || "") as string)}
+                    <TableCell className="text-[10px] text-white/20 font-black uppercase tracking-tighter italic">
+                       {formatDate((post.createdAt || post.published_at || post.created_at || "") as string)}
                     </TableCell>
                     <TableCell className="text-right px-10">
-                      <div className="flex items-center justify-end gap-2 opacity-20 group-hover:opacity-100 transition-all duration-300">
+                      <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0 transition-all duration-300">
                         <Link href={`/blog/${post.slug}`} target="_blank">
-                          <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-white hover:text-black transition-all">
-                            <ExternalLink className="h-4 w-4" />
-                          </Button>
+                           <button className="h-12 w-12 rounded-xl bg-secondary/20 border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white/30 transition-all shadow-skeuo-button active:shadow-skeuo-button-pressed">
+                              <ExternalLink className="h-5 w-5" />
+                           </button>
                         </Link>
                         <Link href={`/dashboard/edit/${post.slug}`}>
-                          <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-white hover:text-black transition-all">
-                            <Pencil className="h-4 w-4" />
-                          </Button>
+                           <button className="h-12 w-12 rounded-xl bg-secondary/20 border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white/30 transition-all shadow-skeuo-button active:shadow-skeuo-button-pressed">
+                              <Pencil className="h-5 w-5" />
+                           </button>
                         </Link>
-                        <Button
-                          variant="ghost" size="icon"
-                          className="h-10 w-10 rounded-full hover:bg-white hover:text-black transition-all"
+                        <button
+                          className="h-12 w-12 rounded-xl bg-secondary/20 border border-white/10 flex items-center justify-center text-white/40 hover:text-primary hover:border-primary/30 transition-all shadow-skeuo-button active:shadow-skeuo-button-pressed"
                           onClick={() => handleToggleStatus(post)}
                           disabled={isTogglingStatus || isDeleting}
                         >
-                          {isTogglingStatus ? <Loader2 className="h-4 w-4 animate-spin" /> : post.status === "published" ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                        </Button>
-                        <Button
-                          variant="ghost" size="icon"
-                          className="h-10 w-10 rounded-full hover:bg-primary hover:text-white transition-all glow-red-hover"
+                          {isTogglingStatus ? <Loader2 className="h-5 w-5 animate-spin" /> : post.status === "published" ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                        </button>
+                        <button
+                          className="h-12 w-12 rounded-xl bg-red-950/20 border border-red-500/10 flex items-center justify-center text-red-500/40 hover:text-primary hover:border-primary/30 transition-all shadow-skeuo-button active:shadow-skeuo-button-pressed"
                           onClick={() => handleDeleteClick(post)}
                           disabled={isDeleting || isTogglingStatus}
                         >
-                          {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
-                        </Button>
+                          {isDeleting ? <Loader2 className="h-5 w-5 animate-spin" /> : <Trash2 className="h-5 w-5" />}
+                        </button>
                       </div>
                     </TableCell>
                   </TableRow>

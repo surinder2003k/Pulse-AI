@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 // @ts-ignore
 import anime from "animejs";
 import Link from "next/link";
-import { ArrowRight, Github } from "lucide-react";
+import { ArrowRight, Github, Zap, ShieldCheck, Database } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function AnimatedHero() {
@@ -24,7 +24,7 @@ export default function AnimatedHero() {
     });
 
     tl.add({
-      targets: '.echo-layer',
+      targets: '.hero-title-main',
       translateY: [40, 0],
       opacity: [0, 1],
       delay: anime.stagger(100),
@@ -48,72 +48,72 @@ export default function AnimatedHero() {
     
   }, []);
 
-  const Headline = () => (
-    <>
-      Design Intelligence <br /> 
-      for the <span className="text-primary relative inline-block">
-        Future
-        <motion.div 
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ delay: 1.5, duration: 0.8 }}
-          className="absolute -bottom-2 left-0 w-full h-1 bg-primary/40 origin-left"
-        />
-      </span>
-    </>
-  );
-
   return (
-    <section ref={containerRef} className="pt-24 pb-16 flex flex-col items-center text-center gap-6 md:gap-8 px-6 relative overflow-hidden min-h-[85vh] justify-center">
+    <section ref={containerRef} className="pt-24 pb-28 flex flex-col items-center text-center gap-8 md:gap-10 px-6 relative overflow-hidden min-h-[80vh] justify-center">
       {/* Grid Background Overlay */}
-      <div className="absolute inset-0 grid-bg opacity-40 pointer-events-none" />
+      <div className="absolute inset-0 grid-bg opacity-20 pointer-events-none" />
       
+      {/* Background Glows */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] -z-10 opacity-30 animate-pulse" />
+
       {/* Pill Badge */}
-      <div className="hero-pill opacity-0 z-10 px-4 py-1 rounded-full bg-white/5 border border-white/10 flex items-center gap-2 backdrop-blur-sm group cursor-pointer hover:bg-white/10 transition-all mb-2">
-        <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-        <span className="text-[10px] font-bold uppercase tracking-widest text-white/70">Pulse AI 2.0 is now live</span>
-        <ArrowRight className="h-3 w-3 text-white/40 group-hover:translate-x-0.5 transition-transform" />
+      <div className="hero-pill opacity-0 z-10 px-5 py-1.5 rounded-full bg-secondary/10 border border-white/5 flex items-center gap-3 backdrop-blur-md group cursor-pointer hover:bg-white/10 transition-all mb-2 shadow-skeuo-in">
+        <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(255,51,51,0.8)]" />
+        <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/50 group-hover:text-white transition-colors">
+          Terminal Protocol V2.0 Active
+        </span>
+        <ArrowRight className="h-2.5 w-2.5 text-white/30 group-hover:translate-x-1 transition-transform group-hover:text-primary" />
       </div>
       
       {/* Massive Solid Title */}
-      <div className="relative z-10 select-none">
-        {/* Main Foreground Title */}
-        <h1 
-          className="echo-layer echo-text opacity-0 relative text-white"
-          style={{ fontSize: 'clamp(2.5rem, 8vw, 6rem)' }}
-        >
-          <Headline />
+      <div className="relative z-10 select-none space-y-3">
+        <h1 className="hero-title-main opacity-0 text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tighter uppercase italic leading-[0.9]">
+          Design <span className="text-primary italic text-glow-red">Intelligence</span>
         </h1>
+        <h2 className="hero-title-main opacity-0 text-2xl md:text-4xl lg:text-5xl font-black text-white/20 tracking-tighter uppercase italic leading-none">
+          For the Future of Editorial
+        </h2>
       </div>
       
-      <p className="hero-subtitle opacity-0 text-white/50 text-base md:text-xl max-w-3xl leading-relaxed font-medium z-10 font-inter mt-2">
-        Pulse AI blends advanced generative algorithms with human creativity <br className="hidden md:block" />
-        to ship world-class stories 10x faster.
+      <p className="hero-subtitle opacity-0 text-white/40 text-base md:text-xl max-w-3xl leading-relaxed font-medium z-10 mt-2 uppercase tracking-tight">
+        Pulse AI blends high-octane generative algorithms with elite editorial vision <br className="hidden md:block" />
+        to capture the spirit of global innovation.
       </p>
       
       <div className="flex flex-wrap items-center justify-center gap-4 mt-6 z-10">
-        <Link href="/dashboard/create">
-          <button className="hero-btn opacity-0 group rounded-full px-8 md:px-10 h-12 md:h-14 text-sm font-bold text-white transition-all bg-primary hover:bg-primary/90 shadow-[0_0_40px_rgba(255,51,51,0.4)] hover:scale-105 active:scale-95 flex items-center gap-2">
-            Start Creating <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+        <Link href="/dashboard">
+          <button className="hero-btn opacity-0 group rounded-[1.5rem] px-8 md:px-10 h-14 md:h-16 text-[10px] font-black uppercase tracking-[0.3em] text-white transition-all bg-primary hover:glow-red-strong shadow-skeuo-float hover:scale-[1.03] active:scale-95 flex items-center gap-3">
+            Initialize Dashboard <Zap className="h-4 w-4 fill-white" />
           </button>
         </Link>
         
-        <Link href="https://github.com/surinder2003k" target="_blank">
-          <button className="hero-btn opacity-0 group rounded-full px-8 md:px-10 h-12 md:h-14 text-sm font-bold text-white transition-all bg-white/5 border border-white/10 hover:bg-white/10 hover:scale-105 active:scale-95 flex items-center gap-2 backdrop-blur-md">
-            <Github className="h-4 w-4" /> View on GitHub
+        <Link href="/blog">
+          <button className="hero-btn opacity-0 group rounded-[1.5rem] px-8 md:px-10 h-14 md:h-16 text-[10px] font-black uppercase tracking-[0.3em] text-white transition-all bg-secondary/10 border border-white/5 hover:bg-white/5 shadow-skeuo-button hover:scale-[1.03] active:scale-95 flex items-center gap-3 backdrop-blur-3xl">
+            Browse Archive <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform text-primary" />
           </button>
         </Link>
       </div>
 
-      {/* Integration Logos (Future) */}
-      <div className="hero-subtitle opacity-0 mt-10 flex items-center justify-center flex-wrap gap-4 md:gap-12 text-white/20 uppercase tracking-[0.3em] text-[10px] font-bold">
-        <span>Integrated with:</span>
-        <div className="flex items-center gap-8 grayscale opacity-50">
-          <span className="hover:grayscale-0 hover:opacity-100 transition-all cursor-crosshair">Groq AI</span>
-          <span className="hover:grayscale-0 hover:opacity-100 transition-all cursor-crosshair">MongoDB</span>
-          <span className="hover:grayscale-0 hover:opacity-100 transition-all cursor-crosshair">Clerk</span>
-          <span className="hover:grayscale-0 hover:opacity-100 transition-all cursor-crosshair">Pexels</span>
-          <span className="hover:grayscale-0 hover:opacity-100 transition-all cursor-crosshair">Vercel</span>
+      {/* Trust Bar */}
+      <div className="hero-subtitle opacity-0 mt-16 flex flex-col items-center gap-6 relative z-10">
+        <div className="flex items-center gap-3">
+           <div className="h-[1px] w-8 bg-white/10" />
+           <span className="text-[9px] font-black uppercase tracking-[0.6em] text-white/20 italic">Verified Tech-Stack</span>
+           <div className="h-[1px] w-8 bg-white/10" />
+        </div>
+        <div className="flex items-center justify-center flex-wrap gap-6 md:gap-12 text-white/10 uppercase tracking-[0.3em] text-[10px] font-black">
+          <div className="flex items-center gap-2 hover:text-white transition-colors cursor-default">
+             <ShieldCheck className="h-3 w-3" /> <span>Clerk Auth</span>
+          </div>
+          <div className="flex items-center gap-2 hover:text-white transition-colors cursor-default">
+             <Database className="h-3 w-3" /> <span>MongoDB</span>
+          </div>
+          <div className="flex items-center gap-2 hover:text-white transition-colors cursor-default">
+             <Zap className="h-3 w-3" /> <span>Groq AI</span>
+          </div>
+          <div className="flex items-center gap-2 hover:text-white transition-colors cursor-default">
+             <Zap className="h-3 w-3" /> <span>Next.js 15</span>
+          </div>
         </div>
       </div>
     </section>

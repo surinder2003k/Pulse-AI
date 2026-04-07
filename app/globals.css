@@ -4,234 +4,140 @@
 
 @layer base {
   :root {
-    --background: 0 0% 0%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 4%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 0%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 100% 60%; /* Vibrant Red/Coral #FF3333 */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 8%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 12%;
-    --muted-foreground: 0 0% 65%;
-    --accent: 0 100% 60%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 15%;
-    --input: 0 0% 15%;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 0 100% 60%; /* #FF3333 */
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
     --ring: 0 100% 60%;
-    --radius: 0.5rem;
+    --radius: 1rem;
   }
 
+  .dark {
+    --background: 0 0% 0%; /* Pure Black for Terminal feel */
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 0 100% 60%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 0 100% 60%;
+  }
+}
+
+@layer base {
   * {
-    @apply border-border selection:bg-primary selection:text-white;
+    @apply border-border;
   }
-
   body {
-    @apply bg-background text-foreground antialiased;
-    font-feature-settings: "ss01", "ss02", "cv01", "cv02";
-  }
-
-
-  /* Professional Precision Scrollbar - Superdesign Spec */
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: #000000;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: #222222;
-    border-radius: 100px;
-    border: 2px solid #000000;
-    transition: all 0.3s ease;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: #FF3333;
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
-@layer components {
-  .glass {
-    @apply bg-black/60 backdrop-blur-2xl border border-white/5;
+@layer utilities {
+  /* High-Contrast Skeuomorphic Shadows */
+  .shadow-skeuo-out {
+    box-shadow: 
+      8px 8px 16px rgba(0, 0, 0, 0.6), 
+      -4px -4px 12px rgba(255, 255, 255, 0.03);
   }
 
-  .glass-premium {
-    @apply bg-black/40 backdrop-blur-[40px] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)];
+  .shadow-skeuo-in {
+    box-shadow: 
+      inset 6px 6px 12px rgba(0, 0, 0, 0.8), 
+      inset -2px -2px 8px rgba(255, 255, 255, 0.02);
   }
 
-  .glow-card {
-    @apply transition-all duration-500 hover:shadow-[0_0_50px_rgba(255,51,51,0.25)] border border-white/5 hover:border-primary/60;
+  .shadow-skeuo-button {
+    box-shadow: 
+      4px 4px 10px rgba(0, 0, 0, 0.5), 
+      -2px -2px 10px rgba(255, 255, 255, 0.03);
   }
 
+  .shadow-skeuo-button-pressed {
+    box-shadow: 
+      inset 4px 4px 8px rgba(0, 0, 0, 0.6), 
+      inset -2px -2px 8px rgba(255, 255, 255, 0.02);
+  }
+
+  .shadow-skeuo-float {
+    box-shadow: 
+      0 20px 40px rgba(0, 0, 0, 0.8), 
+      0 0 20px rgba(255, 51, 51, 0.1);
+  }
+
+  /* Neon Red Glows */
   .glow-red {
-    @apply shadow-[0_0_40px_rgba(255,51,51,0.5)] border-primary/50;
+    box-shadow: 0 0 15px rgba(255, 51, 51, 0.3);
   }
 
-  .glow-red-hover {
-    @apply hover:shadow-[0_0_40px_rgba(255,51,51,0.6)] hover:border-primary/70 transition-all duration-300;
+  .glow-red-strong {
+    box-shadow: 0 0 35px rgba(255, 51, 51, 0.5);
   }
 
-  .red-gradient {
-    @apply bg-gradient-to-br from-primary via-primary to-orange-700;
+  .text-glow-red {
+    text-shadow: 0 0 10px rgba(255, 51, 51, 0.5);
   }
 
-  .grid-bg {
-    background-image: linear-gradient(rgba(255, 51, 51, 0.03) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(255, 51, 51, 0.03) 1px, transparent 1px);
-    background-size: 60px 60px;
+  /* Glass Effects */
+  .glass {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10;
   }
 
-  .echo-text {
-    @apply relative font-black uppercase tracking-tighter mix-blend-difference;
-    text-shadow: 0 15px 40px rgba(255, 51, 51, 0.4);
-  }
-
-  .brutalist-card {
-    @apply bg-black border border-white/10 hover:border-primary/80 transition-all duration-700 shadow-2xl;
-  }
-
-  .brutalist-button {
-    @apply bg-white text-black font-black uppercase tracking-[0.2em] text-[10px] px-8 py-4 rounded-none hover:bg-primary hover:text-white transition-all duration-300 active:scale-95;
+  .glass-dark {
+    @apply bg-black/60 backdrop-blur-3xl border border-white/5;
   }
 }
 
-/* Typography Overrides */
-h1, h2, h3, h4, h5, h6 {
-  @apply tracking-tight font-bold uppercase;
+/* Base Customizations */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-primary/20 rounded-full hover:bg-primary/40 transition-colors;
 }
 
-.text-editorial {
-  @apply font-medium leading-relaxed text-white/70;
-}
-
-/* Rich Text Output - Styles for HTML content from the editor */
-.rich-text-output h1 {
-  font-size: 2.5rem;
-  font-weight: 900;
-  font-style: italic;
-  letter-spacing: -0.02em;
-  color: #ffffff;
-  margin-bottom: 2rem;
-  margin-top: 0;
-}
-
-.rich-text-output h2 {
-  font-size: 1.875rem;
-  font-weight: 800;
-  color: #ffffff;
-  border-left: 4px solid #FF3333;
-  padding-left: 1.25rem;
-  margin-top: 3.5rem;
-  margin-bottom: 1.5rem;
-  font-style: italic;
-  letter-spacing: -0.02em;
-}
-
-.rich-text-output h3 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: rgba(255,255,255,0.9);
-  margin-top: 2.5rem;
-  margin-bottom: 1rem;
-  font-style: italic;
-}
-
-.rich-text-output h4, .rich-text-output h5, .rich-text-output h6 {
-  font-weight: 700;
-  color: rgba(255,255,255,0.85);
-  margin-top: 1.5rem;
-  margin-bottom: 0.75rem;
+/* Rich Text Styling */
+.rich-text-output h1, .rich-text-output h2, .rich-text-output h3 {
+  @apply font-black tracking-tighter text-white uppercase italic mb-8 mt-12 leading-none;
 }
 
 .rich-text-output p {
-  font-size: 1.125rem;
-  line-height: 1.8;
-  color: rgba(255,255,255,0.7);
-  margin-bottom: 1.75rem;
-  font-weight: 500;
-}
-
-.rich-text-output a {
-  color: #FF3333;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.rich-text-output a:hover {
-  text-decoration: underline;
-}
-
-.rich-text-output ul {
-  list-style-type: disc;
-  padding-left: 1.5rem;
-  margin: 1.5rem 0;
-}
-
-.rich-text-output ol {
-  list-style-type: decimal;
-  padding-left: 1.5rem;
-  margin: 1.5rem 0;
-}
-
-.rich-text-output li {
-  color: rgba(255,255,255,0.7);
-  line-height: 1.75;
-  margin-bottom: 0.75rem;
-  font-size: 1.1rem;
-}
-
-.rich-text-output blockquote {
-  border-left: 4px solid #FF3333;
-  background-color: rgba(255,51,51,0.05);
-  padding: 1.5rem 2rem;
-  border-radius: 1rem;
-  font-style: italic;
-  color: rgba(255,255,255,0.9);
-  margin: 2.5rem 0;
+  @apply text-muted-foreground leading-relaxed mb-8 text-lg font-medium;
 }
 
 .rich-text-output strong {
-  color: #ffffff;
-  font-weight: 900;
+  @apply text-primary font-black uppercase tracking-tight;
 }
 
-.rich-text-output em {
-  color: rgba(255,255,255,0.85);
-  font-style: italic;
+.rich-text-output blockquote {
+  @apply border-l-4 border-primary bg-primary/5 p-8 rounded-2xl italic text-xl text-white font-bold mb-10;
 }
-
-.rich-text-output img {
-  max-width: 100%;
-  border-radius: 1.5rem;
-  margin: 3rem 0;
-  border: 1px solid rgba(255,255,255,0.1);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
-  display: block;
-}
-
-.rich-text-output pre {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  overflow-x: auto;
-  margin: 2rem 0;
-}
-
-.rich-text-output code {
-  font-family: 'JetBrains Mono', 'Fira Code', monospace;
-  font-size: 0.9em;
-  background: rgba(255,255,255,0.08);
-  padding: 0.2em 0.4em;
-  border-radius: 4px;
-  color: #FF3333;
-}
-

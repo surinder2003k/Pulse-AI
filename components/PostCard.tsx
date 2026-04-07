@@ -1,125 +1,85 @@
+"use client";
+
 import Link from "next/link";
-import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Calendar, Clock, Eye, User, ArrowRight, Sparkles, TrendingUp } from "lucide-react";
-import { formatDate, calculateReadingTime, cn } from "@/lib/utils";
+import { format } from "date-fns";
 import { motion } from "framer-motion";
+import { Calendar, Eye, Clock, ArrowRight, Zap, TrendingUp } from "lucide-react";
+import { calculateReadingTime, cn } from "@/lib/utils";
 
 interface PostCardProps {
-  post: {
-    title: string;
-    slug: string;
-    excerpt: string;
-    category: string;
-    feature_image_url: string;
-    created_at?: string;
-    createdAt?: string;
-    published_at?: string;
-    content: string;
-    is_ai_generated: boolean;
-    author_name?: string;
-    author_image?: string;
-  };
-  isFeatured?: boolean;
+  post: any;
+  index?: number;
 }
 
-export default function PostCard({ post, isFeatured }: PostCardProps) {
-  const readingTime = calculateReadingTime(post.content);
+export default function PostCard({ post, index = 0 }: PostCardProps) {
+  const readingTime = calculateReadingTime(post.content || "");
 
   return (
-    <Link href={`/blog/${post.slug}`} className="group block h-full">
-      <div className={cn(
-        "flex gap-10 h-full transition-all duration-500",
-        isFeatured ? "flex-col md:flex-row items-stretch" : "flex-col"
-      )}>
-        {/* Image Container */}
-        <div className={cn(
-          "relative overflow-hidden rounded-[2.5rem] border border-white/5 bg-black w-full transition-all duration-500 group-hover:border-primary/30 group-hover:shadow-[0_0_50px_rgba(255,51,51,0.15)]",
-          isFeatured ? "aspect-square md:aspect-[4/5] md:w-[45%]" : "aspect-[16/11]"
-        )}>
-          <Image
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, delay: index * 0.1 }}
+      viewport={{ once: true }}
+      className="group relative"
+    >
+      <Link href={`/blog/${post.slug}`} className="block">
+        <div className="relative overflow-hidden rounded-[2rem] bg-secondary/10 border border-white/5 shadow-skeuo-out aspect-[4/3] group-hover:shadow-skeuo-float transition-all duration-700">
+          {/* Main Image */}
+          <img
             src={post.feature_image_url || "https://images.unsplash.com/photo-1677442136019-21780ecad995"}
             alt={post.title}
-            fill
-            className="object-cover transition-all duration-700 group-hover:scale-105 group-hover:rotate-1"
-            sizes="(max-width: 768px) 100vw, 50vw"
-            priority={isFeatured}
-            loading={isFeatured ? "eager" : "lazy"}
+            className="w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000"
           />
           
-          {/* Subtle Red Overlay on Hover */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
-          <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay" />
+          {/* Glass Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity" />
 
-          {/* Floating Badge */}
-          <div className="absolute top-6 left-6 flex flex-col gap-2">
-            <Badge className="bg-black/80 backdrop-blur-xl border-white/20 text-white font-black text-[10px] uppercase tracking-[0.3em] py-2 px-5 rounded-full shadow-2xl flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-              {post.category}
-            </Badge>
+          {/* AI Badge */}
+          <div className="absolute top-4 left-4 z-10 flex items-center gap-2 bg-primary/90 text-white px-4 py-1.5 rounded-full shadow-skeuo-button border border-white/10">
+            <Zap className="h-3 w-3 fill-white animate-pulse" />
+            <span className="text-[9px] font-black uppercase tracking-widest">AI Gen</span>
           </div>
-        </div>
-        
-        {/* Content Container */}
-        <div className={cn(
-          "flex flex-col gap-8 flex-1 py-4",
-          isFeatured ? "md:py-12" : ""
-        )}>
-          {/* Metadata */}
-          <div className="flex items-center gap-6 text-[10px] text-muted-foreground font-black uppercase tracking-[0.3em]">
-            <span className="flex items-center gap-2">
-              <Calendar className="h-3.5 w-3.5 text-primary/60" /> 
-              {formatDate(post.published_at || post.createdAt || post.created_at || new Date())}
-            </span>
-            {post.is_ai_generated && (
-              <span className="flex items-center gap-2 text-primary">
-                <TrendingUp className="h-3.5 w-3.5" /> 
-                HYPER-INTELLIGENCE
-              </span>
-            )}
+
+          {/* Bottom Info Floating on Glass */}
+          <div className="absolute bottom-6 left-6 right-6">
+            <div className="flex items-center gap-3">
+               <div className="h-0.5 w-8 bg-primary shadow-skeuo-button" />
+               <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/50 group-hover:text-primary transition-colors">
+                 {post.category}
+               </span>
+            </div>
           </div>
           
-          {/* Title */}
-          <h3 className={cn(
-            "font-black leading-[0.95] tracking-tighter group-hover:text-primary transition-colors duration-500 uppercase italic",
-            isFeatured ? "text-4xl md:text-7xl lg:text-8xl" : "text-2xl md:text-3xl line-clamp-2"
-          )}>
+          {/* Inner Highlight Reflection */}
+          <div className="absolute inset-0 border border-white/10 rounded-[2rem] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
+        </div>
+
+        {/* Text Content below Card */}
+        <div className="mt-6 space-y-4 px-2">
+          <div className="flex items-center gap-4 text-[9px] font-black text-white/30 uppercase tracking-[0.2em]">
+            <span className="flex items-center gap-2">
+              <Calendar className="h-3 w-3" /> 
+              {(() => {
+                const date = new Date(post.createdAt || post.published_at || new Date());
+                return !isNaN(date.getTime()) ? format(date, 'MMM dd, yyyy') : 'N/A';
+              })()}
+            </span>
+            <span className="flex items-center gap-2 italic text-primary"><Clock className="h-3 w-3" /> {readingTime}</span>
+          </div>
+
+          <h3 className="text-xl md:text-2xl font-black text-white leading-tight uppercase italic tracking-tighter group-hover:text-primary transition-colors duration-500 line-clamp-2">
             {post.title}
           </h3>
-          
-          {/* Excerpt */}
-          <p className={cn(
-            "text-muted-foreground leading-relaxed font-medium",
-            isFeatured ? "text-lg md:text-2xl line-clamp-4" : "text-sm line-clamp-3"
-          )}>
+
+          <p className="text-[13px] text-white/30 font-medium leading-relaxed line-clamp-2 uppercase tracking-tight group-hover:text-white/50 transition-colors">
             {post.excerpt}
           </p>
-          
-          {/* Footer Info */}
-          <div className="mt-auto pt-8 flex items-center justify-between border-t border-white/5">
-            <div className="flex items-center gap-4">
-              <div className="h-12 w-12 rounded-full bg-secondary/50 flex items-center justify-center border border-white/10 overflow-hidden group-hover:border-primary/50 transition-colors">
-                {post.author_image ? (
-                  <img src={post.author_image} alt={post.author_name || "Author"} className="w-full h-full object-cover" />
-                ) : (
-                  <User className="h-6 w-6 text-muted-foreground" />
-                )}
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xs font-black text-white uppercase tracking-widest">
-                  {post.author_name || "SYSTEM ARCHITECT"}
-                </span>
-                <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">{readingTime} MIN READ</span>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-2 text-xs font-black text-primary uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-500">
-              EXPLORE <ArrowRight className="h-4 w-4" />
-            </div>
+
+          <div className="flex items-center gap-3 pt-2 text-[10px] font-black uppercase tracking-widest text-primary opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-500">
+             Read Protocol <ArrowRight className="h-3 w-3" />
           </div>
         </div>
-      </div>
-    </Link>
+      </Link>
+    </motion.div>
   );
 }

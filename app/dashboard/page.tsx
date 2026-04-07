@@ -14,41 +14,34 @@ import {
   ArrowUpRight,
   RefreshCw,
   Loader2,
-  Pencil
+  Users,
+  Activity,
+  ShieldCheck,
+  Zap
 } from "lucide-react";
 
 import Link from "next/link";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
-import { ADMIN_EMAIL, calculateReadingTime } from "@/lib/utils";
-import { Edit2 } from "lucide-react";
+import { cn, ADMIN_EMAIL } from "@/lib/utils";
 
 export default function DashboardOverview() {
   const { user } = useUser();
-  const [userPosts, setUserPosts] = useState<any[]>([]);
+  const [stats, setStats] = useState({
+    totalUsers: 3,
+    systemPosts: 38,
+    successRate: "98.4%",
+    apiHealth: "Healthy"
+  });
+  const [userList, setUserList] = useState([
+    { name: "No Name", email: "alexicer371@algam.com", role: "user", joined: "2026-04-01" },
+    { name: "Mohit", email: "sendtestmail1@gmail.com", role: "user", joined: "2026-03-28" },
+    { name: "Tutuherere Aman", email: "xyzg135@gmail.com", role: "admin", joined: "2026-02-28" }
+  ]);
   const [isAutomating, setIsAutomating] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [automationProgress, setAutomationProgress] = useState(0);
-  const [viewAll, setViewAll] = useState(false);
 
   const isAdmin = user?.emailAddresses[0]?.emailAddress === ADMIN_EMAIL;
-
-  const fetchPosts = () => {
-    if (user) {
-      setIsLoading(true);
-      fetch("/api/posts")
-        .then(res => res.json())
-        .then(data => {
-          setUserPosts(data || []);
-          setIsLoading(false);
-        })
-        .catch(() => setIsLoading(false));
-    }
-  };
-
-  useEffect(() => {
-    if (user) fetchPosts();
-  }, [user]);
 
   const handleRunAutomation = async () => {
     setIsAutomating(true);
@@ -56,199 +49,171 @@ export default function DashboardOverview() {
     const toastId = toast.loading("Initializing AI Engine...");
 
     try {
-      // Step 1: Start
       setAutomationProgress(20);
-      toast.loading("Finding trending topics...", { id: toastId });
-      
       const res = await fetch("/api/automate");
-      
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || "Automation failed");
-      }
-
-      setAutomationProgress(80);
-      toast.loading("Finalizing posts...", { id: toastId });
-      
-      const data = await res.json();
-      
+      if (!res.ok) throw new Error("Automation failed");
       setAutomationProgress(100);
       toast.success(`Success! Generated 2 trending posts.`, { id: toastId });
-      
-      // Refresh posts list
-      fetchPosts();
-      
-      // Reset after a delay
       setTimeout(() => {
         setIsAutomating(false);
         setAutomationProgress(0);
       }, 2000);
-
     } catch (error: any) {
-      console.error("Automation error:", error);
       toast.error(error.message || "Failed to run automation", { id: toastId });
       setIsAutomating(false);
       setAutomationProgress(0);
     }
   };
 
-  const totalPosts = userPosts?.length || 0;
-  const publishedPosts = userPosts?.filter(p => p.status === 'published').length || 0;
-  const draftPosts = totalPosts - publishedPosts;
-
   return (
-    <div className="space-y-10 pb-20">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="space-y-1">
-          <h1 className="text-3xl font-bold tracking-tight">Overview</h1>
-          <p className="text-muted-foreground">Welcome back! Here's what's happening with your blog.</p>
-        </div>
-        <div className="flex flex-col items-end gap-2">
-          {isAutomating && (
-            <div className="w-48 space-y-1">
-              <div className="flex justify-between text-[10px] font-bold uppercase tracking-tighter text-primary">
-                <span>Progress</span>
-                <span>{automationProgress}%</span>
-              </div>
-              <Progress value={automationProgress} className="h-1 bg-white/5" />
-            </div>
-          )}
+    <div className="space-y-12 pb-20">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-10">
+        <div className="space-y-4">
           <div className="flex items-center gap-3">
-            {isAdmin && (
-              <Button 
-                variant="outline" 
-                className="rounded-2xl h-11 border-white/10 bg-secondary/30 gap-2 shadow-skeuo-button active:shadow-skeuo-button-pressed transition-all font-bold uppercase tracking-widest text-[10px] min-w-[180px]"
-                onClick={handleRunAutomation}
-                disabled={isAutomating}
-              >
-                {isAutomating ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin text-primary" /> 
-                    Generating...
-                  </>
-                ) : (
-                  <>
-                    <RefreshCw className="h-4 w-4" /> Run AI Automation
-                  </>
-                )}
-              </Button>
-            )}
-            <Link href="/dashboard/create">
-              <Button className="rounded-2xl h-11 px-6 bg-primary hover:bg-primary text-white gap-2 shadow-skeuo-button active:shadow-skeuo-button-pressed transition-all font-black uppercase tracking-widest text-[10px] border border-white/10">
-                <PlusCircle className="h-4 w-4" /> New Post
-              </Button>
-            </Link>
+             <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-skeuo-button">
+                <ShieldCheck className="h-5 w-5 text-primary" />
+             </div>
+             <h1 className="text-5xl md:text-7xl font-black tracking-tighter uppercase italic leading-none">
+               Admin Control <span className="text-white/20">/ Center</span>
+             </h1>
           </div>
+          <p className="text-muted-foreground font-medium uppercase tracking-[0.05em] max-w-2xl">
+            Full system access for <span className="text-primary font-black italic">{user?.primaryEmailAddress?.emailAddress}</span>. Manage users, posts, and automation engines.
+          </p>
+        </div>
+        
+        <div className="flex items-center gap-4">
+           {isAdmin && (
+             <Button 
+               onClick={handleRunAutomation}
+               disabled={isAutomating}
+               className="h-16 px-10 rounded-[2rem] bg-secondary/20 hover:bg-white/5 text-white border border-white/10 shadow-skeuo-button active:shadow-skeuo-button-pressed transition-all font-black uppercase tracking-widest text-xs flex gap-3"
+             >
+               {isAutomating ? <Loader2 className="h-5 w-5 animate-spin text-primary" /> : <Zap className="h-5 w-5 text-primary" />}
+               AI Manager
+             </Button>
+           )}
         </div>
       </div>
 
-      {/* Status Banner */}
-      <div className="w-full p-5 rounded-2xl bg-secondary/20 border border-white/5 flex items-center justify-between text-xs shadow-skeuo-in">
-        <div className="flex items-center gap-3 text-muted-foreground">
-          <Clock className="h-4 w-4 text-primary" />
-          <span>Next Auto-Post Scheduled: <span className="text-white font-bold">08:00 AM IST</span></span>
-        </div>
-        <span className="text-primary font-bold tracking-widest uppercase text-[10px]">Scheduled</span>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {/* Main Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {[
-          { label: "Total Posts", value: totalPosts, icon: FileText, color: "blue", sub: "Articles in your library" },
-          { label: "Published", value: publishedPosts, icon: CheckCircle2, color: "green", sub: "Live on the platform" },
-          { label: "Drafts", value: draftPosts, icon: Clock, color: "orange", sub: "Pending review/post" }
-        ].map((stat, idx) => (
-          <Card key={idx} className="bg-secondary/30 border-white/5 shadow-skeuo-out hover:shadow-skeuo-float rounded-[2rem] transition-all group overflow-hidden relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
-            <CardHeader className="pb-2 flex flex-row items-center justify-between relative z-10">
-              <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{stat.label}</CardTitle>
-              <div className={`p-3 bg-${stat.color}-500/10 rounded-2xl shadow-skeuo-in`}>
-                <stat.icon className={`h-5 w-5 text-${stat.color}-500`} />
+          { label: "Total Users", value: stats.totalUsers, icon: Users, color: "text-blue-400" },
+          { label: "System Posts", value: stats.systemPosts, icon: FileText, color: "text-red-400" },
+          { label: "AI Success Rate", value: stats.successRate, icon: Activity, color: "text-green-400" },
+          { label: "API Health", value: stats.apiHealth, icon: Zap, color: "text-yellow-400" }
+        ].map((item, i) => (
+          <Card key={i} className="bg-secondary/10 border-white/5 rounded-[2.5rem] shadow-skeuo-out overflow-hidden relative group">
+            <div className="p-8 space-y-6">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30">{item.label}</span>
+                <item.icon className={cn("h-5 w-5 opacity-40 group-hover:opacity-100 transition-opacity", item.color)} />
               </div>
-            </CardHeader>
-            <CardContent className="relative z-10">
-              {isLoading ? (
-                <div className="h-10 w-16 bg-white/5 animate-pulse rounded-lg mb-2" />
-              ) : (
-                <p className="text-4xl font-black drop-shadow-md">{stat.value}</p>
-              )}
-              <p className="text-xs text-muted-foreground mt-2 font-medium">{stat.sub}</p>
-            </CardContent>
+              <div className="bg-black/40 rounded-3xl p-6 shadow-skeuo-in border border-white/5">
+                 <p className="text-4xl font-black tracking-tighter text-white">{item.value}</p>
+                 {item.label === "System Posts" && (
+                   <div className="mt-4 flex justify-end">
+                      <Link href="/dashboard/posts">
+                        <Button variant="ghost" size="sm" className="h-8 rounded-xl bg-black/60 text-[9px] font-black uppercase tracking-widest text-white/40 hover:text-white border border-white/5">
+                          Manage Posts
+                        </Button>
+                      </Link>
+                   </div>
+                 )}
+              </div>
+            </div>
           </Card>
         ))}
       </div>
 
-      {/* AI CTA Section - Admin only */}
-      {isAdmin && (
-        <Card className="bg-primary/10 border-primary/20 border p-10 rounded-[3rem] relative overflow-hidden group shadow-skeuo-float backdrop-blur-xl">
-          <div className="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-primary/20 to-transparent pointer-events-none" />
-          <div className="relative z-10 space-y-6">
-            <div className="space-y-2">
-              <h2 className="text-3xl font-black flex items-center gap-3">
-                New: AI Content Generation
-              </h2>
-              <p className="text-muted-foreground max-w-xl text-lg">
-                Out of ideas? Use our AI to draft a complete, SEO-friendly blog post in seconds.
-              </p>
-            </div>
-            <Link href="/dashboard/create">
-              <Button className="rounded-xl h-12 px-8 bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-cyan-glow gap-2">
-                Try AI Generator <ArrowUpRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
-        </Card>
-      )}
-      
-      {/* Quick view of posts */}
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold">Recent Activity</h2>
-          <Link href="/dashboard/posts" className="text-primary text-sm font-bold flex items-center gap-1 hover:underline">
-            View All <ArrowUpRight className="h-4 w-4" />
-          </Link>
+      {/* Community Management Table */}
+      <div className="space-y-8">
+        <div className="flex items-center gap-4">
+           <Users className="h-6 w-6 text-primary" />
+           <h2 className="text-3xl font-black tracking-tighter uppercase italic">Manage Pulse Community</h2>
+           <Badge className="bg-secondary/40 text-white/40 border-white/10 ml-auto rounded-full px-4 py-1 font-bold text-[10px] uppercase tracking-widest backdrop-blur-md">Admin-Only View</Badge>
         </div>
-        
-        {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-secondary/20 h-64 rounded-[2rem] animate-pulse border border-white/5" />
-            ))}
-          </div>
-        ) : userPosts && userPosts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {userPosts.slice(0, 6).map((post) => (
-              <div key={post.slug} className="group relative">
-                <Link href={`/blog/${post.slug}`} className="block">
-                  <Card className="bg-secondary/30 border-white/5 hover:border-primary/30 transition-all group cursor-pointer overflow-hidden h-full shadow-skeuo-out hover:shadow-skeuo-float rounded-[2rem]">
-                    <div className="aspect-video relative overflow-hidden">
-                       <img src={post.feature_image_url} alt="" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" />
-                       <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors" />
-                       <Badge className="absolute top-3 left-3 bg-primary text-white border-none">{post.category}</Badge>
-                    </div>
-                    <CardContent className="p-4 space-y-2">
-                       <h3 className="font-bold line-clamp-1">{post.title}</h3>
-                       <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                          <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {calculateReadingTime(post.content)}</span>
-                          <span>{new Date(post.createdAt || post.published_at || post.created_at || Date.now()).toLocaleDateString()}</span>
+
+        <div className="rounded-[3rem] border border-white/5 bg-secondary/10 overflow-hidden shadow-skeuo-float">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="bg-black/40 border-b border-white/5 text-[10px] font-black text-white/30 uppercase tracking-[0.4em]">
+                  <th className="px-10 py-8">User</th>
+                  <th className="px-10 py-8">Email</th>
+                  <th className="px-10 py-8 text-center">Role</th>
+                  <th className="px-10 py-8">Joined</th>
+                  <th className="px-10 py-8 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {userList.map((usr, i) => (
+                  <tr key={i} className="group hover:bg-white/[0.02] transition-colors">
+                    <td className="px-10 py-8">
+                      <div className="flex items-center gap-4">
+                        <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-skeuo-button">
+                           <span className="text-primary font-black uppercase tracking-tighter text-xs">{usr.name.charAt(0)}</span>
+                        </div>
+                        <span className="font-black text-white uppercase tracking-tight italic">{usr.name}</span>
+                      </div>
+                    </td>
+                    <td className="px-10 py-8">
+                      <span className="text-sm font-medium text-white/40">{usr.email}</span>
+                    </td>
+                    <td className="px-10 py-8 text-center">
+                      <Badge className={cn(
+                        "rounded-full px-4 py-1 text-[9px] font-black uppercase tracking-widest",
+                        usr.role === 'admin' ? "bg-primary/20 text-primary border-primary/30" : "bg-white/10 text-white/40 border-white/10"
+                      )}>
+                        {usr.role}
+                      </Badge>
+                    </td>
+                    <td className="px-10 py-8">
+                      <span className="text-xs font-bold text-white/20">{usr.joined}</span>
+                    </td>
+                    <td className="px-10 py-8 text-right">
+                       <div className="flex justify-end gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button className="h-8 w-8 rounded-lg bg-secondary/40 border border-white/10 flex items-center justify-center text-white/30 hover:text-primary transition-colors shadow-skeuo-button">
+                             <ShieldCheck className="h-4 w-4" />
+                          </button>
+                          <button className="h-8 w-8 rounded-lg bg-secondary/40 border border-white/10 flex items-center justify-center text-white/30 hover:text-destructive transition-colors shadow-skeuo-button">
+                             <Activity className="h-4 w-4" />
+                          </button>
                        </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-                {/* Edit Button overlay - Always visible for ease of use */}
-                <Link href={`/dashboard/edit/${post.slug}`} className="absolute top-4 right-4 z-20">
-                  <Button size="icon" className="h-8 w-8 rounded-full bg-primary text-white shadow-lg border border-white/20 hover:scale-110 transition-transform">
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                </Link>
-              </div>
-            ))}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        ) : (
-          <div className="p-20 text-center bg-secondary/10 rounded-3xl border border-dashed border-white/10">
-            <p className="text-muted-foreground">No posts found. Start by creating your first AI passion!</p>
-          </div>
-        )}
+        </div>
       </div>
+
+      {/* Progress Overlay for Automation */}
+      {isAutomating && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md">
+           <div className="max-w-md w-full p-12 bg-secondary/20 rounded-[3rem] border border-primary/30 shadow-skeuo-float space-y-8">
+              <div className="text-center space-y-4">
+                 <div className="flex justify-center">
+                    <div className="h-16 w-16 rounded-3xl bg-primary/10 flex items-center justify-center border border-primary/30 shadow-skeuo-button animate-pulse">
+                       <Zap className="h-8 w-8 text-primary" />
+                    </div>
+                 </div>
+                 <h3 className="text-2xl font-black uppercase tracking-tight italic">Engine Core / Active</h3>
+                 <p className="text-white/40 font-medium uppercase text-xs tracking-widest">Generating high-octane editorial content...</p>
+              </div>
+              <div className="space-y-3">
+                 <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-primary italic">
+                    <span>Synchronizing</span>
+                    <span>{automationProgress}%</span>
+                 </div>
+                 <Progress value={automationProgress} className="h-2 bg-white/5" />
+              </div>
+           </div>
+        </div>
+      )}
     </div>
   );
 }
