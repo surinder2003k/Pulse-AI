@@ -105,116 +105,70 @@ export default function Navbar() {
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <div className="fixed inset-0 z-[999999] md:hidden overflow-hidden" style={{ pointerEvents: 'auto' }}>
+          <div className="fixed inset-0 z-[999999] md:hidden bg-[#0A0A0A]" style={{ pointerEvents: 'auto' }}>
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="absolute inset-0 bg-black/95 backdrop-blur-3xl"
-            />
-
-            <motion.div
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 30, stiffness: 400 }}
-              className="absolute inset-y-0 right-0 w-full bg-black/50 border-l border-white/5 flex flex-col p-8 pt-24"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2 }}
+              className="flex flex-col h-full w-full relative"
             >
-              <div className="flex flex-col gap-12 flex-1">
-                <div className="space-y-2">
-                  <p className="text-[10px] font-black uppercase tracking-[0.5em] text-primary/60">Navigation</p>
-                  <div className="h-px w-12 bg-primary/30" />
+              {/* Header inside modal */}
+              <div className="h-20 flex items-center justify-between px-6 border-b border-white/5">
+                <div onClick={() => setIsMobileMenuOpen(false)}>
+                  <Logo size="md" />
                 </div>
-
-                <div className="space-y-6">
-                  {navLinks.map((link, idx) => (
-                    <motion.div
-                      key={link.href}
-                      initial={{ opacity: 0, x: 50 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.1 + idx * 0.05 }}
-                    >
-                      <Link
-                        href={link.href}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="flex flex-col group py-3"
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="text-3xl font-bold uppercase tracking-tight leading-tight group-hover:text-primary transition-all duration-300 transform group-hover:translate-x-2 text-white">
-                            {link.name}
-                          </span>
-                          <ArrowUpRight className="h-6 w-6 text-white/20 group-hover:text-primary transition-all group-hover:rotate-45" />
-                        </div>
-                        <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-white/40 mt-1">
-                          {link.name === "Home" ? "Back to base" : link.name === "Blog" ? "The heartbeat of stories" : "Intelligence center"}
-                        </span>
-                      </Link>
-                      <div className="h-px w-full bg-white/5 mt-4" />
-                    </motion.div>
-                  ))}
-                  
-                  <SignedIn>
-                    {isAdmin && (
-                      <motion.div
-                        initial={{ opacity: 0, x: 50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.3 }}
-                      >
-                        <Link
-                          href="/admin"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className="flex items-center justify-between mt-6 p-6 rounded-3xl bg-primary/10 border border-primary/20 text-primary group overflow-hidden relative"
-                        >
-                          <div className="relative z-10">
-                            <span className="text-2xl font-black uppercase tracking-widest italic leading-none">AI Manager</span>
-                            <p className="text-[8px] font-black uppercase tracking-[0.2em] opacity-60 mt-1">Authorized access only</p>
-                          </div>
-                          <ShieldCheck className="h-10 w-10 relative z-10 group-hover:scale-110 transition-transform" />
-                          <div className="absolute inset-0 bg-primary/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-                        </Link>
-                      </motion.div>
-                    )}
-                  </SignedIn>
-                </div>
+                <button 
+                  type="button"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-white hover:text-primary transition-colors p-2"
+                >
+                  <X className="h-8 w-8" />
+                </button>
               </div>
 
-              <div className="mt-auto pb-8 space-y-6">
+              {/* Centered Navigation Links */}
+              <div className="flex-1 flex flex-col items-center justify-center gap-8 px-6">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-2xl font-semibold text-white/90 hover:text-primary transition-colors tracking-wide"
+                  >
+                    {link.name}
+                  </Link>
+                ))}
+                
+                <SignedIn>
+                  {isAdmin && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="text-2xl font-semibold text-primary/80 hover:text-primary transition-colors flex items-center gap-3 tracking-wide"
+                    >
+                       AI Manager <ShieldCheck className="h-6 w-6" />
+                    </Link>
+                  )}
+                </SignedIn>
+              </div>
+
+              {/* Footer / Account options */}
+              <div className="pb-12 px-8 flex justify-center w-full">
                 <SignedOut>
                   <SignInButton mode="modal" fallbackRedirectUrl="/">
-                    <Button className="w-full h-24 bg-primary text-white rounded-[2.5rem] font-black uppercase tracking-[0.3em] text-xs glow-red transition-all active:scale-95 group overflow-hidden">
-                      <div className="flex items-center gap-3 relative z-10">
-                        Get Started <Sparkles className="h-4 w-4 group-hover:scale-125 transition-transform" />
-                      </div>
-                      <div className="absolute inset-0 bg-white/10 -translate-x-full group-hover:translate-x-0 transition-transform duration-1000" />
+                    <Button className="w-full max-w-sm h-14 bg-primary text-white rounded-xl font-bold tracking-widest text-sm hover:bg-primary/90 transition-colors shadow-lg">
+                      Get Started
                     </Button>
                   </SignInButton>
                 </SignedOut>
                 
                 <SignedIn>
-                  <div className="flex items-center gap-6 p-8 rounded-[3rem] bg-white/5 border border-white/10 backdrop-blur-md relative overflow-hidden group">
+                  <div className="flex flex-col items-center gap-4">
                     <UserButton />
-                    <div className="flex flex-col min-w-0 relative z-10">
-                      <span className="text-xl font-black text-white truncate italic tracking-tighter leading-none">{user?.fullName || "Pulse User"}</span>
-                      <span className="text-[9px] text-primary uppercase font-black tracking-widest mt-1.5 flex items-center gap-1.5">
-                         <div className="h-1 w-1 rounded-full bg-primary animate-pulse" /> Pulse Verified
-                      </span>
-                    </div>
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                    <span className="text-sm font-medium text-white/60">{user?.fullName || "Pulse User"}</span>
                   </div>
                 </SignedIn>
-
-                <div className="pt-6 border-t border-white/5 flex items-center justify-between px-2">
-                  <div className="flex gap-4">
-                    <div className="h-8 w-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-primary/20 transition-colors">
-                      <div className="h-1 w-1 bg-white" />
-                    </div>
-                    <div className="h-8 w-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-primary/20 transition-colors">
-                      <div className="h-1 w-1 bg-white" />
-                    </div>
-                  </div>
-                  <span className="text-[8px] font-black uppercase tracking-widest text-white/20">Pulse AI v2.0</span>
-                </div>
               </div>
             </motion.div>
           </div>
