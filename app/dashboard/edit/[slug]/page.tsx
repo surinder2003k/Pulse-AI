@@ -43,6 +43,11 @@ export default function EditPostPage({ params }: EditPostPageProps) {
   });
   const [imageSearchQuery, setImageSearchQuery] = useState("");
   const [isSearchingImage, setIsSearchingImage] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
 
   useEffect(() => {
@@ -182,10 +187,14 @@ export default function EditPostPage({ params }: EditPostPageProps) {
                     seoKeywords={formData.seoKeywords}
                   />
 
-                  <RichTextEditor
-                    value={formData.content}
-                    onChange={(val) => setFormData({...formData, content: val})}
-                  />
+                  {mounted ? (
+                    <RichTextEditor
+                      value={formData.content}
+                      onChange={(val) => setFormData({...formData, content: val})}
+                    />
+                  ) : (
+                    <div className="h-64 w-full bg-white/5 animate-pulse rounded-md border border-white/10" />
+                  )}
                 </div>
               </div>
 

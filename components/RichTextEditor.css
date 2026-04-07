@@ -94,6 +94,9 @@
   border-radius: 0.5rem;
   margin: 1.5rem 0;
   display: block;
+  resize: both;
+  overflow: hidden;
+  cursor: nwse-resize;
 }
 .rich-text-container .ql-editor a {
   color: #3b82f6;

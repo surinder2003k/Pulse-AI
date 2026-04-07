@@ -39,6 +39,11 @@ export default function CreatePostPage() {
   const [imageSearchQuery, setImageSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [isSearchingImage, setIsSearchingImage] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Alert State
   const [alert, setAlert] = useState<{
@@ -204,10 +209,14 @@ export default function CreatePostPage() {
                     seoKeywords={formData.seoKeywords} 
                   />
 
-                  <RichTextEditor 
-                    value={formData.content}
-                    onChange={(val) => setFormData({...formData, content: val})}
-                  />
+                  {mounted ? (
+                    <RichTextEditor 
+                      value={formData.content}
+                      onChange={(val) => setFormData({...formData, content: val})}
+                    />
+                  ) : (
+                    <div className="h-64 w-full bg-white/5 animate-pulse rounded-md border border-white/10" />
+                  )}
                 </div>
 
                 <div className="flex justify-end gap-4 pt-6 border-t">

@@ -67,8 +67,14 @@ export default function SEOAnalyzer({ title, content, seoKeywords }: SEOAnalyzer
       const contentLower = content.toLowerCase();
       let kwCount = 0;
       keywords.forEach(kw => {
-        const matches = contentLower.match(new RegExp(kw, 'g'));
-        if (matches) kwCount += matches.length;
+        try {
+          // Escape special regex characters to prevent crash
+          const escapedKw = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          const matches = contentLower.match(new RegExp(escapedKw, 'g'));
+          if (matches) kwCount += matches.length;
+        } catch (e) {
+          console.error("Regex error for keyword:", kw, e);
+        }
       });
       
       const kwDensity = wordCount > 0 ? (kwCount / wordCount) * 100 : 0;

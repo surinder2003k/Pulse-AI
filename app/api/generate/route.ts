@@ -47,12 +47,12 @@ export async function POST(req: Request) {
     "${userPrompt}"
     
     The article MUST be detailed and lengthy, approximately 2000 to 2500 words.
-    Use proper headings, bullet points, and structure for readability and SEO ranking.
+    Use proper HTML formatting for readability and SEO ranking.
     
-    Format the response STRICTLY as a JSON object with these exact keys:
+    Format the response STRICTLY as a JSON object with these exact lowercase keys:
     {
       "title": "A highly engaging, SEO-optimized title for the topic",
-      "content": "Full lengthy markdown content (2000-2500 words) based directly on the prompt.",
+      "content": "Full lengthy HTML content based directly on the prompt. Use valid HTML tags like <h2>, <h3>, <p>, <strong>, <em>, <ul>, <li>. DO NOT USE MARKDOWN. Do not wrap this value in markdown codeblocks like \`\`\`html.",
       "excerpt": "A powerful SEO meta description (max 160 chars)",
       "category": "Technology, Business, News, or whichever fits best",
       "tags": ["seo-tag1", "seo-tag2", "seo-tag3", "seo-tag4", "seo-tag5"],

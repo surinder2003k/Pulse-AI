@@ -2,12 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/sonner";
-import Navbar from "@/components/Navbar";
-import Sidebar from "@/components/Sidebar";
-import NextTopLoader from "nextjs-toploader";
-import LoadingScreen from "@/components/LoadingScreen";
+import { Providers } from "../components/Providers";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space" });
@@ -67,39 +62,20 @@ export const metadata: Metadata = {
   },
 };
 
-import ParticleBackground from "@/components/ParticleBackground";
-
-// ... (rest of imports)
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
-        <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans min-h-screen bg-background text-foreground antialiased`}>
-          {/* ... (script) */}
-          <NextTopLoader color="#FF3333" showSpinner={false} />
-          <LoadingScreen />
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem={false}
-            disableTransitionOnChange
-          >
-            <ParticleBackground />
-            <div className="relative flex min-h-screen flex-col">
-              <Navbar />
-              <main className="flex-1">
-                {children}
-              </main>
-            </div>
-            <Toaster position="top-center" richColors />
-          </ThemeProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans min-h-screen bg-background text-foreground antialiased`}>
+        <ClerkProvider>
+          <Providers>
+            {children}
+          </Providers>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }

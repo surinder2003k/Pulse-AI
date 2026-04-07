@@ -2,10 +2,10 @@
 
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
-import "react-quill/dist/quill.snow.css";
+import "react-quill-new/dist/quill.snow.css";
 import "./RichTextEditor.css"; // Custom overrides
 
-const ReactQuill = dynamic(() => import("react-quill"), { 
+const ReactQuill = dynamic(() => import("react-quill-new"), { 
   ssr: false, 
   loading: () => <div className="h-64 w-full bg-white/5 animate-pulse rounded-md border border-white/10" />
 });

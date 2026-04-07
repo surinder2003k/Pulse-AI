@@ -25,11 +25,15 @@ export function formatDate(date: string | Date | undefined | null) {
   if (!date) return "N/A";
   const d = new Date(date);
   if (isNaN(d.getTime())) return "N/A";
-  return d.toLocaleDateString("en-US", {
+  return d.toLocaleString("en-IN", {
+    timeZone: "Asia/Kolkata",
     month: "short",
-    day: "numeric",
+    day: "2-digit",
     year: "numeric",
-  });
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true
+  }).toUpperCase();
 }
 
 
