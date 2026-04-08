@@ -6,8 +6,10 @@ import CategoryFilter from "@/components/CategoryFilter";
 import Pagination from "@/components/Pagination";
 import { Suspense } from "react";
 import { PostGridSkeleton } from "@/components/LoadingSkeleton";
-import { Database, Zap, BookOpen } from "lucide-react";
+import Link from "next/link";
+import { Database, Zap, BookOpen, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 export const revalidate = 0;
 
@@ -124,11 +126,42 @@ export default async function BlogPage({
               ))}
             </div>
           ) : (
-            <div className="text-center py-40 border-2 border-white/5 rounded-[3rem] bg-secondary/10 shadow-skeuo-in relative overflow-hidden group">
+            <div className="py-32 px-10 text-center animate-in fade-in slide-in-from-bottom-10 duration-1000 bg-secondary/[0.03] rounded-[3rem] border border-white/5 shadow-skeuo-in relative overflow-hidden group">
                <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-               <Zap className="h-16 w-16 mx-auto text-primary/10 mb-6 animate-pulse" />
-               <h3 className="text-3xl font-black mb-3 uppercase italic">Zero Pulse Detected.</h3>
-               <p className="text-white/20 font-black uppercase tracking-[0.5em] text-[10px]">Awaiting next intelligence broadcast...</p>
+               
+               <div className="relative group inline-block mb-12">
+                  <div className="h-24 w-24 rounded-3xl bg-secondary/10 flex items-center justify-center shadow-skeuo-button border border-white/5 mx-auto">
+                     <Zap className="h-10 w-10 text-primary opacity-30 animate-pulse" />
+                  </div>
+                  <div className="absolute -inset-4 blur-2xl bg-primary/10 opacity-50 -z-10" />
+               </div>
+               
+               <div className="space-y-6 max-w-lg mx-auto">
+                  <h2 className="text-3xl md:text-5xl font-black uppercase italic tracking-tighter leading-none text-white">
+                    Zero <span className="text-primary italic">Pulse</span> Detected
+                  </h2>
+                  <p className="text-white/30 font-bold uppercase tracking-widest text-[9px] leading-relaxed border-y border-white/5 py-6">
+                    The requested data sequence is unavailable. Diagnostics suggest modifying parameters or returning to the base directory.
+                  </p>
+               </div>
+
+               <div className="mt-12 flex flex-col items-center gap-6">
+                  <p className="text-[9px] font-black uppercase tracking-[0.4em] text-white/20">Available Domains:</p>
+                  <div className="flex flex-wrap justify-center gap-4">
+                     {["F1", "Football", "Cricket", "Tech"].map(cat => (
+                        <Link key={cat} href={`/blog?category=${cat}`}>
+                           <button className="px-5 py-2.5 rounded-full bg-secondary/10 border border-white/5 text-[9px] font-black uppercase tracking-widest text-white/40 hover:text-primary hover:border-primary/20 transition-all shadow-skeuo-button">
+                              {cat}
+                           </button>
+                        </Link>
+                     ))}
+                  </div>
+                  <Link href="/blog" className="mt-6">
+                     <button className="text-primary font-black uppercase tracking-widest text-[10px] hover:bg-white/5 px-8 py-3 rounded-full border border-primary/20 transition-all active:scale-95 shadow-skeuo-button">
+                        Reset Uplink Matrix
+                     </button>
+                  </Link>
+               </div>
             </div>
           )}
         </div>

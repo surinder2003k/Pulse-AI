@@ -25,8 +25,11 @@ import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
 import { cn, ADMIN_EMAIL } from "@/lib/utils";
 
+import { getAuthStatus } from "@/lib/auth";
+
 export default function DashboardOverview() {
-  const { user } = useUser();
+  const [user, setUser] = useState<any>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [stats, setStats] = useState({
     totalUsers: 3,
     systemPosts: 38,
@@ -41,7 +44,15 @@ export default function DashboardOverview() {
   const [isAutomating, setIsAutomating] = useState(false);
   const [automationProgress, setAutomationProgress] = useState(0);
 
-  const isAdmin = user?.emailAddresses[0]?.emailAddress === ADMIN_EMAIL;
+  useEffect(() => {
+    async function checkAuth() {
+      const res = await fetch("/api/auth/status");
+      const data = await res.json();
+      setIsAdmin(data.isAdmin);
+      setUser(data.user);
+    }
+    checkAuth();
+  }, []);
 
   const handleRunAutomation = async () => {
     setIsAutomating(true);
@@ -68,32 +79,31 @@ export default function DashboardOverview() {
   return (
     <div className="space-y-12 pb-20">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-10">
-        <div className="space-y-4">
-          <div className="flex items-center gap-3">
-             <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-skeuo-button">
-                <ShieldCheck className="h-5 w-5 text-primary" />
-             </div>
-             <h1 className="text-3xl md:text-5xl font-black tracking-tighter uppercase italic leading-none">
-               Admin Control <span className="text-white/20">/ Center</span>
-             </h1>
-          </div>
-          <p className="text-muted-foreground font-medium uppercase tracking-[0.05em] max-w-2xl">
-            Full system access for <span className="text-primary font-black italic">{user?.primaryEmailAddress?.emailAddress}</span>. Manage users, posts, and automation engines.
-          </p>
+      <div className="flex flex-col gap-6">
+        <div className="flex items-center gap-3">
+           <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-skeuo-button">
+              <ShieldCheck className="h-5 w-5 text-primary" />
+           </div>
+           <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic leading-none">
+             Station <span className="text-white/20">/ Overview</span>
+           </h1>
         </div>
         
-        <div className="flex items-center gap-4">
-           {isAdmin && (
-             <Button 
-               onClick={handleRunAutomation}
-               disabled={isAutomating}
-               className="h-16 px-10 rounded-[2rem] bg-secondary/20 hover:bg-white/5 text-white border border-white/10 shadow-skeuo-button active:shadow-skeuo-button-pressed transition-all font-black uppercase tracking-widest text-xs flex gap-3"
-             >
-               {isAutomating ? <Loader2 className="h-5 w-5 animate-spin text-primary" /> : <Zap className="h-5 w-5 text-primary" />}
-               AI Manager
-             </Button>
-           )}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <p className="text-muted-foreground font-medium uppercase tracking-widest text-xs max-w-2xl border-l-[3px] border-primary pl-4 py-1">
+            Secure uplink established for <span className="text-primary font-black italic">{user?.emailAddresses[0]?.emailAddress || "Guest"}</span>. Monitoring terminal activity.
+          </p>
+          
+          {isAdmin && (
+            <Button 
+              onClick={handleRunAutomation}
+              disabled={isAutomating}
+              className="h-14 px-8 rounded-[1.5rem] bg-secondary/10 hover:bg-white/5 text-white border border-white/10 shadow-skeuo-button active:shadow-skeuo-button-pressed transition-all font-black uppercase tracking-widest text-[10px] flex gap-3 group"
+            >
+              {isAutomating ? <Loader2 className="h-4 w-4 animate-spin text-primary" /> : <Zap className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" />}
+              Execute AI Manager
+            </Button>
+          )}
         </div>
       </div>
 

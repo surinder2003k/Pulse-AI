@@ -166,9 +166,14 @@ export default async function HomePage() {
              </div>
              
              <div className="flex flex-wrap justify-center gap-8 md:gap-14">
-                {["Intelligence", "Editorial", "Archive", "Privacy", "Terminal"].map(link => (
-                  <Link key={link} href="#" className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 hover:text-primary transition-colors duration-300">
-                    {link}
+                {[
+                  { name: "Intelligence", href: "/dashboard" },
+                  { name: "Editorial", href: "/blog" },
+                  { name: "Archive", href: "/blog" },
+                  { name: "Terminal", href: "/admin" }
+                ].map(link => (
+                  <Link key={link.name} href={link.href} className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 hover:text-primary transition-colors duration-300">
+                    {link.name}
                   </Link>
                 ))}
              </div>

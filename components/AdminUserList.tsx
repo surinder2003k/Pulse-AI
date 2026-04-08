@@ -154,68 +154,68 @@ export default function AdminUserList({
         </div>
       )}
 
-      <div className="rounded-2xl border border-white/5 bg-secondary/20 overflow-hidden">
+      <div className="rounded-[2.5rem] border border-white/5 bg-secondary/5 overflow-hidden shadow-skeuo-in">
         <Table>
-          <TableHeader className="bg-white/5">
-            <TableRow className="hover:bg-transparent border-white/5">
-              <TableHead className="text-muted-foreground uppercase text-[10px] tracking-widest font-bold">User</TableHead>
-              <TableHead className="text-muted-foreground uppercase text-[10px] tracking-widest font-bold">Email</TableHead>
-              <TableHead className="text-muted-foreground uppercase text-[10px] tracking-widest font-bold">Role</TableHead>
-              <TableHead className="text-muted-foreground uppercase text-[10px] tracking-widest font-bold">Joined</TableHead>
-              <TableHead className="text-right text-muted-foreground uppercase text-[10px] tracking-widest font-bold px-6">Actions</TableHead>
+          <TableHeader className="bg-black/40">
+            <TableRow className="hover:bg-transparent border-white/5 uppercase tracking-[0.4em] text-[10px] font-black italic">
+              <TableHead className="py-8 px-10 text-white/30">Identifier</TableHead>
+              <TableHead className="py-8 text-white/30">Network Node (Email)</TableHead>
+              <TableHead className="py-8 text-white/30">Clearance</TableHead>
+              <TableHead className="py-8 text-white/30">Uplinked</TableHead>
+              <TableHead className="text-right py-8 px-10 text-white/30">Protocols</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {users.map((user) => (
-              <TableRow key={user.id} className="border-white/5 hover:bg-white/5 transition-colors">
-                <TableCell className="font-medium flex items-center gap-3">
-                  <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center">
-                    <UserIcon className="h-4 w-4 text-primary" />
+              <TableRow key={user.id} className="border-white/5 hover:bg-white/[0.02] transition-colors group">
+                <TableCell className="px-10 py-8">
+                  <div className="flex items-center gap-5">
+                    <div className="h-12 w-12 rounded-2xl bg-secondary/20 flex items-center justify-center border border-white/10 shadow-skeuo-button group-hover:bg-primary/10 group-hover:border-primary/20 transition-all">
+                      <UserIcon className="h-5 w-5 text-white/40 group-hover:text-primary transition-colors" />
+                    </div>
+                    <span className="font-black text-lg text-white group-hover:text-primary transition-colors italic uppercase tracking-tighter">{user.name}</span>
                   </div>
-                  {user.name}
                 </TableCell>
-                <TableCell className="text-muted-foreground">{user.email}</TableCell>
+                <TableCell className="text-white/40 font-bold text-xs uppercase tracking-widest">{user.email}</TableCell>
                 <TableCell>
-                  <Badge variant={user.role === "admin" ? "accent" : "secondary"}>
-                    {user.role === "admin" && <Shield className="h-3 w-3 mr-1" />}
+                  <Badge className={cn(
+                    "text-[10px] font-black uppercase border-none px-4 py-1.5 rounded-full shadow-skeuo-button transition-all",
+                    user.role === "admin" ? "bg-primary text-white glow-red" : "bg-white/10 text-white/40"
+                  )}>
+                    {user.role === "admin" && <Shield className="h-3 w-3 mr-2" />}
                     {user.role}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-muted-foreground">{user.created_at}</TableCell>
-                <TableCell className="text-right px-6">
-                  <div className="flex items-center justify-end gap-2">
+                <TableCell className="text-[10px] text-white/20 font-black uppercase tracking-tighter italic">
+                  {user.created_at}
+                </TableCell>
+                <TableCell className="text-right px-10">
+                  <div className="flex items-center justify-end gap-4 opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0 transition-all duration-300">
                     {/* Role Toggle Button */}
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
+                    <button 
                       disabled={updatingId === user.id || user.id === currentUserId || user.email === "xyzg135@gmail.com"}
-                      className={cn(
-                        "h-8 w-8 rounded-lg transition-all",
-                        user.role === 'admin' 
-                          ? "text-primary hover:text-primary/80 hover:bg-primary/10" 
-                          : "text-muted-foreground hover:text-white hover:bg-white/10"
-                      )}
+                      className="h-12 w-12 rounded-xl bg-secondary/20 border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white/30 transition-all shadow-skeuo-button active:shadow-skeuo-button-pressed disabled:opacity-20 disabled:cursor-not-allowed"
                       onClick={() => toggleRole(user)}
+                      title={user.role === 'admin' ? "Demote to User" : "Promote to Admin"}
                     >
                       {updatingId === user.id ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <Loader2 className="h-5 w-5 animate-spin" />
                       ) : user.role === 'admin' ? (
-                        <UserIcon className="h-4 w-4" />
+                        <UserIcon className="h-5 w-5" />
                       ) : (
-                        <Shield className="h-4 w-4" />
+                        <Shield className="h-5 w-5" />
                       )}
-                    </Button>
-
+                    </button>
+ 
                     {/* Delete Button */}
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
+                    <button 
                       disabled={deletingId === user.id || user.id === currentUserId || user.email === "xyzg135@gmail.com"}
-                      className="h-8 w-8 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                      className="h-12 w-12 rounded-xl bg-red-950/20 border border-red-500/10 flex items-center justify-center text-red-500/40 hover:text-primary hover:border-primary/30 transition-all shadow-skeuo-button active:shadow-skeuo-button-pressed disabled:opacity-20 disabled:cursor-not-allowed"
                       onClick={() => handleDeleteClick(user)}
+                      title="Purge User"
                     >
-                      {deletingId === user.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
-                    </Button>
+                      {deletingId === user.id ? <Loader2 className="h-5 w-5 animate-spin" /> : <Trash2 className="h-5 w-5" />}
+                    </button>
                   </div>
                 </TableCell>
               </TableRow>
@@ -226,3 +226,4 @@ export default function AdminUserList({
     </>
   );
 }
+

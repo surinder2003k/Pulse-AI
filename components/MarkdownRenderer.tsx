@@ -16,18 +16,24 @@ function isHtmlContent(content: string): boolean {
 
 export default function MarkdownRenderer({ content, className }: MarkdownRendererProps) {
   const proseClasses = cn(
-    "prose prose-invert prose-cyan max-w-none",
+    "prose prose-invert prose-red max-w-none",
     "prose-headings:scroll-mt-20 prose-headings:font-black prose-headings:tracking-tight",
-    "prose-h1:text-4xl md:prose-h1:text-5xl prose-h1:mb-10 text-white",
-    "prose-h2:text-3xl md:prose-h2:text-4xl prose-h2:mt-14 prose-h2:mb-6 prose-h2:text-white prose-h2:border-l-4 prose-h2:border-primary prose-h2:pl-6",
-    "prose-h3:text-2xl md:prose-h3:text-3xl prose-h3:mt-10 prose-h3:mb-6 prose-h3:text-white/90",
-    "prose-p:text-xl prose-p:leading-[1.8] prose-p:text-white/70 prose-p:mb-8",
+    "prose-h1:text-4xl md:prose-h1:text-5xl prose-h1:mb-10 text-white uppercase italic",
+    "prose-h2:text-2xl md:prose-h2:text-3xl prose-h2:mt-14 prose-h2:mb-6 prose-h2:text-white prose-h2:border-l-4 prose-h2:border-primary prose-h2:pl-6 uppercase italic",
+    "prose-h3:text-xl md:prose-h3:text-2xl prose-h3:mt-10 prose-h3:mb-6 prose-h3:text-white/90 uppercase italic",
+    "prose-p:text-lg md:text-xl prose-p:leading-[1.8] prose-p:text-white/70 prose-p:mb-8 font-medium",
     "prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-bold transition-all",
     "prose-ul:my-8 prose-ul:list-disc prose-li:text-white/70 prose-li:leading-relaxed prose-li:mb-4 prose-li:pl-2",
     "prose-ol:my-8 prose-ol:list-decimal prose-li:marker:text-primary prose-li:marker:font-black",
     "prose-img:rounded-[2.5rem] prose-img:shadow-2xl prose-img:my-16 prose-img:border prose-img:border-white/10",
-    "prose-blockquote:border-l-primary prose-blockquote:bg-primary/5 prose-blockquote:py-8 prose-blockquote:px-10 prose-blockquote:rounded-3xl prose-blockquote:italic prose-blockquote:text-white/90 prose-blockquote:my-12",
+    "prose-blockquote:border-l-primary prose-blockquote:bg-primary/5 prose-blockquote:py-8 prose-blockquote:px-10 prose-blockquote:rounded-3xl prose-blockquote:italic prose-blockquote:text-white/90 prose-blockquote:my-12 prose-blockquote:shadow-skeuo-in prose-blockquote:border-y prose-blockquote:border-r prose-blockquote:border-white/5",
     "prose-strong:text-white prose-strong:font-black",
+    "prose-table:border-collapse prose-table:w-full prose-table:my-12",
+    "prose-thead:bg-primary/10 prose-thead:text-primary prose-thead:font-black prose-thead:uppercase prose-thead:tracking-widest",
+    "prose-th:px-6 prose-th:py-4 prose-th:border prose-th:border-white/10",
+    "prose-td:px-6 prose-td:py-4 prose-td:border prose-td:border-white/10 prose-td:text-white/60",
+    "prose-code:text-primary prose-code:bg-primary/5 prose-code:px-2 prose-code:py-0.5 prose-code:rounded-lg prose-code:before:content-none prose-code:after:content-none",
+    "prose-pre:bg-secondary/20 prose-pre:border prose-pre:border-white/10 prose-pre:rounded-[2rem] prose-pre:shadow-skeuo-in",
     className
   );
 
