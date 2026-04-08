@@ -146,13 +146,13 @@ export default function Navbar() {
                <Logo size="md" />
                <div className="h-[1px] w-20 bg-white/10" />
                
-               <div className="flex flex-col gap-6">
+               <div className="flex flex-col gap-4">
                  {navLinks.map((link) => (
                     <Link
                       key={link.name}
                       href={link.href}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="text-3xl font-black uppercase tracking-tighter italic text-white/40 hover:text-primary transition-all active:scale-110"
+                      className="text-xl font-black uppercase tracking-tighter italic text-white/40 hover:text-primary transition-all active:scale-110"
                     >
                       {link.name}
                     </Link>
@@ -163,7 +163,7 @@ export default function Navbar() {
 
               {isSignedIn ? (
                 <div className="flex flex-col items-center gap-8">
-                  <Link href="/dashboard" className="text-lg font-black uppercase tracking-[0.4em] text-primary" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Link href="/dashboard" className="text-base font-black uppercase tracking-[0.4em] text-primary" onClick={() => setIsMobileMenuOpen(false)}>
                     Enter Terminal
                   </Link>
                   <div className="scale-125">
@@ -176,7 +176,7 @@ export default function Navbar() {
                     <button className="text-lg font-black uppercase tracking-[0.4em] text-white/30">Login Protocol</button>
                   </SignInButton>
                   <SignUpButton mode="modal">
-                    <button className="bg-primary text-white text-lg font-black uppercase tracking-[0.2em] px-10 py-5 rounded-[1.5rem] shadow-skeuo-float">
+                    <button className="bg-primary text-white text-sm font-black uppercase tracking-[0.2em] px-8 py-4 rounded-[1.25rem] shadow-skeuo-float">
                       Join Network
                     </button>
                   </SignUpButton>

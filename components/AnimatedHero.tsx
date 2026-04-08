@@ -49,7 +49,7 @@ export default function AnimatedHero() {
   }, []);
 
   return (
-    <section ref={containerRef} className="pt-24 pb-28 flex flex-col items-center text-center gap-8 md:gap-10 px-6 relative overflow-hidden min-h-[80vh] justify-center">
+    <section ref={containerRef} className="pt-20 pb-20 md:pt-24 md:pb-28 flex flex-col items-center text-center gap-6 md:gap-10 px-5 md:px-6 relative overflow-hidden min-h-[85vh] justify-center">
       {/* Grid Background Overlay */}
       <div className="absolute inset-0 grid-bg opacity-20 pointer-events-none" />
       
@@ -66,11 +66,11 @@ export default function AnimatedHero() {
       </div>
       
       {/* Massive Solid Title */}
-      <div className="relative z-10 select-none space-y-3">
-        <h1 className="hero-title-main opacity-0 text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tighter uppercase italic leading-[0.9]">
+      <div className="relative z-10 select-none space-y-2 md:space-y-3">
+        <h1 className="hero-title-main opacity-0 text-3xl md:text-6xl lg:text-7xl font-black text-white tracking-tighter uppercase italic leading-[0.9]">
           Design <span className="text-primary italic text-glow-red">Intelligence</span>
         </h1>
-        <h2 className="hero-title-main opacity-0 text-2xl md:text-4xl lg:text-5xl font-black text-white/20 tracking-tighter uppercase italic leading-none">
+        <h2 className="hero-title-main opacity-0 text-xl md:text-4xl lg:text-5xl font-black text-white/20 tracking-tighter uppercase italic leading-none">
           For the Future of Editorial
         </h2>
       </div>
@@ -80,22 +80,22 @@ export default function AnimatedHero() {
         to capture the spirit of global innovation.
       </p>
       
-      <div className="flex flex-wrap items-center justify-center gap-4 mt-6 z-10">
-        <Link href="/dashboard">
-          <button className="hero-btn opacity-0 group rounded-[1.5rem] px-8 md:px-10 h-14 md:h-16 text-[10px] font-black uppercase tracking-[0.3em] text-white transition-all bg-primary hover:glow-red-strong shadow-skeuo-float hover:scale-[1.03] active:scale-95 flex items-center gap-3">
-            Initialize Dashboard <Zap className="h-4 w-4 fill-white" />
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-4 z-10 w-full max-w-sm sm:max-w-none px-2 sm:px-0">
+        <Link href="/dashboard" className="w-full sm:w-auto">
+          <button className="hero-btn opacity-0 w-full sm:w-auto group rounded-[1.25rem] px-8 md:px-10 h-12 md:h-14 text-[10px] font-black uppercase tracking-[0.3em] text-white transition-all bg-primary hover:glow-red-strong shadow-skeuo-float hover:scale-[1.03] active:scale-95 flex items-center justify-center gap-3">
+            Initialize Dashboard <Zap className="h-3.5 w-3.5 fill-white" />
           </button>
         </Link>
         
-        <Link href="/blog">
-          <button className="hero-btn opacity-0 group rounded-[1.5rem] px-8 md:px-10 h-14 md:h-16 text-[10px] font-black uppercase tracking-[0.3em] text-white transition-all bg-secondary/10 border border-white/5 hover:bg-white/5 shadow-skeuo-button hover:scale-[1.03] active:scale-95 flex items-center gap-3 backdrop-blur-3xl">
-            Browse Archive <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform text-primary" />
+        <Link href="/blog" className="w-full sm:w-auto">
+          <button className="hero-btn opacity-0 w-full sm:w-auto group rounded-[1.25rem] px-8 md:px-10 h-12 md:h-14 text-[10px] font-black uppercase tracking-[0.3em] text-white transition-all bg-secondary/10 border border-white/5 hover:bg-white/5 shadow-skeuo-button hover:scale-[1.03] active:scale-95 flex items-center justify-center gap-3 backdrop-blur-3xl">
+            Browse Archive <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform text-primary" />
           </button>
         </Link>
       </div>
 
       {/* Trust Bar */}
-      <div className="hero-subtitle opacity-0 mt-16 flex flex-col items-center gap-6 relative z-10">
+      <div className="hero-subtitle opacity-0 mt-8 md:mt-16 flex flex-col items-center gap-4 md:gap-6 relative z-10">
         <div className="flex items-center gap-3">
            <div className="h-[1px] w-8 bg-white/10" />
            <span className="text-[9px] font-black uppercase tracking-[0.6em] text-white/20 italic">Verified Tech-Stack</span>

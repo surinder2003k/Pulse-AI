@@ -74,7 +74,7 @@ export default function DashboardOverview() {
              <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-skeuo-button">
                 <ShieldCheck className="h-5 w-5 text-primary" />
              </div>
-             <h1 className="text-5xl md:text-7xl font-black tracking-tighter uppercase italic leading-none">
+             <h1 className="text-3xl md:text-5xl font-black tracking-tighter uppercase italic leading-none">
                Admin Control <span className="text-white/20">/ Center</span>
              </h1>
           </div>
@@ -98,7 +98,7 @@ export default function DashboardOverview() {
       </div>
 
       {/* Main Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
         {[
           { label: "Total Users", value: stats.totalUsers, icon: Users, color: "text-blue-400" },
           { label: "System Posts", value: stats.systemPosts, icon: FileText, color: "text-red-400" },
@@ -106,7 +106,7 @@ export default function DashboardOverview() {
           { label: "API Health", value: stats.apiHealth, icon: Zap, color: "text-yellow-400" }
         ].map((item, i) => (
           <Card key={i} className="bg-secondary/10 border-white/5 rounded-[2.5rem] shadow-skeuo-out overflow-hidden relative group">
-            <div className="p-8 space-y-6">
+            <div className="p-5 md:p-8 space-y-4 md:space-y-6">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30">{item.label}</span>
                 <item.icon className={cn("h-5 w-5 opacity-40 group-hover:opacity-100 transition-opacity", item.color)} />

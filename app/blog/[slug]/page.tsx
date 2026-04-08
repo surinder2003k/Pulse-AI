@@ -27,6 +27,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: `${post.title} | Pulse AI`,
     description: post.excerpt,
     keywords: `${post.tags?.join(", ") || ""}, Pulse Editorial, F1 Reports, Football Deep Dives, Real-time Stories, Premium Content`,
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true },
+    },
     alternates: {
       canonical: url,
     },

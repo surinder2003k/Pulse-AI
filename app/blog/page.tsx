@@ -29,8 +29,13 @@ export async function generateMetadata({ searchParams }: { searchParams: Promise
   return {
     title,
     description,
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true },
+    },
     alternates: {
-      canonical: `${baseUrl}/blog${category ? `?category=${category}` : ""}`,
+      canonical: `${baseUrl}/blog`,
     },
     openGraph: {
       title,
@@ -83,29 +88,29 @@ export default async function BlogPage({
       {/* Background Decor */}
       <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] -z-10" />
       
-      <div className="flex flex-col gap-16 md:gap-20 pb-32 pt-20 px-6 container mx-auto">
+      <div className="flex flex-col gap-12 md:gap-16 pb-24 pt-16 px-4 md:px-6 container mx-auto">
         {/* Header Section */}
-        <div className="flex flex-col items-center text-center gap-6 relative">
-           <div className="flex items-center gap-3 bg-secondary/10 px-6 py-2 rounded-full border border-white/5 shadow-skeuo-in">
-              <Database className="h-3.5 w-3.5 text-primary animate-pulse" />
+        <div className="flex flex-col items-center text-center gap-4 relative">
+           <div className="flex items-center gap-3 bg-secondary/10 px-5 py-2 rounded-full border border-white/5 shadow-skeuo-in">
+              <Database className="h-3 w-3 text-primary animate-pulse" />
               <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/40">Archive Access Protocol</span>
            </div>
            
-           <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter italic uppercase text-white leading-none">
+           <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter italic uppercase text-white leading-none">
               Stories <span className="text-primary italic">Archive.</span>
            </h1>
            
-           <p className="text-white/30 max-w-xl text-lg font-medium uppercase tracking-tight italic">
-              Accessing <span className="text-primary font-black tracking-widest px-2">{count || 0}</span> Modules across the grid. Use terminal search to dive deeper.
+           <p className="text-white/30 max-w-lg text-sm md:text-base font-medium uppercase tracking-tight italic">
+              Accessing <span className="text-primary font-black tracking-widest px-2">{count || 0}</span> modules across the grid.
            </p>
         </div>
 
         {/* Filter & Search Bar */}
-        <div className="flex flex-col lg:flex-row gap-8 items-center justify-between border-y border-white/5 py-8 md:py-10 bg-secondary/[0.01] shadow-skeuo-in px-8 md:px-12 rounded-[2rem]">
-          <div className="w-full lg:w-auto overflow-x-auto no-scrollbar pb-2 lg:pb-0">
+        <div className="flex flex-col lg:flex-row gap-6 items-center justify-between border-y border-white/5 py-6 bg-secondary/[0.01] shadow-skeuo-in px-6 md:px-10 rounded-[1.5rem]">
+          <div className="w-full lg:w-auto overflow-x-auto no-scrollbar pb-1 lg:pb-0">
             <CategoryFilter />
           </div>
-          <div className="w-full md:w-[350px] relative">
+          <div className="w-full md:w-[300px] relative">
             <Search />
           </div>
         </div>

@@ -1,4 +1,5 @@
 import Sidebar from "@/components/Sidebar";
+import MobileNav from "@/components/MobileNav";
 
 export default function DashboardLayout({
   children,
@@ -9,10 +10,11 @@ export default function DashboardLayout({
     <div className="flex h-screen overflow-hidden">
       <Sidebar />
       <div className="flex-1 flex flex-col relative overflow-y-auto">
-        <main className="flex-1 p-6 md:p-10">
+        <main className="flex-1 p-4 pb-24 md:pb-10 md:p-10">
           {children}
         </main>
       </div>
+      <MobileNav />
     </div>
   );
 }
