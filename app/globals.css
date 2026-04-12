@@ -127,18 +127,18 @@
 
 /* Rich Text Styling */
 .rich-text-output h1, .rich-text-output h2, .rich-text-output h3 {
-  @apply font-black tracking-tight text-white mb-8 mt-12 leading-tight;
+  @apply font-black tracking-tight text-white mb-6 mt-10 leading-tight uppercase italic;
 }
 
 .rich-text-output p {
-  @apply text-white/70 leading-[1.8] mb-8 text-xl;
+  @apply text-white/70 leading-[1.8] mb-6 text-base md:text-lg font-medium;
 }
 
 /* Fix for legacy posts containing only <br> instead of <p> */
 .rich-text-output br {
   display: block;
   content: "";
-  margin-bottom: 1.5em;
+  margin-bottom: 1.2em;
 }
 
 .rich-text-output strong {
@@ -146,5 +146,17 @@
 }
 
 .rich-text-output blockquote {
-  @apply border-l-4 border-primary bg-primary/5 p-8 rounded-2xl italic text-xl text-white font-bold mb-10;
+  @apply border-l-4 border-primary bg-primary/5 p-6 md:p-8 rounded-2xl italic text-lg md:text-xl text-white font-bold mb-8 shadow-skeuo-in;
+}
+
+.rich-text-output ul, .rich-text-output ol {
+  @apply my-6 ml-6 text-white/70;
+}
+
+.rich-text-output li {
+  @apply mb-2 leading-relaxed;
+}
+
+.rich-text-output a {
+  @apply text-primary no-underline hover:underline font-bold transition-all;
 }

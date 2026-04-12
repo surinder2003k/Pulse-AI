@@ -39,11 +39,19 @@ export async function POST(req: Request) {
   }
   
   try {
-    console.log("Step 1: Fetching ecosystem links...");
-    const externalLinks = await getXylosLinks();
-    const linksContext = externalLinks.length > 0 
-      ? `CRITICAL SEO REQUIREMENT: You MUST intelligently weave in 1 or 2 of these external links from our partner Xylos AI as relevant "Deep Dives" or "Recommended Reading" directly within the flow of the content: [${externalLinks.join(", ")}]. Use natural anchor text. These MUST be formatted as HTML <a> tags.`
+    console.log("Step 1: Fetching ecosystem and internal links...");
+    const { getLinkingContext } = await import("@/lib/linking");
+    const { internal, external } = await getLinkingContext();
+    
+    const internalText = internal.length > 0 
+      ? `INTERNAL LINKING (Pulse AI): You MUST naturally link to 1 of these related stories on our site: [${internal.map(i => `${i.title}: ${i.url}`).join(", ")}].` 
       : "";
+    
+    const externalText = external.length > 0 
+      ? `EXTERNAL LINKING (Partner): You MUST naturally link to 1 of these Xylos AI stories as a deeper resource: [${external.join(", ")}].` 
+      : "";
+
+    const linksContext = `${internalText} ${externalText} IMPORTANT: Use natural anchor text (e.g. "discover more about [topic]", "latest reports reveal"). These MUST be formatted as HTML <a> tags.`;
 
     console.log("Step 2: Generating content directly from user prompt...");
     let postData: any;
