@@ -172,7 +172,7 @@ export default function SEOAnalyzer({ title, content, seoKeywords, focusKeyword,
     maxScore += 25;
     if (focusKeyword) {
       const fkLower = focusKeyword.toLowerCase();
-      const fkTests = [];
+      const fkTests: string[] = [];
       
       // FK in Meta Title
       if (metaTitle.toLowerCase().includes(fkLower)) {
