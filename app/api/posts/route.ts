@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   try {
     await connectDB();
     const body = await req.json();
-    const { title, excerpt, content, category, tags, featureImage, seoKeywords } = body;
+    const { title, excerpt, content, category, tags, featureImage, featureImageAlt, seoKeywords, focusKeyword, metaTitle, metaDescription } = body;
 
     let slug = slugifyLib(title, { lower: true, strict: true });
     
@@ -41,7 +41,11 @@ export async function POST(req: Request) {
       category,
       tags: Array.isArray(tags) ? tags : [],
       feature_image_url: featureImage,
+      feature_image_alt: featureImageAlt || title,
       seoKeywords: seoKeywords || "",
+      meta_title: metaTitle || "",
+      meta_description: metaDescription || "",
+      focus_keyword: focusKeyword || "",
       status: "published",
       is_ai_generated: body.is_ai_generated || false,
       author_name: authorName,

@@ -5,6 +5,7 @@ import Post from "@/models/Post";
 import slugifyLib from "slugify";
 import { generateContentWithFallback } from "@/lib/ai-generator";
 import { ADMIN_EMAIL } from "@/lib/utils";
+import { getXylosLinks } from "@/lib/external-links";
 
 // Keys from environment variables
 const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY;
@@ -33,6 +34,12 @@ export async function GET(req: Request) {
   try {
     await connectDB();
     
+    console.log("Fetching ecosystem links for automation...");
+    const externalLinks = await getXylosLinks();
+    const linksContext = externalLinks.length > 0 
+      ? `You SHOULD intelligently weave in 1-2 of these external links from our ecosystem partner Xylos AI as relevant deep dives or suggested reading: [${externalLinks.join(", ")}]. Provide them as HTML <a> tags inside the content.`
+      : "";
+
     // Fetch recent post titles to provide context to the AI (avoiding duplicates)
     const recentPosts = await Post.find().sort({ createdAt: -1 }).limit(15).select('title').lean();
     const recentTitles = recentPosts.map(p => p.title).join(", ");
@@ -69,12 +76,18 @@ export async function GET(req: Request) {
       Format the response STRICTLY as a JSON object with these exact keys:
       {
         "title": "A highly engaging, SEO-optimized title for the trending news",
+        "meta_title": "A custom SEO title for Google (max 60 chars)",
+        "meta_description": "A compelling meta description (max 160 chars)",
+        "focus_keyword": "The primary focus keyword for this article",
         "content": "Full Markdown content (1000-1200 words) discussing the news.",
-        "excerpt": "A powerful SEO meta description (max 160 chars)",
+        "excerpt": "A powerful short summary for cards/previews (max 160 chars)",
         "category": "${settings.automationCategory}",
         "tags": ["trending", "${settings.automationCategory.toLowerCase()}", "seo-tag1", "seo-tag2"],
-        "imageSearchKeyword": "A generic 1-2 word English keyword (like 'technology', 'nature', 'city') to find a high-quality relevant background image on Unsplash. DO NOT use specific brand names or acronyms."
+        "imageSearchKeyword": "A generic 1-2 word English keyword (like 'technology', 'nature', 'city') to find a high-quality relevant background image on Unsplash. DO NOT use specific brand names or acronyms.",
+        "image_alt": "A descriptive ALT tag for the news visual"
       }
+
+      ${linksContext}
       
       Important: Return ONLY the JSON object. NO markdown blocks or other text outside the JSON. Ensure the JSON is valid and minified.`;
 
@@ -134,7 +147,11 @@ export async function GET(req: Request) {
           content: postData.content,
           category: postData.category,
           tags: postData.tags,
+          meta_title: postData.meta_title,
+          meta_description: postData.meta_description,
+          focus_keyword: postData.focus_keyword,
           feature_image_url: featureImage,
+          feature_image_alt: postData.image_alt || postData.title,
           status: "published",
           is_ai_generated: true,
           published_at: new Date()

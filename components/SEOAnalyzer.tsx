@@ -6,7 +6,10 @@ import { CheckCircle, AlertTriangle, XCircle } from "lucide-react";
 interface SEOAnalyzerProps {
   title: string;
   content: string;
-  seoKeywords: string; // Comma separated
+  seoKeywords: string; // Comma separated tags
+  focusKeyword: string; // The primary target
+  metaTitle: string;
+  metaDescription: string;
 }
 
 interface SEOTest {
@@ -16,7 +19,7 @@ interface SEOTest {
   score: number; // 0 to 10
 }
 
-export default function SEOAnalyzer({ title, content, seoKeywords }: SEOAnalyzerProps) {
+export default function SEOAnalyzer({ title, content, seoKeywords, focusKeyword, metaTitle, metaDescription }: SEOAnalyzerProps) {
   const [score, setScore] = useState(0);
   const [tests, setTests] = useState<SEOTest[]>([]);
 
@@ -127,16 +130,84 @@ export default function SEOAnalyzer({ title, content, seoKeywords }: SEOAnalyzer
     maxScore += 10;
     const hasLinks = content.includes('<a href=');
     if (hasLinks) {
-       newTests.push({ id: "links", label: `Content contains links`, status: "pass", score: 10 });
+       newTests.push({ id: "links", label: `Content contains internal/external links`, status: "pass", score: 10 });
        totalScore += 10;
     } else {
-       newTests.push({ id: "links", label: `No outbound/internal links found`, status: "warn", score: 0 });
+       newTests.push({ id: "links", label: `No links found. Add <a> tags for SEO authority.`, status: "warn", score: 0 });
+    }
+
+    // NEW ADVANCED TESTS
+    
+    // 7. Meta Title Test (Max 15)
+    maxScore += 15;
+    if (metaTitle) {
+      const metaTitleLen = metaTitle.length;
+      if (metaTitleLen >= 30 && metaTitleLen <= 60) {
+        newTests.push({ id: "mt_len", label: `Meta Title length is perfect (${metaTitleLen} chars)`, status: "pass", score: 15 });
+        totalScore += 15;
+      } else {
+        newTests.push({ id: "mt_len", label: `Meta Title length is suboptimal (${metaTitleLen} chars). Aim for 30-60.`, status: "warn", score: 5 });
+        totalScore += 5;
+      }
+    } else {
+      newTests.push({ id: "mt_len", label: `Missing Meta Title`, status: "fail", score: 0 });
+    }
+
+    // 8. Meta Description Test (Max 15)
+    maxScore += 15;
+    if (metaDescription) {
+      const metaDesLen = metaDescription.length;
+      if (metaDesLen >= 70 && metaDesLen <= 160) {
+        newTests.push({ id: "md_len", label: `Meta Description length is perfect (${metaDesLen} chars)`, status: "pass", score: 15 });
+        totalScore += 15;
+      } else {
+        newTests.push({ id: "md_len", label: `Meta Description length is suboptimal (${metaDesLen} chars). Aim for 70-160.`, status: "warn", score: 5 });
+        totalScore += 5;
+      }
+    } else {
+      newTests.push({ id: "md_len", label: `Missing Meta Description`, status: "fail", score: 0 });
+    }
+
+    // 9. Focus Keyword Tests (Max 25)
+    maxScore += 25;
+    if (focusKeyword) {
+      const fkLower = focusKeyword.toLowerCase();
+      const fkTests = [];
+      
+      // FK in Meta Title
+      if (metaTitle.toLowerCase().includes(fkLower)) {
+        fkTests.push("Meta Title");
+        totalScore += 8;
+      }
+      
+      // FK in Meta Description
+      if (metaDescription.toLowerCase().includes(fkLower)) {
+        fkTests.push("Meta Description");
+        totalScore += 8;
+      }
+      
+      // FK in First Paragraph
+      const firstPara = rawContent.split('\n')[0].toLowerCase();
+      if (firstPara.includes(fkLower)) {
+        fkTests.push("First Paragraph");
+        totalScore += 9;
+      }
+
+      if (fkTests.length === 3) {
+        newTests.push({ id: "fk_dist", label: `Focus keyword used in Title, Desc, and Intro!`, status: "pass", score: 25 });
+      } else if (fkTests.length > 0) {
+        newTests.push({ id: "fk_dist", label: `Focus keyword missing from ${["Meta Title", "Meta Description", "First Paragraph"].filter(x => !fkTests.includes(x)).join(", ")}`, status: "warn", score: 10 });
+      } else {
+        newTests.push({ id: "fk_dist", label: `Focus keyword not found in SEO meta or intro`, status: "fail", score: 0 });
+      }
+    } else {
+      newTests.push({ id: "fk_dist", label: `Missing Focus Keyword`, status: "fail", score: 0 });
     }
 
     setTests(newTests);
     setScore(Math.round((totalScore / maxScore) * 100));
 
-  }, [title, content, seoKeywords]);
+  }, [title, content, seoKeywords, focusKeyword, metaTitle, metaDescription]);
 
   const getColor = () => {
     if (score >= 80) return "bg-green-500";

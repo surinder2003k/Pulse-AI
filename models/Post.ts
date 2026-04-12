@@ -10,9 +10,13 @@ export interface IPost {
   category: string;
   tags: string[];
   feature_image_url?: string;
+  feature_image_alt?: string;
   status: 'draft' | 'published';
   is_ai_generated: boolean;
   seoKeywords?: string;
+  meta_title?: string;
+  meta_description?: string;
+  focus_keyword?: string;
   author_name?: string;
   author_image?: string;
   published_at: Date;
@@ -32,7 +36,11 @@ const PostSchema = new Schema<IPost>({
   category: { type: String, required: true },
   tags: [{ type: String }],
   feature_image_url: { type: String },
+  feature_image_alt: { type: String },
   seoKeywords: { type: String },
+  meta_title: { type: String },
+  meta_description: { type: String },
+  focus_keyword: { type: String },
   status: { type: String, enum: ['draft', 'published'], default: 'published' },
   is_ai_generated: { type: Boolean, default: false },
   author_name: { type: String },

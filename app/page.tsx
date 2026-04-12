@@ -10,6 +10,18 @@ import { Badge } from "@/components/ui/badge";
 import Logo from "@/components/Logo";
 
 export const revalidate = 0;
+export const metadata = {
+  title: "Pulse AI | High-Octane Intelligence Reports",
+  description: "The next generation of AI-driven editorial content. Engineering stories across F1, Global Sports, and Deep Tech with tactical precision.",
+  openGraph: {
+    title: "Pulse AI | High-Octane Intelligence Reports",
+    description: "The next generation of AI-driven editorial content.",
+    url: "https://pulse-blog-ai.vercel.app",
+    siteName: "Pulse AI",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    type: "website",
+  },
+};
 
 export default async function HomePage() {
   await connectDB();
@@ -68,7 +80,7 @@ export default async function HomePage() {
                   <div className="aspect-[4/5] rounded-[2rem] overflow-hidden border border-white/5 shadow-skeuo-float bg-secondary/10 relative transition-transform duration-700 group-hover:scale-[1.02]">
                     <img 
                       src={featuredPost.feature_image_url} 
-                      alt="" 
+                      alt={featuredPost.feature_image_alt || featuredPost.title} 
                       className="w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700" 
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent pointer-events-none" />

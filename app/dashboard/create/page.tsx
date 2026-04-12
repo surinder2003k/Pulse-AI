@@ -65,7 +65,11 @@ export default function CreatePostPage() {
     category: "Technology",
     tags: "",
     seoKeywords: "",
-    featureImage: ""
+    focusKeyword: "",
+    metaTitle: "",
+    metaDescription: "",
+    featureImage: "",
+    featureImageAlt: ""
   });
 
   const showAlert = (type: "success" | "error" | "info", title: string, message: string) => {
@@ -92,8 +96,12 @@ export default function CreatePostPage() {
         content: data.content,
         category: data.category,
         tags: Array.isArray(data.tags) ? data.tags.join(", ") : data.tags,
-        seoKeywords: "",
-        featureImage: data.feature_image_url || data.featureImage || ""
+        seoKeywords: data.seoKeywords || "",
+        focusKeyword: data.focus_keyword || "",
+        metaTitle: data.meta_title || "",
+        metaDescription: data.meta_description || "",
+        featureImage: data.feature_image_url || data.featureImage || "",
+        featureImageAlt: data.feature_image_alt || data.image_alt || data.title || ""
       });
       toast.dismiss(toastId);
       showAlert("success", "Content Ready", "AI has successfully generated the draft.");
@@ -207,6 +215,9 @@ export default function CreatePostPage() {
                     title={formData.title} 
                     content={formData.content} 
                     seoKeywords={formData.seoKeywords} 
+                    focusKeyword={formData.focusKeyword}
+                    metaTitle={formData.metaTitle}
+                    metaDescription={formData.metaDescription}
                   />
 
                   {mounted ? (
@@ -275,6 +286,16 @@ export default function CreatePostPage() {
                 <Dropzone 
                   onUpload={(url) => setFormData({...formData, featureImage: url})} 
                   currentImage={formData.featureImage} 
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Image ALT Text</label>
+                <Input 
+                  placeholder="Describe this image for SEO..." 
+                  value={formData.featureImageAlt}
+                  onChange={(e) => setFormData({...formData, featureImageAlt: e.target.value})}
+                  className="text-xs h-8 bg-secondary/20"
                 />
               </div>
 
@@ -366,14 +387,45 @@ export default function CreatePostPage() {
                 />
               </div>
 
-              <div className="pt-4 border-t space-y-2">
-                <label className="text-sm font-medium">Focus SEO Keywords</label>
-                <Input 
-                  placeholder="e.g. best ai tools, future of groq" 
-                  value={formData.seoKeywords}
-                  onChange={(e) => setFormData({...formData, seoKeywords: e.target.value})}
-                />
-                <p className="text-[10px] text-muted-foreground">Separate keywords with commas.</p>
+              <div className="pt-4 border-t space-y-4">
+                <div className="flex items-center gap-2 text-primary font-semibold">
+                  <BrainCircuit className="h-4 w-4" />
+                  <span className="text-sm">SEO Meta Controls</span>
+                </div>
+                
+                <div className="space-y-2">
+                  <label className="text-[11px] uppercase tracking-wider font-bold text-muted-foreground">Focus Keyword</label>
+                  <Input 
+                    placeholder="Enter focus keyword..." 
+                    value={formData.focusKeyword}
+                    onChange={(e) => setFormData({...formData, focusKeyword: e.target.value})}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[11px] uppercase tracking-wider font-bold text-muted-foreground">Meta Title</label>
+                  <Input 
+                    placeholder="Custom SEO Title..." 
+                    value={formData.metaTitle}
+                    onChange={(e) => setFormData({...formData, metaTitle: e.target.value})}
+                  />
+                  <p className={`text-[10px] ${formData.metaTitle.length > 60 ? 'text-red-500' : 'text-muted-foreground'}`}>
+                    {formData.metaTitle.length}/60 characters
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[11px] uppercase tracking-wider font-bold text-muted-foreground">Meta Description</label>
+                  <Textarea 
+                    placeholder="Custom Meta Description..." 
+                    value={formData.metaDescription}
+                    onChange={(e) => setFormData({...formData, metaDescription: e.target.value})}
+                    className="min-h-[80px] text-xs"
+                  />
+                   <p className={`text-[10px] ${formData.metaDescription.length > 160 ? 'text-red-500' : 'text-muted-foreground'}`}>
+                    {formData.metaDescription.length}/160 characters
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>

@@ -4,6 +4,7 @@ import connectDB from "@/lib/mongodb";
 import Post from "@/models/Post";
 import slugifyLib from "slugify";
 import { generateContentWithFallback } from "@/lib/ai-generator";
+import { getXylosLinks } from "@/lib/external-links";
 
 // Keys from environment variables
 const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY;
@@ -38,7 +39,13 @@ export async function POST(req: Request) {
   }
   
   try {
-    console.log("Step 1: Generating content directly from user prompt...");
+    console.log("Step 1: Fetching ecosystem links...");
+    const externalLinks = await getXylosLinks();
+    const linksContext = externalLinks.length > 0 
+      ? `You MAY intelligently include 1-2 of these external links from our ecosystem partner Xylos AI if they are contextually relevant: [${externalLinks.join(", ")}]. Provide them as standard HTML <a> tags.`
+      : "";
+
+    console.log("Step 2: Generating content directly from user prompt...");
     let postData: any;
 
     // DIRECT USER PROMPT: No personas, no hardcoded tone. Just the user's exact topic/instructions.
@@ -58,12 +65,18 @@ export async function POST(req: Request) {
     Format the response STRICTLY as a JSON object with these exact keys:
     {
       "title": "A highly engaging, SEO-optimized title",
+      "meta_title": "A custom SEO title for Google (max 60 chars)",
+      "meta_description": "A compelling meta description (max 160 chars)",
+      "focus_keyword": "The primary focus keyword for this article",
       "content": "<h2>Introduction</h2><p>First paragraph here...</p><p>Second paragraph...</p><h3>Key Benefits</h3><ul><li>Point 1</li><li>Point 2</li></ul><p>Conclusion paragraph...</p>",
-      "excerpt": "A powerful SEO meta description (max 160 chars)",
+      "excerpt": "A powerful short summary for cards/previews (max 160 chars)",
       "category": "Technology, Business, News, or whichever fits best",
       "tags": ["seo-tag1", "seo-tag2", "seo-tag3", "seo-tag4", "seo-tag5"],
-      "imageSearchKeyword": "A generic 1-2 word English keyword (like 'technology', 'city') for Unsplash"
+      "imageSearchKeyword": "A generic 1-2 word English keyword (like 'technology', 'city') for Unsplash",
+      "image_alt": "A descriptive ALT tag for the feature image"
     }
+
+    ${linksContext}
     
     Return ONLY JSON. No external markdown, no conversational text.`;
 
@@ -121,7 +134,11 @@ export async function POST(req: Request) {
         content: postData.content,
         category: postData.category,
         tags: postData.tags,
+        meta_title: postData.meta_title,
+        meta_description: postData.meta_description,
+        focus_keyword: postData.focus_keyword,
         feature_image_url: featureImage,
+        feature_image_alt: postData.image_alt || postData.title,
         status: "published",
         is_ai_generated: true,
         published_at: new Date()

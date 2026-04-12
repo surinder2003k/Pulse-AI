@@ -17,16 +17,16 @@ import { ADMIN_EMAIL } from "@/lib/utils";
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   await connectDB();
-  const post = await Post.findOne({ slug }).select("title excerpt feature_image_url tags").lean() as IPost | null;
+  const post = await Post.findOne({ slug }).select("title excerpt feature_image_url tags meta_title meta_description focus_keyword").lean() as IPost | null;
 
   if (!post) return { title: 'Story Missing' };
 
   const url = `${process.env.NEXT_PUBLIC_APP_URL || 'https://pulse-blog-ai.vercel.app'}/blog/${slug}`;
 
   return {
-    title: `${post.title} | Pulse AI`,
-    description: post.excerpt,
-    keywords: `${post.tags?.join(", ") || ""}, Pulse Editorial, F1 Reports, Football Deep Dives, Real-time Stories, Premium Content`,
+    title: (post.meta_title || post.title) + " | Pulse AI",
+    description: post.meta_description || post.excerpt,
+    keywords: `${post.focus_keyword || ""}, ${post.tags?.join(", ") || ""}, Pulse Editorial, F1 Reports, Football Deep Dives, Real-time Stories, Premium Content`,
     robots: {
       index: true,
       follow: true,
@@ -36,8 +36,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       canonical: url,
     },
     openGraph: {
-      title: post.title,
-      description: post.excerpt,
+      title: post.meta_title || post.title,
+      description: post.meta_description || post.excerpt,
       url: url,
       siteName: "Pulse AI",
       images: [
@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
           url: post.feature_image_url || "/og-image.png",
           width: 1200,
           height: 630,
-          alt: post.title,
+          alt: post.meta_title || post.title,
         },
       ],
       type: "article",
@@ -55,8 +55,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     },
     twitter: {
       card: "summary_large_image",
-      title: post.title,
-      description: post.excerpt,
+      title: post.meta_title || post.title,
+      description: post.meta_description || post.excerpt,
       images: [post.feature_image_url || "/og-image.png"],
     },
   };
@@ -162,7 +162,7 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
         <div className="relative aspect-[16/9] rounded-[4rem] overflow-hidden mb-24 border border-white/5 bg-secondary/10 shadow-skeuo-float">
           <Image
             src={post.feature_image_url || "https://images.unsplash.com/photo-1677442136019-21780ecad995"}
-            alt={post.title}
+            alt={post.feature_image_alt || post.title}
             fill
             className="object-cover grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-1000 transform hover:scale-[1.02]"
             priority
