@@ -72,6 +72,15 @@ export async function GET(req: Request) {
       // Step 1: Prompt Gemini to pick a trending topic
       const automationPrompt = `You are an expert AI journalist and SEO content creator.
       Identify a highly trending global news topic or major breakthrough from the last 24-48 hours specifically in the "${settings.automationCategory}" category.
+      2. Use <h2> and <h3> for headings.
+      3. Use <ul>, <ol>, and <li> for lists.
+      4. CRITICAL: Use only standard text and well-formatted Markdown/HTML.
+      
+      CRITICAL STRUCTURAL RULES:
+      - Start EVERY line at column 0 (no leading spaces/indentation).
+      - Use DOUBLE NEWLINES (\n\n) between every paragraph.
+      - Use DOUBLE NEWLINES before every heading.
+      - Ensure a space follows every '#' in headers (e.g. '## Header').
       
       CRITICAL: DO NOT write about any of these recent topics: [${recentTitles}]. 
       You MUST choose something unique and fresh that hasn't been covered in the list above.

@@ -38,18 +38,37 @@ export default function MarkdownRenderer({ content, className }: MarkdownRendere
     className
   );
 
-  let processedContent = (content || "").trim();
+  // Robust normalization for AI-generated text
+  const cleanContent = (raw: string) => {
+    if (!raw) return "";
+    
+    let text = raw.trim();
 
-  // Normalize bad AI outputs without doubling whitespace
-  // 1. Remove "Here is a blog post..." leading chatter
-  processedContent = processedContent.replace(/^(Here is|Sure,|In this article|Today we will).*\n/i, "");
-  
-  // 2. Clean up multiple empty lines into single paragraph breaks
-  processedContent = processedContent.replace(/\n{3,}/g, '\n\n');
+    // 1. Remove common AI conversational fluff
+    text = text.replace(/^(Here is|Sure,|In this article|Today we will|This blog post).*\n/i, "");
+
+    // 2. STRIP leading indentation (VITAL for Markdown detection)
+    // Most AI outputs use 2-4 spaces which prevents `#` from being a header
+    text = text.split('\n').map(line => line.trimStart()).join('\n');
+
+    // 3. Ensure double newlines for sections if the AI only sent single ones
+    // We target headers, lists, and bold text that likely starts a new context
+    if (!text.includes('\n\n')) {
+      text = text
+        .replace(/\n(?=#{1,6}\s)/g, '\n\n') // Before headers
+        .replace(/\n(?=[*+-]\s)/g, '\n\n')  // Before lists
+        .replace(/\n(?=\d+\.\s)/g, '\n\n');  // Before numbered lists
+    }
+
+    // 4. Force a double newline before every header if not present
+    text = text.replace(/([^\n])(\n)(#{1,6}\s)/g, '$1\n\n$3');
+
+    return text;
+  };
+
+  const processedContent = cleanContent(content);
 
   if (containsHtml(processedContent)) {
-    // If it contains HTML links/tags, use parsing to preserve the dual-linking while keeping prose styles
-    // We Wrap in a prose div so the parser-generated tags inherit the styles
     return (
       <div className={cn(proseClasses, "rich-text-output")}>
         {parse(processedContent)}

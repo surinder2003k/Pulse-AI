@@ -64,11 +64,14 @@ export async function POST(req: Request) {
     The article MUST be detailed and lengthy, approximately 1500 to 2000 words.
     
     IMPORTANT FORMATTING RULES:
-    1. You MUST format the "content" value as rich HTML.
-    2. You MUST wrap EVERY paragraph in <p> tags.
-    3. You MUST use <h2> and <h3> for headings.
-    4. You MUST use <ul>, <ol>, and <li> for lists.
-    5. CRITICAL: DO NOT use Markdown (like # or **). Every piece of text must be properly nested inside an HTML tag.
+    1. Use well-formatted Markdown.
+    2. Use <h2> and <h3> for headings.
+    3. Use <ul>, <ol>, and <li> for lists.
+    4. CRITICAL STRUCTURAL RULES:
+       - Start EVERY line at column 0 (no leading spaces/indentation).
+       - Use DOUBLE NEWLINES (\n\n) between every paragraph.
+       - Use DOUBLE NEWLINES before every heading.
+       - Ensure a space follows every '#' in headers (e.g. '## Header').
     
     Format the response STRICTLY as a JSON object with these exact keys:
     {
