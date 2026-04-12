@@ -39,7 +39,11 @@ export default function EditPostPage({ params }: EditPostPageProps) {
     category: "Technology",
     tags: "",
     seoKeywords: "",
-    featureImage: ""
+    featureImage: "",
+    featureImageAlt: "",
+    metaTitle: "",
+    metaDescription: "",
+    focusKeyword: ""
   });
   const [imageSearchQuery, setImageSearchQuery] = useState("");
   const [isSearchingImage, setIsSearchingImage] = useState(false);
@@ -65,7 +69,11 @@ export default function EditPostPage({ params }: EditPostPageProps) {
           category: data.category,
           tags: Array.isArray(data.tags) ? data.tags.join(", ") : data.tags,
           seoKeywords: data.seoKeywords || "",
-          featureImage: data.feature_image_url || ""
+          featureImage: data.feature_image_url || "",
+          featureImageAlt: data.feature_image_alt || "",
+          metaTitle: data.meta_title || "",
+          metaDescription: data.meta_description || "",
+          focusKeyword: data.focus_keyword || ""
         });
       } catch (error) {
         toast.error("Could not load post data.");
@@ -185,6 +193,9 @@ export default function EditPostPage({ params }: EditPostPageProps) {
                     title={formData.title}
                     content={formData.content}
                     seoKeywords={formData.seoKeywords}
+                    focusKeyword={formData.focusKeyword}
+                    metaTitle={formData.metaTitle}
+                    metaDescription={formData.metaDescription}
                   />
 
                   {mounted ? (
@@ -304,13 +315,63 @@ export default function EditPostPage({ params }: EditPostPageProps) {
               {formData.featureImage && (
                 <div className="pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
                   <label className="text-xs font-bold text-muted-foreground uppercase mb-2 block">Preview</label>
-                  <div className="aspect-video rounded-xl overflow-hidden border border-white/10 shadow-skeuo-in bg-black/20">
+                  <div className="aspect-video rounded-xl overflow-hidden border border-white/10 shadow-skeuo-in bg-black/20 text-center flex items-center justify-center">
                     <img src={formData.featureImage} alt="Preview" className="w-full h-full object-cover" />
                   </div>
                 </div>
               )}
             </div>
+          </Card>
 
+          <Card className="bg-secondary/30 border-white/5 p-6 shadow-skeuo-out rounded-[2rem]">
+            <div className="flex items-center gap-2 mb-4">
+              <Search className="h-5 w-5 text-primary" />
+              <h2 className="text-lg font-bold">SEO Meta Controls</h2>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-muted-foreground uppercase">Focus Keyword</label>
+                <Input 
+                  placeholder="Primary target keyword" 
+                  value={formData.focusKeyword}
+                  onChange={(e) => setFormData({...formData, focusKeyword: e.target.value})}
+                  className="bg-background/50 border-white/5 rounded-xl h-11 shadow-skeuo-in"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-muted-foreground uppercase">SEO Meta Title</label>
+                <Input 
+                  placeholder="Custom browser title" 
+                  value={formData.metaTitle}
+                  onChange={(e) => setFormData({...formData, metaTitle: e.target.value})}
+                  className="bg-background/50 border-white/5 rounded-xl h-11 shadow-skeuo-in"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-muted-foreground uppercase transition-all duration-300">
+                  SEO Meta Description
+                </label>
+                <Textarea 
+                  placeholder="Custom search snippet..." 
+                  value={formData.metaDescription}
+                  onChange={(e) => setFormData({...formData, metaDescription: e.target.value})}
+                  className="bg-background/50 border-white/5 min-h-[80px] rounded-xl shadow-skeuo-in"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-muted-foreground uppercase">Image ALT Tag</label>
+                <Input 
+                  placeholder="Accessibility description" 
+                  value={formData.featureImageAlt}
+                  onChange={(e) => setFormData({...formData, featureImageAlt: e.target.value})}
+                  className="bg-background/50 border-white/5 rounded-xl h-11 shadow-skeuo-in"
+                />
+              </div>
+            </div>
           </Card>
         </div>
       </div>
