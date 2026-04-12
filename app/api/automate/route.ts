@@ -37,7 +37,7 @@ export async function GET(req: Request) {
     console.log("Fetching ecosystem links for automation...");
     const externalLinks = await getXylosLinks();
     const linksContext = externalLinks.length > 0 
-      ? `You SHOULD intelligently weave in 1-2 of these external links from our ecosystem partner Xylos AI as relevant deep dives or suggested reading: [${externalLinks.join(", ")}]. Provide them as HTML <a> tags inside the content.`
+      ? `CRITICAL SEO REQUIREMENT: You MUST intelligently weave in 1 or 2 of these external links from our partner Xylos AI as relevant "Deep Dives" or "Recommended Reading" directly within the flow of the content: [${externalLinks.join(", ")}]. Use natural anchor text. These MUST be formatted as HTML <a> tags.`
       : "";
 
     // Fetch recent post titles to provide context to the AI (avoiding duplicates)

@@ -12,34 +12,35 @@ export async function getXylosLinks(): Promise<string[]> {
     });
 
     if (!response.ok) {
-      console.error(`Failed to fetch sitemap: ${response.statusText}`);
+      console.error(`[Linking] Failed to fetch Xylos sitemap: ${response.status} ${response.statusText}`);
       return [];
     }
 
     const xml = await response.text();
     
-    // Simple regex to extract URLs from <loc> tags
+    // Improved regex to extract URLs from <loc> tags
     const locRegex = /<loc>(https?:\/\/[^<]+)<\/loc>/g;
     const links: string[] = [];
     let match;
 
     while ((match = locRegex.exec(xml)) !== null) {
-      const url = match[1];
-      // Filter out root, legal, or administrative pages if necessary
-      if (
-        !url.endsWith("/") && 
-        !url.includes("/login") && 
-        !url.includes("/dashboard") &&
-        !url.includes("/api")
-      ) {
+      const url = match[1].trim();
+      
+      // Focus primarily on blog posts for contextual relevance
+      const isBlogPost = url.includes("/blog/");
+      const isIrrelevant = url.includes("/login") || url.includes("/dashboard") || url.includes("/api") || url.includes("/about");
+
+      if (isBlogPost && !isIrrelevant) {
         links.push(url);
       }
     }
 
-    // Return the latest 20 links to keep prompt size manageable
-    return links.slice(0, 20);
-  } catch (error) {
-    console.error("Error parsing Xylos sitemap:", error);
+    console.log(`[Linking] Successfully harvested ${links.length} relevant external links from Xylos AI.`);
+    
+    // Return a shuffled selection or the first 15 links
+    return links.sort(() => 0.5 - Math.random()).slice(0, 15);
+  } catch (error: any) {
+    console.error("[Linking] CRITICAL: Error parsing Xylos sitemap:", error.message);
     return [];
   }
 }
