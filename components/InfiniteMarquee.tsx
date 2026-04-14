@@ -2,6 +2,7 @@
 
 import React from "react";
 import { cn } from "@/lib/utils";
+import { Zap } from "lucide-react";
 
 interface InfiniteMarqueeProps {
   images: string[];
