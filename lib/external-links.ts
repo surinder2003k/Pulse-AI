@@ -24,7 +24,9 @@ export async function getXylosLinks(): Promise<string[]> {
     let match;
 
     while ((match = locRegex.exec(xml)) !== null) {
-      const url = match[1].trim();
+      const rawUrl = match[1].trim();
+      // Domain Guard: Force normalization to the user-requested staging domain
+      const url = rawUrl.replace('xylos-ai.com', 'xylosai.vercel.app');
       
       // Focus primarily on blog posts for contextual relevance
       const isBlogPost = url.includes("/blog/");

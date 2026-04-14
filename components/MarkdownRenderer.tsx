@@ -61,23 +61,18 @@ export default function MarkdownRenderer({ content, className }: MarkdownRendere
     }
 
     // 4. Force a double newline before every header if not present
-    text = text.replace(/([^\n])(\n)(#{1,6}\s)/g, '$1\n\n$3');
+    text = text.replace(/([^\n])(\n?)(#{1,6}\s)/g, '$1\n\n$3');
+
+    // 5. Ensure EVERY header has a space (Markdown requirement)
+    text = text.replace(/\n(#{1,6})([^\s#])/g, '\n$1 $2');
 
     return text;
   };
 
   const processedContent = cleanContent(content);
 
-  if (containsHtml(processedContent)) {
-    return (
-      <div className={cn(proseClasses, "rich-text-output")}>
-        {parse(processedContent)}
-      </div>
-    );
-  }
-
   return (
-    <div className={proseClasses}>
+    <div className={cn(proseClasses, "rich-text-output")}>
       <ReactMarkdown remarkPlugins={[remarkGfm]}>
         {processedContent}
       </ReactMarkdown>
