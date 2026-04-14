@@ -42,12 +42,8 @@ export default async function HomePage() {
       <AnimatedHero />
 
       {/* 2. Stats/Editorial Hub Bar */}
-      <motion.section 
-        initial={{ opacity: 0, scale: 0.98 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1 }}
-        viewport={{ once: true }}
-        className="relative z-10 py-10 md:py-16 border-y border-white/5 glass-dark shadow-premium"
+      <section 
+        className="animate-in fade-in zoom-in-95 duration-1000 relative z-10 py-10 md:py-16 border-y border-white/5 glass-dark shadow-premium"
       >
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-12 md:gap-16">
@@ -70,7 +66,7 @@ export default async function HomePage() {
             ))}
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* 3. The Editor's Pick Section */}
       {featuredPost && (
