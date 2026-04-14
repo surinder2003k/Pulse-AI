@@ -46,7 +46,7 @@ export async function GET(req: Request) {
       ? `EXTERNAL LINKING (Partner): You MUST naturally link to 1 of these Xylos AI stories as a deeper resource: [${external.join(", ")}].` 
       : "";
 
-    const linksContext = `${internalText} ${externalText} IMPORTANT: Use natural anchor text (e.g. "discover more about [topic]", "latest reports reveal"). These MUST be formatted as HTML <a> tags.`;
+    const linksContext = `${internalText} ${externalText} IMPORTANT: Use natural anchor text. CRITICAL: You MUST use the EXACT URLs provided above (specifically starting with "https://xylosai.vercel.app/"). DO NOT alter them to "xylos-ai.com" or any other domain. These MUST be formatted as HTML <a> tags.`;
 
     // Fetch recent post titles to avoid duplicating topics
     const recentPosts = await Post.find().sort({ createdAt: -1 }).limit(10).select('title').lean();
