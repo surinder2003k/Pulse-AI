@@ -59,7 +59,10 @@ export default function MarkdownRenderer({ content, className }: MarkdownRendere
     // Convert <a href="...">Text</a> to [Text](URL)
     text = text.replace(/<a\s+href=["'](.*?)["'].*?>(.*?)<\/a>/gi, '[$2]($1)');
 
-    // 4. Ensure double newlines for sections if the AI only sent single ones
+    // 4. GLOBAL DOMAIN GUARD: Ensure any stray xylos-ai.com links use the correct staging domain
+    text = text.replace(/xylos-ai\.com/gi, 'xylosai.vercel.app');
+
+    // 5. Ensure double newlines for sections if the AI only sent single ones
     // We target headers, lists, and bold text that likely starts a new context
     if (!text.includes('\n\n')) {
       text = text
