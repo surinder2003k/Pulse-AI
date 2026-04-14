@@ -49,71 +49,84 @@ export default function AnimatedHero() {
   }, []);
 
   return (
-    <section ref={containerRef} className="pt-20 pb-20 md:pt-24 md:pb-28 flex flex-col items-center text-center gap-6 md:gap-10 px-5 md:px-6 relative overflow-hidden min-h-[85vh] justify-center">
-      {/* Grid Background Overlay */}
-      <div className="absolute inset-0 grid-bg opacity-20 pointer-events-none" />
+    <section ref={containerRef} className="pt-24 pb-24 md:pt-32 md:pb-40 flex flex-col items-center text-center gap-8 md:gap-14 px-6 md:px-8 relative overflow-hidden min-h-[95vh] justify-center">
+      {/* Cinematic Background Architecture */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(229,9,20,0.06),transparent_60%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] mix-blend-overlay pointer-events-none" />
+      <div className="absolute inset-0 grid-bg opacity-[0.15] pointer-events-none" />
       
-      {/* Background Glows */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] -z-10 opacity-30 animate-pulse" />
+      {/* Dynamic Background Glows */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[180px] -z-10 opacity-40 animate-pulse-slow" />
 
-      {/* Pill Badge */}
-      <div className="hero-pill opacity-0 z-10 px-5 py-1.5 rounded-full bg-secondary/10 border border-white/5 flex items-center gap-3 backdrop-blur-md group cursor-pointer hover:bg-white/10 transition-all mb-2 shadow-skeuo-in">
-        <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(255,51,51,0.8)]" />
-        <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/50 group-hover:text-white transition-colors">
-          Terminal Protocol V2.0 Active
+      {/* Flagship Protocol Badge */}
+      <div className="hero-pill opacity-0 z-10 px-6 py-2 rounded-full bg-black/40 border border-white/5 flex items-center gap-4 backdrop-blur-3xl group cursor-pointer hover:border-primary/40 transition-all duration-700 shadow-premium">
+        <div className="relative flex items-center justify-center">
+           <div className="h-2 w-2 rounded-full bg-primary animate-ping absolute" />
+           <div className="h-2 w-2 rounded-full bg-primary shadow-glow-red relative" />
+        </div>
+        <span className="text-[10px] font-black uppercase tracking-[0.5em] text-white/40 group-hover:text-white transition-colors">
+          Terminal Protocol V2.0 <span className="text-primary italic">Live</span>
         </span>
-        <ArrowRight className="h-2.5 w-2.5 text-white/30 group-hover:translate-x-1 transition-transform group-hover:text-primary" />
+        <div className="h-4 w-[1px] bg-white/10" />
+        <ArrowRight className="h-3 w-3 text-white/20 group-hover:translate-x-1 transition-transform group-hover:text-primary" />
       </div>
       
-      {/* Massive Solid Title */}
-      <div className="relative z-10 select-none space-y-2 md:space-y-3">
-        <h1 className="hero-title-main opacity-0 text-3xl md:text-6xl lg:text-7xl font-black text-white tracking-tighter uppercase italic leading-[0.9]">
-          Design <span className="text-primary italic text-glow-red">Intelligence</span>
-        </h1>
-        <h2 className="hero-title-main opacity-0 text-xl md:text-4xl lg:text-5xl font-black text-white/20 tracking-tighter uppercase italic leading-none">
-          For the Future of Editorial
-        </h2>
+      {/* Typeform Architecture */}
+      <div className="relative z-10 select-none space-y-4 md:space-y-6">
+        <div className="overflow-hidden">
+          <h1 className="hero-title-main opacity-0 text-5xl md:text-8xl lg:text-9xl font-black text-white tracking-tighter uppercase italic leading-[0.85] flex flex-col items-center">
+            <span>Design</span>
+            <span className="text-primary italic text-glow-red relative">
+              Intelligence
+              <div className="absolute -bottom-2 left-0 w-full h-1 bg-primary/20 rounded-full overflow-hidden">
+                 <div className="h-full w-1/3 bg-primary animate-scan shadow-glow-red" />
+              </div>
+            </span>
+          </h1>
+        </div>
       </div>
       
-      <p className="hero-subtitle opacity-0 text-white/40 text-base md:text-xl max-w-3xl leading-relaxed font-medium z-10 mt-2 uppercase tracking-tight">
-        Pulse AI blends high-octane generative algorithms with elite editorial vision <br className="hidden md:block" />
-        to capture the spirit of global innovation.
+      <p className="hero-subtitle opacity-0 text-white/40 text-lg md:text-2xl max-w-4xl leading-relaxed font-medium z-10 uppercase tracking-tight italic">
+        Fusing high-octane generative algorithms with elite editorial vision <br className="hidden md:block" />
+        to capture the spirit of global innovation with tactical precision.
       </p>
       
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-4 z-10 w-full max-w-sm sm:max-w-none px-2 sm:px-0">
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 mt-6 z-10 w-full max-w-md sm:max-w-none px-4 sm:px-0">
         <Link href="/dashboard" className="w-full sm:w-auto">
-          <button className="hero-btn opacity-0 w-full sm:w-auto group rounded-[1.25rem] px-8 md:px-10 h-12 md:h-14 text-[10px] font-black uppercase tracking-[0.3em] text-white transition-all bg-primary hover:glow-red-strong shadow-skeuo-float hover:scale-[1.03] active:scale-95 flex items-center justify-center gap-3">
-            Initialize Dashboard <Zap className="h-3.5 w-3.5 fill-white" />
+          <button className="hero-btn opacity-0 w-full sm:w-auto group relative overflow-hidden rounded-[2rem] px-10 md:px-14 h-14 md:h-16 text-[11px] font-black uppercase tracking-[0.4em] text-white transition-all bg-primary hover:glow-red-strong shadow-premium hover:scale-[1.05] active:scale-95 flex items-center justify-center gap-4">
+            <span className="relative z-10 flex items-center gap-4">
+              Initialize Dashboard <Zap className="h-4 w-4 fill-white" />
+            </span>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shimmer" />
           </button>
         </Link>
         
         <Link href="/blog" className="w-full sm:w-auto">
-          <button className="hero-btn opacity-0 w-full sm:w-auto group rounded-[1.25rem] px-8 md:px-10 h-12 md:h-14 text-[10px] font-black uppercase tracking-[0.3em] text-white transition-all bg-secondary/10 border border-white/5 hover:bg-white/5 shadow-skeuo-button hover:scale-[1.03] active:scale-95 flex items-center justify-center gap-3 backdrop-blur-3xl">
-            Browse Archive <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform text-primary" />
+          <button className="hero-btn opacity-0 w-full sm:w-auto group rounded-[2rem] px-10 md:px-14 h-14 md:h-16 text-[11px] font-black uppercase tracking-[0.4em] text-white transition-all bg-white/5 border border-white/10 hover:bg-white/10 shadow-premium hover:scale-[1.05] active:scale-95 flex items-center justify-center gap-4 backdrop-blur-3xl hover:border-primary/30">
+            Browse Archive <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform text-primary" />
           </button>
         </Link>
       </div>
 
-      {/* Trust Bar */}
-      <div className="hero-subtitle opacity-0 mt-8 md:mt-16 flex flex-col items-center gap-4 md:gap-6 relative z-10">
-        <div className="flex items-center gap-3">
-           <div className="h-[1px] w-8 bg-white/10" />
-           <span className="text-[9px] font-black uppercase tracking-[0.6em] text-white/20 italic">Verified Tech-Stack</span>
-           <div className="h-[1px] w-8 bg-white/10" />
+      {/* Tactical Trust Architecture */}
+      <div className="hero-subtitle opacity-0 mt-12 md:mt-24 flex flex-col items-center gap-6 md:gap-10 relative z-10">
+        <div className="flex items-center gap-4">
+           <div className="h-[1px] w-12 bg-white/10" />
+           <span className="text-[10px] font-black uppercase tracking-[0.7em] text-white/10 italic">Core Stack Verified</span>
+           <div className="h-[1px] w-12 bg-white/10" />
         </div>
-        <div className="flex items-center justify-center flex-wrap gap-6 md:gap-12 text-white/10 uppercase tracking-[0.3em] text-[10px] font-black">
-          <div className="flex items-center gap-2 hover:text-white transition-colors cursor-default">
-             <ShieldCheck className="h-3 w-3" /> <span>Clerk Auth</span>
-          </div>
-          <div className="flex items-center gap-2 hover:text-white transition-colors cursor-default">
-             <Database className="h-3 w-3" /> <span>MongoDB</span>
-          </div>
-          <div className="flex items-center gap-2 hover:text-white transition-colors cursor-default">
-             <Zap className="h-3 w-3" /> <span>Groq AI</span>
-          </div>
-          <div className="flex items-center gap-2 hover:text-white transition-colors cursor-default">
-             <Zap className="h-3 w-3" /> <span>Next.js 15</span>
-          </div>
+        <div className="flex items-center justify-center flex-wrap gap-8 md:gap-16 text-white/10 uppercase tracking-[0.4em] text-[10px] font-black">
+          {[
+            { icon: ShieldCheck, label: "Clerk Auth" },
+            { icon: Database, label: "MongoDB" },
+            { icon: Zap, label: "Groq LPU" },
+            { icon: Zap, label: "Next.js 15" }
+          ].map((item, idx) => (
+            <div key={idx} className="flex items-center gap-3 hover:text-primary transition-all duration-500 cursor-default group">
+               <item.icon className="h-4 w-4 group-hover:scale-110 group-hover:text-primary" /> 
+               <span className="group-hover:translate-x-1 transition-transform">{item.label}</span>
+            </div>
+          ))}
         </div>
       </div>
     </section>

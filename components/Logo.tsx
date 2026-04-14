@@ -38,7 +38,7 @@ export default function Logo({ className, size = "md", showText = true }: LogoPr
             ease: "easeInOut",
           }}
           className={cn(
-            "border-2 border-primary rotate-45 flex items-center justify-center bg-black transition-all group-hover:glow-red shadow-skeuo-button",
+            "border-2 border-primary rotate-45 flex items-center justify-center bg-black transition-all group-hover:shadow-glow-red",
             size === "sm" ? "h-5 w-5 border" : 
             size === "md" ? "h-7 w-7" : 
             size === "lg" ? "h-12 w-12 border-[3px]" : "h-20 w-20 border-[4px]"
@@ -62,7 +62,7 @@ export default function Logo({ className, size = "md", showText = true }: LogoPr
       {showText && (
         <div className="flex flex-col gap-0.5">
           <span className={cn(
-            "font-black tracking-tighter uppercase italic",
+            "font-black tracking-tighter uppercase italic text-glow-red",
             size === "sm" ? "text-xl" : 
             size === "md" ? "text-3xl" : 
             size === "lg" ? "text-5xl" : "text-7xl"

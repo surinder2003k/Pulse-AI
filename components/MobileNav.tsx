@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Home, FileText, PlusCircle, Zap, ShieldCheck } from "lucide-react";
 import { cn, ADMIN_EMAIL } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
+import { motion } from "framer-motion";
 
 const primaryNav = [
   { name: "Overview", icon: Home, href: "/dashboard" },
@@ -22,8 +23,11 @@ export default function MobileNav() {
   const navItems = isAdmin ? [...primaryNav, adminNavItem] : primaryNav;
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-2xl border-t border-white/10 shadow-[0_-8px_40px_rgba(0,0,0,0.8)]">
-      <div className="flex items-stretch h-16">
+    <nav className="md:hidden fixed bottom-10 left-6 right-6 z-50 bg-black/60 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] shadow-premium overflow-hidden glass-dark pb-safe">
+      {/* Cinematic Pulse Background */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(229,9,20,0.05),transparent_70%)] pointer-events-none" />
+      
+      <div className="flex items-center justify-around h-20 relative z-10">
         {navItems.map((item) => {
           const isActive =
             item.href === "/dashboard"
@@ -35,20 +39,23 @@ export default function MobileNav() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex-1 flex flex-col items-center justify-center gap-1 transition-all duration-200 relative",
-                isActive ? "text-primary" : "text-white/30 hover:text-white/70"
+                "flex flex-col items-center justify-center gap-1.5 transition-all duration-500 relative px-4",
+                isActive ? "text-primary scale-110" : "text-white/20 hover:text-white/50"
               )}
             >
               {isActive && (
-                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-primary rounded-full shadow-[0_0_8px_rgba(255,51,51,0.8)]" />
+                <motion.div 
+                  layoutId="mobile-nav-active"
+                  className="absolute -top-1 w-6 h-[2px] bg-primary shadow-glow-red rounded-full"
+                />
               )}
               <item.icon
                 className={cn(
-                  "h-5 w-5 transition-transform",
-                  isActive ? "scale-110" : ""
+                  "h-5 w-5 transition-all duration-500",
+                  isActive ? "drop-shadow-glow" : ""
                 )}
               />
-              <span className="text-[9px] font-black uppercase tracking-widest">
+              <span className="text-[8px] font-black uppercase tracking-[0.2em] italic">
                 {item.name}
               </span>
             </Link>

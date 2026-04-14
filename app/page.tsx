@@ -42,34 +42,42 @@ export default async function HomePage() {
       <AnimatedHero />
 
       {/* 2. Stats/Editorial Hub Bar */}
-      <section className="relative z-10 py-10 md:py-12 border-y border-white/5 bg-black/60 backdrop-blur-3xl shadow-skeuo-in">
+      <motion.section 
+        initial={{ opacity: 0, scale: 0.98 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1 }}
+        viewport={{ once: true }}
+        className="relative z-10 py-10 md:py-16 border-y border-white/5 glass-dark shadow-premium"
+      >
         <div className="container mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 md:gap-16">
             {[
               { label: "Intelligence Reports", val: "1,420+" },
               { label: "Network Bandwidth", val: "99.8%" },
               { label: "Global Reach", val: "140+" },
               { label: "Engine Uptime", val: "24/7" },
             ].map((stat) => (
-              <div key={stat.label} className="group cursor-default">
-                <div className="text-2xl md:text-3xl font-black text-white tracking-tighter italic lg:text-4xl group-hover:text-primary transition-colors">
+              <div key={stat.label} className="group cursor-default relative">
+                <div className="text-3xl md:text-5xl font-black text-white tracking-tighter italic group-hover:text-primary transition-all duration-500">
                   {stat.val}
                 </div>
-                <div className="text-[9px] uppercase font-black tracking-[0.43em] text-white/30 mt-2 border-l border-primary/40 pl-3">
+                <div className="text-[8px] uppercase font-black tracking-[0.6em] text-white/20 mt-3 border-l-2 border-primary/20 pl-4 group-hover:border-primary transition-colors">
                   {stat.label}
                 </div>
+                {/* Subtle Glow behind */}
+                <div className="absolute -inset-4 bg-primary/0 group-hover:bg-primary/5 rounded-full blur-2xl transition-all duration-500" />
               </div>
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* 3. The Editor's Pick Section */}
       {featuredPost && (
         <section className="relative z-10 py-20 md:py-24 px-6">
           <div className="container mx-auto">
             <div className="flex items-center gap-4 mb-10">
-               <span className="w-10 h-1 bg-primary shadow-skeuo-button" />
+               <span className="w-10 h-1 bg-primary shadow-glow-red" />
                <span className="text-[9px] font-black uppercase tracking-[0.5em] text-primary">The Editor's Pick</span>
             </div>
             
@@ -77,7 +85,7 @@ export default async function HomePage() {
               {/* Left Side: Visual */}
               <div className="lg:col-span-5 group relative">
                 <Link href={`/blog/${featuredPost.slug}`} className="block">
-                  <div className="aspect-[4/5] rounded-[2rem] overflow-hidden border border-white/5 shadow-skeuo-float bg-secondary/10 relative transition-transform duration-700 group-hover:scale-[1.02]">
+                  <div className="aspect-[4/5] rounded-[2rem] overflow-hidden border border-white/5 shadow-soft bg-secondary/5 relative transition-all duration-700 group-hover:scale-[1.02] group-hover:shadow-glow-red">
                     <img 
                       src={featuredPost.feature_image_url} 
                       alt={featuredPost.feature_image_alt || featuredPost.title} 
@@ -103,7 +111,7 @@ export default async function HomePage() {
                   {featuredPost.excerpt}
                 </p>
                 <div className="flex items-center gap-5 pt-2">
-                   <div className="h-12 w-12 rounded-full border border-white/10 flex items-center justify-center shadow-skeuo-in bg-secondary/10 group overflow-hidden">
+                   <div className="h-12 w-12 rounded-full border border-white/10 flex items-center justify-center glass-dark bg-secondary/5 group overflow-hidden">
                       <img src="/logo.svg" alt="" className="h-6 w-6 opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all" />
                    </div>
                    <div>
@@ -124,8 +132,8 @@ export default async function HomePage() {
             <h2 className="text-2xl md:text-4xl font-black text-white tracking-tighter uppercase italic">
               Latest <span className="text-primary italic">Stories.</span>
             </h2>
-            <Link href="/blog" className="text-[9px] font-black uppercase tracking-widest text-primary flex items-center gap-2 hover:translate-x-2 transition-transform shadow-skeuo-button px-5 py-2.5 rounded-full bg-black/40 border border-white/10">
-               Archive <ChevronRight className="h-3 w-3" />
+            <Link href="/blog" className="text-[9px] font-black uppercase tracking-widest text-primary flex items-center gap-2 hover:translate-x-2 transition-all shadow-glow-red px-6 py-3 rounded-full bg-black/40 border border-primary/20 glass hover:bg-primary/10">
+               Access Intelligence Archive <ChevronRight className="h-3 w-3" />
             </Link>
           </div>
 
@@ -153,7 +161,7 @@ export default async function HomePage() {
               </p>
             </div>
             <div className="pt-6 flex justify-center">
-              <Link href="/sign-up" className="bg-primary hover:glow-red-strong text-white px-10 md:px-14 py-5 md:py-6 rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.4em] transition-all transform hover:scale-[1.03] shadow-skeuo-float">
+              <Link href="/sign-up" className="bg-primary hover:glow-red-strong text-white px-10 md:px-14 py-5 md:py-6 rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.4em] transition-all transform hover:scale-[1.03] shadow-soft">
                 Join the Network
               </Link>
             </div>

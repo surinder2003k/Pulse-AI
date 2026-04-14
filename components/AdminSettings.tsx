@@ -54,58 +54,91 @@ export default function AdminSettings() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between p-6 rounded-2xl bg-black/20 border border-white/5 shadow-skeuo-in group hover:border-primary/20 transition-all">
-        <div className="space-y-1">
-           <span className="block text-[10px] font-black uppercase tracking-[0.3em] text-white/30">Protocol: AUTO_BROADCAST</span>
-           <span className="font-bold text-white/80 group-hover:text-white transition-colors">Daily AI Intelligence Generation</span>
+    <div className="space-y-8">
+      {/* Protocol Card */}
+      <div className="group relative flex items-center justify-between p-8 rounded-3xl bg-black/40 border border-white/5 shadow-premium glass-dark transition-all duration-700 hover:border-primary/30 hover:shadow-glow-red overflow-hidden">
+        {/* Cinematic Underlay */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl -z-10 transition-all duration-700 group-hover:bg-primary/10" />
+        
+        <div className="space-y-2">
+           <div className="flex items-center gap-2">
+             <div className="h-1 w-4 bg-primary rounded-full group-hover:w-8 transition-all duration-700" />
+             <span className="block text-[10px] font-black uppercase tracking-[0.4em] text-primary italic">Protocol: AUTO_BROADCAST</span>
+           </div>
+           <span className="block text-lg font-bold text-white/90 group-hover:text-white transition-colors">Daily AI Intelligence Generation</span>
         </div>
-        <div className="flex items-center gap-5">
+
+        <div className="flex items-center gap-6">
           <Badge className={cn(
-            "text-[9px] font-black uppercase px-4 py-1.5 rounded-full border-none shadow-skeuo-button transition-all",
-            enabled ? "bg-primary text-white glow-red" : "bg-white/10 text-white/30"
+            "text-[9px] font-black uppercase px-6 py-2 rounded-full border-none transition-all duration-500",
+            enabled 
+              ? "bg-primary text-white shadow-glow-red scale-110" 
+              : "bg-white/5 text-white/20"
           )}>
-            {enabled ? "ACTIVE" : "OFFLINE"}
+            {enabled ? "Sync Active" : "Link Severed"}
           </Badge>
           <button 
             disabled={updating}
             onClick={() => updateSetting('automationEnabled', !enabled)}
-            className={`relative inline-flex h-8 w-14 items-center rounded-full transition-all shadow-skeuo-in ${enabled ? 'bg-primary' : 'bg-secondary/40'} disabled:opacity-50`}
+            className={cn(
+               "relative inline-flex h-10 w-20 items-center rounded-full transition-all duration-500 shadow-premium",
+               enabled ? "bg-primary" : "bg-white/5"
+            )}
           >
-            <span className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-xl transition-all ${enabled ? 'translate-x-7' : 'translate-x-1'}`} />
+            <span className={cn(
+              "inline-block h-8 w-8 transform rounded-full bg-white shadow-2xl transition-all duration-500",
+              enabled ? "translate-x-11" : "translate-x-1"
+            )} />
           </button>
         </div>
       </div>
       
-      <div className="flex items-center justify-between p-6 rounded-2xl bg-black/20 border border-white/5 shadow-skeuo-in group hover:border-primary/20 transition-all">
-        <div className="space-y-1">
-           <span className="block text-[10px] font-black uppercase tracking-[0.3em] text-white/30">Target: CONTENT_DOMAIN</span>
-           <span className="font-bold text-white/80 group-hover:text-white transition-colors">Default Intelligence Domain</span>
+      {/* Target Card */}
+      <div className="group relative flex items-center justify-between p-8 rounded-3xl bg-black/40 border border-white/5 shadow-premium glass-dark transition-all duration-700 hover:border-primary/30 overflow-hidden">
+        <div className="space-y-2">
+           <div className="flex items-center gap-2">
+             <div className="h-1 w-4 bg-primary/40 rounded-full group-hover:bg-primary transition-all duration-700" />
+             <span className="block text-[10px] font-black uppercase tracking-[0.4em] text-white/30">Target: CONTENT_DOMAIN</span>
+           </div>
+           <span className="block text-lg font-bold text-white/90 group-hover:text-white transition-colors">Default Intelligence Domain</span>
         </div>
-        <select 
-          disabled={updating || !enabled}
-          value={category}
-          onChange={(e) => updateSetting('automationCategory', e.target.value)}
-          className="bg-secondary/20 border border-white/10 rounded-xl px-4 py-2 text-xs font-black uppercase tracking-widest outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 disabled:opacity-20 transition-all shadow-skeuo-button h-10 appearance-none text-center cursor-pointer min-w-[140px]"
-        >
-          {categories.map(c => <option key={c} value={c} className="bg-black text-white">{c}</option>)}
-        </select>
+        
+        <div className="relative">
+          <select 
+            disabled={updating || !enabled}
+            value={category}
+            onChange={(e) => updateSetting('automationCategory', e.target.value)}
+            className="bg-black/80 border border-white/10 rounded-2xl px-8 py-3 text-xs font-black uppercase tracking-[0.2em] text-primary outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 disabled:opacity-20 transition-all duration-500 shadow-premium min-w-[200px] cursor-pointer appearance-none hover:border-primary/40"
+          >
+            {categories.map(c => <option key={c} value={c} className="bg-black text-white">{c}</option>)}
+          </select>
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-primary/40">
+            <Loader2 className={cn("h-4 w-4", updating ? "animate-spin" : "opacity-0")} />
+          </div>
+        </div>
       </div>
 
-      <div className="flex items-center justify-between p-6 rounded-2xl bg-black/20 border border-white/5 shadow-skeuo-in group opacity-50 select-none">
-        <div className="space-y-1">
-           <span className="block text-[10px] font-black uppercase tracking-[0.3em] text-white/30">Entry: PUBLIC_UPLINK</span>
-           <span className="font-bold text-white/40">Open Registration Matrix</span>
+      {/* Restricted Entry */}
+      <div className="group flex items-center justify-between p-8 rounded-3xl bg-black/40 border border-white/5 shadow-premium glass-dark opacity-30 select-none cursor-not-allowed grayscale">
+        <div className="space-y-2">
+           <span className="block text-[10px] font-black uppercase tracking-[0.4em] text-white/30">Entry: PUBLIC_UPLINK</span>
+           <span className="block text-lg font-bold text-white/20 italic">Open Registration Matrix [LOCK]</span>
         </div>
-        <Badge className="bg-white/5 text-white/20 text-[9px] font-black uppercase border-white/5 px-4 py-1.5 rounded-full shadow-skeuo-in">RESTRICTED</Badge>
+        <Badge className="bg-white/5 text-white/20 text-[9px] font-black uppercase border-white/5 px-6 py-2 rounded-full tracking-[0.3em]">Restricted Access</Badge>
       </div>
       
-      <div className="flex items-center justify-between p-6 rounded-2xl bg-black/20 border border-white/5 shadow-skeuo-in group">
-        <div className="space-y-1">
-           <span className="block text-[10px] font-black uppercase tracking-[0.3em] text-white/30">Output: ANALYTICAL_DEPTH</span>
-           <span className="font-bold text-white/80 group-hover:text-white transition-colors">Resolution Standard</span>
+      {/* Output Stats Overlay */}
+      <div className="group relative flex items-center justify-between p-8 rounded-3xl bg-black/40 border border-white/5 shadow-premium glass-dark transition-all duration-700">
+        <div className="space-y-2">
+           <span className="block text-[10px] font-black uppercase tracking-[0.4em] text-white/30">Output: ANALYTICAL_DEPTH</span>
+           <span className="block text-lg font-bold text-white/90 group-hover:text-white transition-colors italic">Neural Resolution Standard</span>
         </div>
-        <span className="font-black text-primary uppercase italic tracking-[0.2em] text-[10px] bg-primary/10 px-6 py-2 rounded-full border border-primary/20 shadow-skeuo-button animate-pulse-slow">Deep Resonance</span>
+        <div className="flex items-center gap-4">
+          <div className="h-2 w-32 bg-white/5 rounded-full overflow-hidden hidden md:block">
+             <div className="h-full w-2/3 bg-primary animate-pulse shadow-glow-red" />
+          </div>
+          <span className="font-black text-primary uppercase italic tracking-[0.3em] text-[10px] bg-primary/10 px-8 py-3 rounded-full border border-primary/20 shadow-glow-red animate-pulse-slow">Deep Resonance</span>
+        </div>
       </div>
     </div>
   );

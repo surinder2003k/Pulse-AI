@@ -175,72 +175,102 @@ export default function CreatePostPage() {
         onClose={() => setAlert(prev => ({ ...prev, isVisible: false }))}
       />
 
-      <div className="mb-10">
-        <h1 className="text-3xl font-bold tracking-tight">Create New Post</h1>
-        <p className="text-muted-foreground mt-2">Write manually or use AI to generate your next big story.</p>
+      <div className="mb-10 relative">
+        <div className="absolute -left-6 top-1/2 -translate-y-1/2 w-1 h-12 bg-primary rounded-full shadow-[0_0_15px_rgba(255,51,51,0.5)]" />
+        <h1 className="text-4xl font-black tracking-tighter uppercase italic text-glow-red">
+          Tactical <span className="text-white">Workspace</span>
+        </h1>
+        <p className="text-white/40 mt-2 font-mono text-xs uppercase tracking-[0.2em]">
+          Protocol: Content Generation // Status: Ready
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>Post Content</CardTitle>
+          <Card className="glass-dark border-white/5 shadow-premium overflow-hidden">
+            <div className="h-1 bg-gradient-to-r from-primary/50 via-primary to-primary/50" />
+            <CardHeader className="bg-white/5 py-4 border-b border-white/5">
+              <div className="flex items-center gap-3">
+                <Layout className="h-4 w-4 text-primary" />
+                <CardTitle className="text-sm font-black uppercase tracking-widest italic">Draft Core</CardTitle>
+              </div>
             </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Post Title</label>
+            <CardContent className="p-8">
+              <form onSubmit={handleSubmit} className="space-y-8">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Editorial Title</label>
+                    <span className="text-[10px] font-mono text-primary/60 italic">01 // IDENTITY</span>
+                  </div>
                   <Input 
-                    placeholder="Enter post title..." 
+                    placeholder="ENTER HEADLINE..." 
                     value={formData.title}
                     onChange={(e) => setFormData({...formData, title: e.target.value})}
-                    className="h-12 text-lg font-semibold"
+                    className="h-14 text-xl font-black italic bg-white/[0.03] border-white/10 focus:border-primary/50 transition-all placeholder:text-white/10 uppercase"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Excerpt (Summary)</label>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Narrative Excerpt</label>
+                    <span className="text-[10px] font-mono text-primary/60 italic">02 // CONTEXT</span>
+                  </div>
                   <Textarea 
-                    placeholder="Briefly describe what this post is about..." 
+                    placeholder="BRIEF SUMMARY..." 
                     value={formData.excerpt}
                     onChange={(e) => setFormData({...formData, excerpt: e.target.value})}
-                    className="min-h-[80px]"
+                    className="min-h-[100px] bg-white/[0.03] border-white/10 focus:border-primary/50 transition-all placeholder:text-white/10 italic text-sm"
                   />
                 </div>
 
-                <div className="space-y-4">
-                  <label className="text-sm font-medium">Content</label>
+                <div className="space-y-4 pt-4 border-t border-white/5">
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Manuscript Body</label>
+                    <span className="text-[10px] font-mono text-primary/60 italic">03 // INTEL</span>
+                  </div>
                   
-                  <SEOAnalyzer 
-                    title={formData.title} 
-                    content={formData.content} 
-                    seoKeywords={formData.seoKeywords} 
-                    focusKeyword={formData.focusKeyword}
-                    metaTitle={formData.metaTitle}
-                    metaDescription={formData.metaDescription}
-                  />
-
-                  {mounted ? (
-                    <RichTextEditor 
-                      value={formData.content}
-                      onChange={(val) => setFormData({...formData, content: val})}
+                  <div className="bg-white/[0.02] rounded-xl border border-white/5 p-4 mb-4">
+                    <SEOAnalyzer 
+                      title={formData.title} 
+                      content={formData.content} 
+                      seoKeywords={formData.seoKeywords} 
+                      focusKeyword={formData.focusKeyword}
+                      metaTitle={formData.metaTitle}
+                      metaDescription={formData.metaDescription}
                     />
-                  ) : (
-                    <div className="h-64 w-full bg-white/5 animate-pulse rounded-md border border-white/10" />
-                  )}
+                  </div>
+
+                  <div className="glass-dark rounded-xl border border-white/5 p-1">
+                    {mounted ? (
+                      <RichTextEditor 
+                        value={formData.content}
+                        onChange={(val) => setFormData({...formData, content: val})}
+                      />
+                    ) : (
+                      <div className="h-96 w-full bg-white/5 animate-pulse rounded-lg border border-white/5" />
+                    )}
+                  </div>
                 </div>
 
-                <div className="flex justify-end gap-4 pt-6 border-t">
-                  <Button variant="outline" onClick={() => router.back()}>
-                    Cancel
+                <div className="flex justify-end gap-4 pt-8 border-t border-white/5">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => router.back()}
+                    className="bg-transparent border-white/10 hover:bg-white/5 hover:border-white/20 transition-all font-black uppercase italic tracking-widest text-xs"
+                  >
+                    Abort
                   </Button>
                   <Button 
                     type="submit"
                     disabled={isPublishing} 
-                    className="bg-primary hover:bg-primary/90 text-white min-w-[150px]"
+                    className="bg-primary hover:bg-primary/90 text-white min-w-[180px] h-12 shadow-glow-red border-none font-black uppercase italic tracking-widest text-xs transition-all active:scale-95"
                   >
-                    {isPublishing ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : <Send className="mr-2 h-4 w-4" />}
-                    Publish Post
+                    {isPublishing ? (
+                      <Loader2 className="animate-spin mr-2 h-4 w-4" />
+                    ) : (
+                      <Send className="mr-2 h-4 w-4" />
+                    )}
+                    Deploy Post
                   </Button>
                 </div>
               </form>
@@ -248,114 +278,115 @@ export default function CreatePostPage() {
           </Card>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-8">
           {/* AI Helper Card */}
-          <Card className="border-primary/20 bg-primary/5">
-            <CardHeader className="pb-3">
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-primary" />
-                <CardTitle className="text-lg">AI Integration</CardTitle>
+          <Card className="glass-dark border-primary/20 bg-primary/[0.03] shadow-glow-red shadow-sm overflow-hidden group">
+            <div className="h-1 bg-primary/40 group-hover:bg-primary transition-colors" />
+            <CardHeader className="py-4 bg-primary/[0.05] border-b border-primary/10">
+              <div className="flex items-center gap-3">
+                <Sparkles className="h-4 w-4 text-primary animate-pulse" />
+                <CardTitle className="text-sm font-black uppercase tracking-widest italic text-white/80">Neural Assistant</CardTitle>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <Textarea 
-                placeholder="What should I write about?" 
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                className="bg-background min-h-[100px]"
-              />
+            <CardContent className="p-6 space-y-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60">Topic Prompt</label>
+                <Textarea 
+                  placeholder="WHAT IS THE NEW FRONTIER?" 
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  className="bg-black/40 border-primary/20 focus:border-primary/50 min-h-[120px] text-sm italic placeholder:text-primary/20 uppercase tracking-wider"
+                />
+              </div>
               <Button 
                 onClick={handleGenerate}
                 disabled={isGenerating}
-                className="w-full"
+                className="w-full h-12 bg-primary hover:bg-primary/90 text-white shadow-glow-red font-black uppercase italic tracking-widest text-xs transition-all hover:scale-[1.02] active:scale-95 border-none"
               >
-                {isGenerating ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : <BrainCircuit className="mr-2 h-4 w-4" />}
-                Generate Draft
+                {isGenerating ? (
+                  <Loader2 className="animate-spin mr-2 h-4 w-4" />
+                ) : (
+                  <BrainCircuit className="mr-2 h-4 w-4" />
+                )}
+                Synthesize Draft
               </Button>
             </CardContent>
           </Card>
 
           {/* Settings & Image Card */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg">Post Settings</CardTitle>
+          <Card className="glass-dark border-white/5 shadow-premium">
+            <CardHeader className="py-4 bg-white/5 border-b border-white/5">
+              <div className="flex items-center gap-3">
+                <Zap className="h-4 w-4 text-primary" />
+                <CardTitle className="text-sm font-black uppercase tracking-widest italic">Asset Config</CardTitle>
+              </div>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Feature Image</label>
-                <Dropzone 
-                  onUpload={(url) => setFormData({...formData, featureImage: url})} 
-                  currentImage={formData.featureImage} 
-                />
+            <CardContent className="p-6 space-y-8">
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Cover Identity</label>
+                <div className="p-1 glass-dark rounded-xl border border-white/5 group hover:border-primary/30 transition-all">
+                  <Dropzone 
+                    onUpload={(url) => setFormData({...formData, featureImage: url})} 
+                    currentImage={formData.featureImage} 
+                  />
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Image ALT Text</label>
-                <Input 
-                  placeholder="Describe this image for SEO..." 
-                  value={formData.featureImageAlt}
-                  onChange={(e) => setFormData({...formData, featureImageAlt: e.target.value})}
-                  className="text-xs h-8 bg-secondary/20"
-                />
-              </div>
-
-              <div className="pt-4 border-t space-y-4">
+              <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium">Search Library</label>
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Visual Database</label>
                   {searchResults.length > 0 && (
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
+                    <button 
                       onClick={() => setSearchResults([])}
-                      className="h-7 px-2 text-xs text-muted-foreground hover:text-white"
+                      className="text-[9px] font-black uppercase tracking-widest text-primary/60 hover:text-primary transition-colors"
                     >
-                      <X className="h-3 w-3 mr-1" /> Clear
-                    </Button>
+                      Reset
+                    </button>
                   )}
                 </div>
                 <div className="flex gap-2">
                   <Input 
-                    placeholder="Search images..." 
+                    placeholder="QUERY ASSETS..." 
                     value={imageSearchQuery}
                     onChange={(e) => setImageSearchQuery(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleImageSearch()}
-                    className="flex-1"
+                    className="flex-1 h-10 bg-black/40 border-white/10 uppercase text-xs"
                   />
                   <Button 
                     onClick={handleImageSearch}
                     disabled={isSearchingImage}
                     variant="secondary"
-                    className="px-3"
+                    className="px-3 h-10 glass-dark border-white/10 hover:border-primary/50 transition-all"
                   >
-                    {isSearchingImage ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
+                    {isSearchingImage ? <Loader2 className="h-4 w-4 animate-spin text-primary" /> : <Search className="h-4 w-4 text-primary" />}
                   </Button>
                 </div>
 
                 {searchResults.length > 0 && (
-                  <div className="grid grid-cols-2 gap-2 mt-4 max-h-[300px] overflow-y-auto p-2 border rounded-md bg-secondary/20">
+                  <div className="grid grid-cols-2 gap-2 mt-4 max-h-[250px] overflow-y-auto p-3 border border-white/5 rounded-xl bg-black/40 custom-scrollbar">
                     {searchResults.map((url, i) => (
                       <div 
                         key={i}
                         onClick={() => {
                           setFormData({...formData, featureImage: url});
-                          toast.success("Image selected.");
+                          toast.success("Identity Locked.");
                         }}
-                        className={`relative aspect-video cursor-pointer overflow-hidden rounded border transition-all group ${formData.featureImage === url ? 'ring-2 ring-primary border-primary' : 'border-white/10 hover:border-primary/50'}`}
+                        className={`relative aspect-video cursor-pointer overflow-hidden rounded-lg border transition-all group ${formData.featureImage === url ? 'ring-2 ring-primary border-primary' : 'border-white/5 hover:border-primary/50'}`}
                       >
                         <img 
                           src={url} 
                           alt={`Result ${i}`} 
-                          className={`object-cover w-full h-full transition-all duration-500
-                            ${formData.featureImage === url ? 'grayscale-0 opacity-100' : 'grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100'}
+                          className={`object-cover w-full h-full transition-all duration-700
+                            ${formData.featureImage === url ? 'grayscale-0 scale-110' : 'grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110'}
                           `}
                         />
                         <div className={`absolute inset-0 transition-opacity flex items-center justify-center
                           ${formData.featureImage === url ? 'bg-primary/20 opacity-100' : 'bg-primary/10 opacity-0 group-hover:opacity-100'}
                         `}>
-                          <span className={`text-[10px] uppercase font-bold tracking-tighter px-2 py-1 rounded
-                            ${formData.featureImage === url ? 'bg-primary text-white shadow-lg' : 'bg-black/80'}
+                          <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full
+                            ${formData.featureImage === url ? 'bg-primary text-white shadow-glow-red' : 'bg-black/80 text-white cursor-pointer'}
                           `}>
-                            {formData.featureImage === url ? 'Selected' : 'Select'}
+                            {formData.featureImage === url ? 'Active' : 'Deploy'}
                           </span>
                         </div>
                       </div>
@@ -364,67 +395,61 @@ export default function CreatePostPage() {
                 )}
               </div>
 
-              <div className="pt-4 border-t space-y-2">
-                <label className="text-sm font-medium">Category</label>
-                <select 
-                  value={formData.category}
-                  onChange={(e) => setFormData({...formData, category: e.target.value})}
-                  className="w-full bg-background border rounded-md h-10 px-3 text-sm focus:ring-1 focus:ring-primary/40 outline-none"
-                >
-                  <option>Technology</option>
-                  <option>Design</option>
-                  <option>Intelligence</option>
-                  <option>Future</option>
-                </select>
-              </div>
-
-              <div className="pt-4 border-t space-y-2">
-                <label className="text-sm font-medium">Tags</label>
-                <Input 
-                  placeholder="e.g. ai, tech, future" 
-                  value={formData.tags}
-                  onChange={(e) => setFormData({...formData, tags: e.target.value})}
-                />
-              </div>
-
-              <div className="pt-4 border-t space-y-4">
-                <div className="flex items-center gap-2 text-primary font-semibold">
-                  <BrainCircuit className="h-4 w-4" />
-                  <span className="text-sm">SEO Meta Controls</span>
+              <div className="pt-6 border-t border-white/5 space-y-4">
+                <div className="flex items-center gap-2 text-primary font-black uppercase tracking-widest text-[10px] italic">
+                  <ShieldCheck className="h-3 w-3" />
+                  SEO Protocol
                 </div>
                 
-                <div className="space-y-2">
-                  <label className="text-[11px] uppercase tracking-wider font-bold text-muted-foreground">Focus Keyword</label>
-                  <Input 
-                    placeholder="Enter focus keyword..." 
-                    value={formData.focusKeyword}
-                    onChange={(e) => setFormData({...formData, focusKeyword: e.target.value})}
-                  />
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-black uppercase tracking-[0.2em] text-white/40">Category</label>
+                    <div className="relative">
+                      <select 
+                        value={formData.category}
+                        onChange={(e) => setFormData({...formData, category: e.target.value})}
+                        className="w-full glass-dark border border-white/10 rounded-lg h-10 px-4 text-xs font-black uppercase italic tracking-widest text-white/80 focus:border-primary/50 outline-none appearance-none cursor-pointer"
+                      >
+                        <option>Technology</option>
+                        <option>Design</option>
+                        <option>Intelligence</option>
+                        <option>Future</option>
+                      </select>
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[4px] border-t-primary pointer-events-none" />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-black uppercase tracking-[0.2em] text-white/40">Tags (CSV)</label>
+                    <Input 
+                      placeholder="AI, FUTURE, INTEL..." 
+                      value={formData.tags}
+                      onChange={(e) => setFormData({...formData, tags: e.target.value})}
+                      className="h-10 bg-black/40 border-white/10 text-xs uppercase tracking-widest placeholder:text-white/5"
+                    />
+                  </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-[11px] uppercase tracking-wider font-bold text-muted-foreground">Meta Title</label>
-                  <Input 
-                    placeholder="Custom SEO Title..." 
-                    value={formData.metaTitle}
-                    onChange={(e) => setFormData({...formData, metaTitle: e.target.value})}
-                  />
-                  <p className={`text-[10px] ${formData.metaTitle.length > 60 ? 'text-red-500' : 'text-muted-foreground'}`}>
-                    {formData.metaTitle.length}/60 characters
-                  </p>
-                </div>
+                <div className="space-y-4 pt-4">
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-black uppercase tracking-[0.2em] text-white/40">Focus Vector</label>
+                    <Input 
+                      placeholder="ENTER KEYWORD..." 
+                      value={formData.focusKeyword}
+                      onChange={(e) => setFormData({...formData, focusKeyword: e.target.value})}
+                      className="bg-black/40 border-white/10 text-xs italic uppercase placeholder:text-white/5"
+                    />
+                  </div>
 
-                <div className="space-y-2">
-                  <label className="text-[11px] uppercase tracking-wider font-bold text-muted-foreground">Meta Description</label>
-                  <Textarea 
-                    placeholder="Custom Meta Description..." 
-                    value={formData.metaDescription}
-                    onChange={(e) => setFormData({...formData, metaDescription: e.target.value})}
-                    className="min-h-[80px] text-xs"
-                  />
-                   <p className={`text-[10px] ${formData.metaDescription.length > 160 ? 'text-red-500' : 'text-muted-foreground'}`}>
-                    {formData.metaDescription.length}/160 characters
-                  </p>
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-black uppercase tracking-[0.2em] text-white/40">Meta Signature</label>
+                    <Textarea 
+                      placeholder="CUSTOM SIGNATURE..." 
+                      value={formData.metaDescription}
+                      onChange={(e) => setFormData({...formData, metaDescription: e.target.value})}
+                      className="min-h-[80px] text-[10px] bg-black/40 border-white/10 tracking-wider text-white/60"
+                    />
+                  </div>
                 </div>
               </div>
             </CardContent>

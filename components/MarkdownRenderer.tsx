@@ -26,15 +26,15 @@ export default function MarkdownRenderer({ content, className }: MarkdownRendere
     "prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-bold prose-a:transition-all",
     "prose-ul:my-6 prose-ul:list-disc prose-li:text-white/70 prose-li:leading-relaxed prose-li:mb-2 prose-li:pl-2",
     "prose-ol:my-6 prose-ol:list-decimal prose-li:marker:text-primary prose-li:marker:font-black",
-    "prose-img:rounded-[2rem] prose-img:shadow-2xl prose-img:my-10 prose-img:border prose-img:border-white/10",
-    "prose-blockquote:border-l-primary prose-blockquote:bg-primary/5 prose-blockquote:py-6 prose-blockquote:px-8 prose-blockquote:rounded-3xl prose-blockquote:italic prose-blockquote:text-white/90 prose-blockquote:my-10 prose-blockquote:shadow-skeuo-in prose-blockquote:border-y prose-blockquote:border-r prose-blockquote:border-white/5",
+    "prose-img:rounded-[2.5rem] prose-img:shadow-premium prose-img:my-12 prose-img:border prose-img:border-white/10",
+    "prose-blockquote:border-l-primary prose-blockquote:bg-primary/5 prose-blockquote:py-8 prose-blockquote:px-10 prose-blockquote:rounded-[2rem] prose-blockquote:italic prose-blockquote:text-white/90 prose-blockquote:my-12 prose-blockquote:shadow-premium prose-blockquote:border-y prose-blockquote:border-r prose-blockquote:border-white/5",
     "prose-strong:text-white prose-strong:font-black",
-    "prose-table:border-collapse prose-table:w-full prose-table:my-10",
+    "prose-table:border-collapse prose-table:w-full prose-table:my-12",
     "prose-thead:bg-primary/10 prose-thead:text-primary prose-thead:font-black prose-thead:uppercase prose-thead:tracking-widest",
-    "prose-th:px-4 prose-th:py-2 prose-th:border prose-th:border-white/10",
-    "prose-td:px-4 prose-td:py-2 prose-td:border prose-td:border-white/10 prose-td:text-white/60",
+    "prose-th:px-6 prose-th:py-4 prose-th:border prose-th:border-white/10",
+    "prose-td:px-6 prose-td:py-4 prose-td:border prose-td:border-white/10 prose-td:text-white/60",
     "prose-code:text-primary prose-code:bg-primary/5 prose-code:px-2 prose-code:py-0.5 prose-code:rounded-lg prose-code:before:content-none prose-code:after:content-none",
-    "prose-pre:bg-secondary/20 prose-pre:border prose-pre:border-white/10 prose-pre:rounded-[1.5rem] prose-pre:shadow-skeuo-in",
+    "prose-pre:bg-black/60 prose-pre:border prose-pre:border-white/5 prose-pre:rounded-[2rem] prose-pre:shadow-premium glass-dark",
     className
   );
 

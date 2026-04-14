@@ -77,57 +77,68 @@ export default function DashboardOverview() {
   };
 
   return (
-    <div className="space-y-12 pb-20">
+    <div className="space-y-12 pb-20 relative">
+      {/* Cinematic Background Mesh */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full -z-10 animate-pulse pointer-events-none" />
+
       {/* Header Section */}
-      <div className="flex flex-col gap-6">
-        <div className="flex items-center gap-3">
-           <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-skeuo-button">
-              <ShieldCheck className="h-5 w-5 text-primary" />
+      <div className="flex flex-col gap-6 relative">
+        <div className="flex items-center gap-4 group">
+           <div className="w-12 h-12 rounded-2xl bg-black/40 backdrop-blur-3xl flex items-center justify-center border border-white/10 shadow-premium transition-all group-hover:border-primary/50 group-hover:shadow-glow-red">
+              <ShieldCheck className="h-6 w-6 text-primary" />
            </div>
-           <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic leading-none">
-             Station <span className="text-white/20">/ Overview</span>
-           </h1>
+           <div className="space-y-1">
+             <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic leading-none text-glow-red">
+               Operational <span className="text-white">Core</span>
+             </h1>
+             <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.4em]">Sector: User-Matrix // Status: Active</p>
+           </div>
         </div>
         
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <p className="text-muted-foreground font-medium uppercase tracking-widest text-xs max-w-2xl border-l-[3px] border-primary pl-4 py-1">
-            Secure uplink established for <span className="text-primary font-black italic">{user?.emailAddresses[0]?.emailAddress || "Guest"}</span>. Monitoring terminal activity.
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-l-[1px] border-white/5 pl-6 py-2">
+          <p className="text-white/40 font-black uppercase tracking-[0.2em] text-[10px] max-w-2xl italic">
+            SECURE UPLINK ESTABLISHED // <span className="text-primary italic">{user?.emailAddresses[0]?.emailAddress || "GUEST_IDENTITY"}</span> // MONITORING PROTOCOLS...
           </p>
           
           {isAdmin && (
             <Button 
               onClick={handleRunAutomation}
               disabled={isAutomating}
-              className="h-14 px-8 rounded-[1.5rem] bg-secondary/10 hover:bg-white/5 text-white border border-white/10 shadow-skeuo-button active:shadow-skeuo-button-pressed transition-all font-black uppercase tracking-widest text-[10px] flex gap-3 group"
+              className="h-14 px-10 rounded-2xl bg-primary hover:bg-primary/90 text-white shadow-glow-red border-none transition-all font-black uppercase italic tracking-widest text-[11px] flex gap-3 group active:scale-95"
             >
-              {isAutomating ? <Loader2 className="h-4 w-4 animate-spin text-primary" /> : <Zap className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" />}
-              Execute AI Manager
+              {isAutomating ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Zap className="h-4 w-4 text-white group-hover:scale-110 transition-transform" />
+              )}
+              Initialize AI Engine
             </Button>
           )}
         </div>
       </div>
 
       {/* Main Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
         {[
-          { label: "Total Users", value: stats.totalUsers, icon: Users, color: "text-blue-400" },
-          { label: "System Posts", value: stats.systemPosts, icon: FileText, color: "text-red-400" },
-          { label: "AI Success Rate", value: stats.successRate, icon: Activity, color: "text-green-400" },
-          { label: "API Health", value: stats.apiHealth, icon: Zap, color: "text-yellow-400" }
+          { label: "Total Population", value: stats.totalUsers, icon: Users, color: "text-blue-500" },
+          { label: "Knowledge Nodes", value: stats.systemPosts, icon: FileText, color: "text-red-500" },
+          { label: "Synthesis Rate", value: stats.successRate, icon: Activity, color: "text-green-500" },
+          { label: "Uplink Health", value: stats.apiHealth, icon: Zap, color: "text-yellow-500" }
         ].map((item, i) => (
-          <Card key={i} className="bg-secondary/10 border-white/5 rounded-[2.5rem] shadow-skeuo-out overflow-hidden relative group">
-            <div className="p-5 md:p-8 space-y-4 md:space-y-6">
+          <Card key={i} className="glass-dark border-white/5 rounded-[3rem] shadow-premium overflow-hidden transition-all hover:scale-[1.02] hover:border-white/10 group cursor-default">
+            <div className="h-1 bg-gradient-to-r from-transparent via-white/5 to-transparent group-hover:via-primary/30 transition-all" />
+            <div className="p-8 space-y-8">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30">{item.label}</span>
-                <item.icon className={cn("h-5 w-5 opacity-40 group-hover:opacity-100 transition-opacity", item.color)} />
+                <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/20">{item.label}</span>
+                <item.icon className={cn("h-4 w-4 opacity-20 group-hover:opacity-100 group-hover:scale-110 transition-all drop-shadow-[0_0_8px_currentColor]", item.color)} />
               </div>
-              <div className="bg-black/40 rounded-3xl p-6 shadow-skeuo-in border border-white/5">
-                 <p className="text-4xl font-black tracking-tighter text-white">{item.value}</p>
-                 {item.label === "System Posts" && (
-                   <div className="mt-4 flex justify-end">
+              <div className="space-y-2">
+                 <p className="text-5xl font-black tracking-tighter text-white italic transition-all group-hover:text-glow-red">{item.value}</p>
+                 {item.label === "Knowledge Nodes" && (
+                   <div className="pt-4">
                       <Link href="/dashboard/posts">
-                        <Button variant="ghost" size="sm" className="h-8 rounded-xl bg-black/60 text-[9px] font-black uppercase tracking-widest text-white/40 hover:text-white border border-white/5">
-                          Manage Posts
+                        <Button variant="ghost" className="h-9 w-full rounded-xl bg-white/[0.03] text-[9px] font-black uppercase tracking-widest text-white/40 hover:text-white hover:bg-white/10 border border-white/5 transition-all italic">
+                          Directory Access
                         </Button>
                       </Link>
                    </div>
@@ -139,57 +150,63 @@ export default function DashboardOverview() {
       </div>
 
       {/* Community Management Table */}
-      <div className="space-y-8">
+      <div className="space-y-8 pt-12 border-t border-white/5 relative">
         <div className="flex items-center gap-4">
-           <Users className="h-6 w-6 text-primary" />
-           <h2 className="text-3xl font-black tracking-tighter uppercase italic">Manage Pulse Community</h2>
-           <Badge className="bg-secondary/40 text-white/40 border-white/10 ml-auto rounded-full px-4 py-1 font-bold text-[10px] uppercase tracking-widest backdrop-blur-md">Admin-Only View</Badge>
+           <Users className="h-5 w-5 text-primary" />
+           <div className="space-y-1">
+             <h2 className="text-3xl font-black tracking-tighter uppercase italic">Access <span className="text-white/20">/ Network</span></h2>
+             <p className="text-[9px] font-mono text-white/20 uppercase tracking-[0.4em]">Protocol: User-Registry // Level: Restricted</p>
+           </div>
+           <Badge className="bg-primary/10 text-primary border-primary/20 ml-auto rounded-full px-5 py-2 font-black text-[10px] uppercase tracking-widest backdrop-blur-2xl italic">System_Admin_Session</Badge>
         </div>
 
-        <div className="rounded-[3rem] border border-white/5 bg-secondary/10 overflow-hidden shadow-skeuo-float">
+        <div className="rounded-[4rem] border border-white/5 bg-black/40 backdrop-blur-3xl overflow-hidden shadow-premium group">
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
-                <tr className="bg-black/40 border-b border-white/5 text-[10px] font-black text-white/30 uppercase tracking-[0.4em]">
-                  <th className="px-10 py-8">User</th>
-                  <th className="px-10 py-8">Email</th>
-                  <th className="px-10 py-8 text-center">Role</th>
-                  <th className="px-10 py-8">Joined</th>
-                  <th className="px-10 py-8 text-right">Actions</th>
+                <tr className="bg-white/[0.02] border-b border-white/5 text-[10px] font-black text-white/20 uppercase tracking-[0.5em]">
+                  <th className="px-12 py-10">Entity</th>
+                  <th className="px-12 py-10">Credentials</th>
+                  <th className="px-12 py-10 text-center">Protocol</th>
+                  <th className="px-12 py-10">Sequence</th>
+                  <th className="px-12 py-10 text-right">Overrides</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
                 {userList.map((usr, i) => (
-                  <tr key={i} className="group hover:bg-white/[0.02] transition-colors">
-                    <td className="px-10 py-8">
-                      <div className="flex items-center gap-4">
-                        <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-skeuo-button">
-                           <span className="text-primary font-black uppercase tracking-tighter text-xs">{usr.name.charAt(0)}</span>
+                  <tr key={i} className="group hover:bg-white/[0.03] transition-all">
+                    <td className="px-12 py-10">
+                      <div className="flex items-center gap-5">
+                        <div className="h-12 w-12 rounded-2xl bg-white/[0.03] flex items-center justify-center border border-white/10 shadow-premium group-hover:border-primary/30 transition-all">
+                           <span className="text-primary font-black uppercase tracking-tighter text-sm italic">{usr.name.charAt(0)}</span>
                         </div>
-                        <span className="font-black text-white uppercase tracking-tight italic">{usr.name}</span>
+                        <div className="flex flex-col gap-1">
+                          <span className="font-black text-white uppercase tracking-wider italic text-sm group-hover:text-primary transition-colors">{usr.name}</span>
+                          <span className="text-[10px] font-mono text-white/20">UUID: {Math.random().toString(16).slice(2, 8).toUpperCase()}</span>
+                        </div>
                       </div>
                     </td>
-                    <td className="px-10 py-8">
-                      <span className="text-sm font-medium text-white/40">{usr.email}</span>
+                    <td className="px-12 py-10">
+                      <span className="text-xs font-bold text-white/40 font-mono tracking-tight">{usr.email}</span>
                     </td>
-                    <td className="px-10 py-8 text-center">
+                    <td className="px-12 py-10 text-center">
                       <Badge className={cn(
-                        "rounded-full px-4 py-1 text-[9px] font-black uppercase tracking-widest",
-                        usr.role === 'admin' ? "bg-primary/20 text-primary border-primary/30" : "bg-white/10 text-white/40 border-white/10"
+                        "rounded-full px-5 py-2 text-[10px] font-black uppercase tracking-widest italic transition-all",
+                        usr.role === 'admin' ? "bg-primary/20 text-primary border-primary/40 shadow-glow-red" : "bg-white/5 text-white/30 border-white/10"
                       )}>
                         {usr.role}
                       </Badge>
                     </td>
-                    <td className="px-10 py-8">
-                      <span className="text-xs font-bold text-white/20">{usr.joined}</span>
+                    <td className="px-12 py-10">
+                      <span className="text-[11px] font-black text-white/20 uppercase tracking-widest">{usr.joined}</span>
                     </td>
-                    <td className="px-10 py-8 text-right">
-                       <div className="flex justify-end gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button className="h-8 w-8 rounded-lg bg-secondary/40 border border-white/10 flex items-center justify-center text-white/30 hover:text-primary transition-colors shadow-skeuo-button">
-                             <ShieldCheck className="h-4 w-4" />
+                    <td className="px-12 py-10 text-right">
+                       <div className="flex justify-end gap-3 opacity-20 group-hover:opacity-100 transition-all">
+                          <button className="h-10 w-10 rounded-xl bg-white/[0.05] border border-white/10 flex items-center justify-center text-white/30 hover:text-primary hover:border-primary/50 hover:bg-primary/10 transition-all shadow-premium active:scale-95">
+                             <ShieldCheck className="h-5 w-5" />
                           </button>
-                          <button className="h-8 w-8 rounded-lg bg-secondary/40 border border-white/10 flex items-center justify-center text-white/30 hover:text-destructive transition-colors shadow-skeuo-button">
-                             <Activity className="h-4 w-4" />
+                          <button className="h-10 w-10 rounded-xl bg-white/[0.05] border border-white/10 flex items-center justify-center text-white/30 hover:text-destructive hover:border-destructive/50 hover:bg-destructive/10 transition-all shadow-premium active:scale-95">
+                             <Activity className="h-5 w-5" />
                           </button>
                        </div>
                     </td>
@@ -203,23 +220,30 @@ export default function DashboardOverview() {
 
       {/* Progress Overlay for Automation */}
       {isAutomating && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md">
-           <div className="max-w-md w-full p-12 bg-secondary/20 rounded-[3rem] border border-primary/30 shadow-skeuo-float space-y-8">
-              <div className="text-center space-y-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-2xl transition-all animate-in fade-in">
+           <div className="max-w-md w-full p-16 glass-dark rounded-[4rem] border border-primary/20 shadow-glow-red space-y-10 relative overflow-hidden">
+              {/* Background scanning effect */}
+              <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent animate-shimmer pointer-events-none" />
+              
+              <div className="text-center space-y-6 relative z-10">
                  <div className="flex justify-center">
-                    <div className="h-16 w-16 rounded-3xl bg-primary/10 flex items-center justify-center border border-primary/30 shadow-skeuo-button animate-pulse">
-                       <Zap className="h-8 w-8 text-primary" />
+                    <div className="h-24 w-24 rounded-[2.5rem] bg-primary/10 flex items-center justify-center border border-primary/30 shadow-glow-red animate-pulse">
+                       <Zap className="h-12 w-12 text-primary fill-primary" />
                     </div>
                  </div>
-                 <h3 className="text-2xl font-black uppercase tracking-tight italic">Engine Core / Active</h3>
-                 <p className="text-white/40 font-medium uppercase text-xs tracking-widest">Generating high-octane editorial content...</p>
+                 <div className="space-y-2">
+                   <h3 className="text-3xl font-black uppercase tracking-tighter italic text-glow-red">Neural Synthesis</h3>
+                   <p className="text-white/30 font-black uppercase text-[10px] tracking-[0.4em]">Propagating Editorial Matrix...</p>
+                 </div>
               </div>
-              <div className="space-y-3">
-                 <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-primary italic">
+              <div className="space-y-4 relative z-10">
+                 <div className="flex justify-between text-[11px] font-black uppercase tracking-[0.3em] text-primary italic">
                     <span>Synchronizing</span>
                     <span>{automationProgress}%</span>
                  </div>
-                 <Progress value={automationProgress} className="h-2 bg-white/5" />
+                 <div className="h-2 bg-white/5 rounded-full overflow-hidden border border-white/10">
+                    <Progress value={automationProgress} className="h-full bg-primary shadow-glow-red" />
+                 </div>
               </div>
            </div>
         </div>

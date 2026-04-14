@@ -10,7 +10,7 @@
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 0 100% 60%; /* #FF3333 */
+    --primary: 0 100% 50%; /* Pure Deep Red */
     --primary-foreground: 210 40% 98%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -60,35 +60,30 @@
 }
 
 @layer utilities {
-  /* High-Contrast Skeuomorphic Shadows */
-  .shadow-skeuo-out {
+  /* High-End Editorial Shadows */
+  .shadow-premium {
     box-shadow: 
-      8px 8px 16px rgba(0, 0, 0, 0.6), 
-      -4px -4px 12px rgba(255, 255, 255, 0.03);
+      0 10px 15px -3px rgba(0, 0, 0, 0.4), 
+      0 4px 6px -2px rgba(0, 0, 0, 0.2);
   }
 
-  .shadow-skeuo-in {
+  .shadow-soft {
     box-shadow: 
-      inset 6px 6px 12px rgba(0, 0, 0, 0.8), 
-      inset -2px -2px 8px rgba(255, 255, 255, 0.02);
+      0 20px 25px -5px rgba(0, 0, 0, 0.5), 
+      0 10px 10px -5px rgba(0, 0, 0, 0.3);
   }
 
-  .shadow-skeuo-button {
-    box-shadow: 
-      4px 4px 10px rgba(0, 0, 0, 0.5), 
-      -2px -2px 10px rgba(255, 255, 255, 0.03);
+  .shadow-glow-red {
+    box-shadow: 0 0 25px rgba(255, 0, 0, 0.15);
   }
 
-  .shadow-skeuo-button-pressed {
-    box-shadow: 
-      inset 4px 4px 8px rgba(0, 0, 0, 0.6), 
-      inset -2px -2px 8px rgba(255, 255, 255, 0.02);
+  /* Glass Effects */
+  .glass {
+    @apply bg-white/[0.03] backdrop-blur-2xl border border-white/10;
   }
 
-  .shadow-skeuo-float {
-    box-shadow: 
-      0 20px 40px rgba(0, 0, 0, 0.8), 
-      0 0 20px rgba(255, 51, 51, 0.1);
+  .glass-dark {
+    @apply bg-black/40 backdrop-blur-[40px] border border-white/5;
   }
 
   /* Neon Red Glows */
@@ -102,15 +97,6 @@
 
   .text-glow-red {
     text-shadow: 0 0 10px rgba(255, 51, 51, 0.5);
-  }
-
-  /* Glass Effects */
-  .glass {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10;
-  }
-
-  .glass-dark {
-    @apply bg-black/60 backdrop-blur-3xl border border-white/5;
   }
 }
 
