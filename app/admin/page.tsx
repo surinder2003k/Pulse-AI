@@ -111,10 +111,7 @@ export default async function AdminPage() {
         ))}
       </div>
 
-      <motion.div 
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
+      <div 
         className="space-y-10 bg-secondary/[0.02] p-8 md:p-14 rounded-[3.5rem] border border-white/5 shadow-premium glass-dark"
       >
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
@@ -129,7 +126,7 @@ export default async function AdminPage() {
           </Badge>
         </div>
         <AdminUserList initialUsers={formattedUsers} currentUserId={currentUserId ?? undefined} />
-      </motion.div>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
         <div className="lg:col-span-7">
