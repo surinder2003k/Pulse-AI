@@ -16,6 +16,8 @@ import {
   MessageSquareShare,
   Search,
   Trash2,
+  Zap,
+  ShieldCheck,
   X
 } from "lucide-react";
 import { useEffect } from "react";
