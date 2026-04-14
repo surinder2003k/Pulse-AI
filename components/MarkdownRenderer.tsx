@@ -51,7 +51,15 @@ export default function MarkdownRenderer({ content, className }: MarkdownRendere
     // Most AI outputs use 2-4 spaces which prevents `#` from being a header
     text = text.split('\n').map(line => line.trimStart()).join('\n');
 
-    // 3. Ensure double newlines for sections if the AI only sent single ones
+    // 3. TRANSLATE HTML tags to Markdown (Hot-Swap Fix)
+    // Convert <b> and <strong> to **
+    text = text.replace(/<(b|strong).*?>(.*?)<\/\1>/gi, '**$2**');
+    // Convert <i> and <em> to *
+    text = text.replace(/<(i|em).*?>(.*?)<\/\1>/gi, '*$2*');
+    // Convert <a href="...">Text</a> to [Text](URL)
+    text = text.replace(/<a\s+href=["'](.*?)["'].*?>(.*?)<\/a>/gi, '[$2]($1)');
+
+    // 4. Ensure double newlines for sections if the AI only sent single ones
     // We target headers, lists, and bold text that likely starts a new context
     if (!text.includes('\n\n')) {
       text = text

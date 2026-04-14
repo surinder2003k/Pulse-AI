@@ -51,7 +51,7 @@ export async function POST(req: Request) {
       ? `EXTERNAL LINKING (Partner): You MUST naturally link to 1 of these Xylos AI stories as a deeper resource: [${external.join(", ")}].` 
       : "";
 
-    const linksContext = `${internalText} ${externalText} IMPORTANT: Use natural anchor text. CRITICAL: You MUST use the EXACT URLs provided above (specifically starting with "https://xylosai.vercel.app/"). DO NOT alter them to "xylos-ai.com" or any other domain. These MUST be formatted as Markdown links: [Anchor Text](URL). DO NOT USE HTML <a> TAGS.`;
+    const linksContext = `${internalText} ${externalText} IMPORTANT: Use natural anchor text. CRITICAL: You MUST use the EXACT URLs provided above. DO NOT alter them. You MUST use ONLY Markdown syntax: [Anchor Text](URL). NEVER use HTML tags like <a> or <b>. If you want to bold something, use **Double Asterisks**.`;
 
     console.log("Step 2: Generating content directly from user prompt...");
     let postData: any;
