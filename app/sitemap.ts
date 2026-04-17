@@ -2,6 +2,8 @@ import { MetadataRoute } from 'next';
 import connectDB from '@/lib/mongodb';
 import Post from '@/models/Post';
 
+export const dynamic = 'force-dynamic';
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pulse-blog-ai.vercel.app';
   

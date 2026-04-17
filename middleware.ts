@@ -15,6 +15,14 @@ const isPublicRoute = createRouteMatcher([
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
+  // Bypass completely for Search Crawlers & Bots to prevent Redirect Errors in Google Search Console
+  const userAgent = req.headers.get("user-agent") || "";
+  const isBot = /bot|crawler|spider|crawling|googlebot|bingbot|yandex|baiduspider|twitterbot|facebookexternalhit|linkedinbot/i.test(userAgent);
+  
+  if (isBot) {
+    return NextResponse.next();
+  }
+
   const { userId } = await auth();
 
   // Protect private routes — redirect to sign-in if not logged in
