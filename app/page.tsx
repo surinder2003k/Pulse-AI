@@ -31,8 +31,7 @@ export default async function HomePage() {
     .lean();
 
   const allPosts = JSON.parse(JSON.stringify(postsRaw));
-  const featuredPost = allPosts[0];
-  const gridPosts = allPosts.slice(1, 7);
+  const gridPosts = allPosts.slice(0, 6);
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-white relative overflow-hidden">
@@ -68,58 +67,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 3. The Editor's Pick Section */}
-      {featuredPost && (
-        <section className="relative z-10 py-20 md:py-24 px-6">
-          <div className="container mx-auto">
-            <div className="flex items-center gap-4 mb-10">
-               <span className="w-10 h-1 bg-primary shadow-glow-red" />
-               <span className="text-[9px] font-black uppercase tracking-[0.5em] text-primary">The Editor's Pick</span>
-            </div>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16 items-center">
-              {/* Left Side: Visual */}
-              <div className="lg:col-span-5 group relative">
-                <Link href={`/blog/${featuredPost.slug}`} className="block">
-                  <div className="aspect-[4/5] rounded-[2rem] overflow-hidden border border-white/5 shadow-soft bg-secondary/5 relative transition-all duration-700 group-hover:scale-[1.02] group-hover:shadow-glow-red">
-                    <img 
-                      src={featuredPost.feature_image_url} 
-                      alt={featuredPost.feature_image_alt || featuredPost.title} 
-                      className="w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700" 
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent pointer-events-none" />
-                    
-                    <Badge className="absolute top-6 left-6 bg-primary/90 text-white border-none py-1.5 px-5 rounded-full font-black uppercase text-[9px] tracking-widest shadow-skeuo-button">
-                       Featured
-                    </Badge>
-                  </div>
-                </Link>
-              </div>
-
-              {/* Right Side: Typography */}
-              <div className="lg:col-span-7 space-y-6 md:space-y-8">
-                <Link href={`/blog/${featuredPost.slug}`} className="group block">
-                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter leading-[0.95] uppercase italic group-hover:text-primary transition-colors duration-500">
-                    {featuredPost.title}
-                  </h2>
-                </Link>
-                <p className="text-lg text-white/40 leading-relaxed max-w-2xl font-medium uppercase tracking-tight">
-                  {featuredPost.excerpt}
-                </p>
-                <div className="flex items-center gap-5 pt-2">
-                   <div className="h-12 w-12 rounded-full border border-white/10 flex items-center justify-center glass-dark bg-secondary/5 group overflow-hidden">
-                      <img src="/logo.svg" alt="" className="h-6 w-6 opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all" />
-                   </div>
-                   <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-white">Digital Editorial Team</p>
-                      <p className="text-[9px] uppercase font-bold text-primary tracking-widest mt-1 italic">Verified Publisher</p>
-                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* 4. Latest Stories Grid */}
       <section className="relative z-10 py-20 md:py-24 bg-secondary/[0.02] border-y border-white/5">
