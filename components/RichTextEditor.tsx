@@ -7,7 +7,7 @@ import "./RichTextEditor.css"; // Custom overrides
 
 const ReactQuill = dynamic(() => import("react-quill-new"), { 
   ssr: false, 
-  loading: () => <div className="h-64 w-full bg-white/5 animate-pulse rounded-md border border-white/10" />
+  loading: () => <div className="h-64 w-full bg-white animate-pulse rounded-[2rem] border border-slate-200 shadow-sm" />
 });
 
 interface RichTextEditorProps {
@@ -49,7 +49,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
         modules={modules}
         formats={formats}
         placeholder={placeholder || "Start writing your SEO-optimized masterpiece..."}
-        className="text-white min-h-[400px] h-auto overflow-hidden bg-white/5 border border-white/10 rounded-xl"
+        className="text-gray-900 min-h-[400px] h-auto overflow-hidden bg-white border border-slate-200 shadow-premium rounded-[2.5rem]"
       />
     </div>
   );

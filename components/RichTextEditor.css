@@ -1,12 +1,12 @@
-/* Dark Theme Overrides for React Quill */
+/* Light Theme Editorial Overrides for React Quill */
 
 .rich-text-container .ql-toolbar.ql-snow {
   border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  background-color: rgba(255, 255, 255, 0.05);
-  border-top-left-radius: 0.75rem;
-  border-top-right-radius: 0.75rem;
-  padding: 12px;
+  border-bottom: 1px solid #f1f5f9;
+  background-color: #ffffff;
+  border-top-left-radius: 2.5rem;
+  border-top-right-radius: 2.5rem;
+  padding: 1.5rem;
 }
 
 .rich-text-container .ql-container.ql-snow {
@@ -17,47 +17,61 @@
 
 .rich-text-container .ql-editor {
   min-height: 400px;
-  padding: 1.5rem;
-  color: #e5e5e5;
+  padding: 2rem;
+  color: #0f172a; /* Slate 900 */
+  line-height: 1.8;
 }
 
 .rich-text-container .ql-editor.ql-blank::before {
-  color: rgba(255, 255, 255, 0.3);
+  color: #94a3b8; /* Slate 400 */
   font-style: italic;
+  left: 2rem;
 }
 
-/* Toolbar Icons Styling */
+/* Toolbar Icons Styling - Slate Theme */
 .rich-text-container .ql-snow .ql-stroke {
-  stroke: #a3a3a3;
+  stroke: #64748b; /* Slate 500 */
 }
 
 .rich-text-container .ql-snow .ql-fill,
 .rich-text-container .ql-snow .ql-stroke.ql-fill {
-  fill: #a3a3a3;
+  fill: #64748b;
 }
 
 .rich-text-container .ql-snow .ql-picker {
-  color: #a3a3a3;
+  color: #64748b;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.1em;
 }
 
 .rich-text-container .ql-snow .ql-picker-options {
-  background-color: #1a1a1a;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #ffffff;
+  border: 1px solid #f1f5f9;
+  border-radius: 1rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem;
 }
 
 .rich-text-container .ql-snow .ql-tooltip {
-  background-color: #1a1a1a;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #fff;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  background-color: #ffffff;
+  border: 1px solid #f1f5f9;
+  color: #0f172a;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  border-radius: 1rem;
+  padding: 1rem;
 }
 
 .rich-text-container .ql-snow .ql-tooltip input[type=text] {
-  background-color: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background-color: #f8fafc;
+  border: 1px solid #f1f5f9;
+  color: #0f172a;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.8rem;
 }
 
+/* Interactive States - Primary Color Pulse */
 .rich-text-container .ql-toolbar button:hover .ql-stroke,
 .rich-text-container .ql-toolbar button.ql-active .ql-stroke,
 .rich-text-container .ql-toolbar .ql-picker-label:hover .ql-stroke,
@@ -83,24 +97,23 @@
   color: #ff3333;
 }
 
-/* Editor content styling */
-.rich-text-container .ql-editor h1 { font-size: 2.25rem; font-weight: 800; margin-bottom: 1rem; color: #fff; }
-.rich-text-container .ql-editor h2 { font-size: 1.875rem; font-weight: 700; margin-bottom: 0.875rem; color: #fff; }
-.rich-text-container .ql-editor h3 { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.75rem; color: #f3f4f6; }
-.rich-text-container .ql-editor h4 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; color: #f3f4f6; }
-.rich-text-container .ql-editor p { margin-bottom: 1rem; }
+/* Editor content styling for High-End Editorial */
+.rich-text-container .ql-editor h1 { font-size: 2.5rem; font-weight: 900; margin-bottom: 1.5rem; color: #0f172a; letter-spacing: -0.02em; }
+.rich-text-container .ql-editor h2 { font-size: 2rem; font-weight: 800; margin-bottom: 1.25rem; color: #1e293b; letter-spacing: -0.01em; }
+.rich-text-container .ql-editor h3 { font-size: 1.75rem; font-weight: 700; margin-bottom: 1rem; color: #334155; }
+.rich-text-container .ql-editor h4 { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.75rem; color: #475569; }
+.rich-text-container .ql-editor p { margin-bottom: 1.5rem; font-weight: 500; }
 .rich-text-container .ql-editor img {
   max-width: 100%;
-  border-radius: 0.5rem;
-  margin: 1.5rem 0;
+  border-radius: 1.5rem;
+  margin: 2.5rem 0;
   display: block;
-  resize: both;
-  overflow: hidden;
-  cursor: nwse-resize;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
 }
 .rich-text-container .ql-editor a {
-  color: #3b82f6;
+  color: #2563eb;
   text-decoration: underline;
+  text-underline-offset: 4px;
 }
 .rich-text-container .ql-editor a:hover {
   color: #ff3333;

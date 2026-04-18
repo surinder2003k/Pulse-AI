@@ -1,6 +1,8 @@
 import Sidebar from "@/components/Sidebar";
 import MobileNav from "@/components/MobileNav";
 import MobileTopHeader from "@/components/MobileTopHeader";
+import Link from "next/link";
+import Logo from "@/components/Logo";
 
 export default function DashboardLayout({
   children,

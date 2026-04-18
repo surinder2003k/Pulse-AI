@@ -222,17 +222,17 @@ export default function SEOAnalyzer({ title, content, seoKeywords, focusKeyword,
   };
 
   return (
-    <div className="bg-[#111] border border-white/10 rounded-xl p-5 mb-6">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-white tracking-wide">SEO Analyzer</h3>
-        <div className={`text-xl font-bold ${getTextColor()}`}>
+    <div className="bg-white border border-slate-200 rounded-[2rem] p-8 mb-10 shadow-sm group hover:shadow-premium transition-all">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="font-black uppercase italic tracking-tighter text-gray-900">Search Intelligence</h3>
+        <div className={`text-2xl font-black italic tracking-tighter ${getTextColor()}`}>
           {score}%
         </div>
       </div>
       
-      <div className="relative h-2 w-full overflow-hidden rounded-full bg-secondary/50 mb-6">
+      <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-slate-100 mb-8 border border-slate-200">
         <div
-          className="h-full transition-all duration-500 ease-in-out rounded-full"
+          className="h-full transition-all duration-1000 ease-out rounded-full"
           style={{ 
             width: `${score}%`,
             backgroundColor: score >= 80 ? '#22c55e' : score >= 50 ? '#eab308' : '#ef4444'
@@ -240,13 +240,15 @@ export default function SEOAnalyzer({ title, content, seoKeywords, focusKeyword,
         />
       </div>
 
-      <div className="space-y-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {tests.map((test) => (
-          <div key={test.id} className="flex items-start gap-3 text-sm">
-            {test.status === "pass" && <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" />}
-            {test.status === "warn" && <AlertTriangle className="w-4 h-4 text-yellow-500 mt-0.5 shrink-0" />}
-            {test.status === "fail" && <XCircle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />}
-            <span className="text-white/80">{test.label}</span>
+          <div key={test.id} className="flex items-start gap-4 p-4 rounded-2xl bg-slate-50/50 border border-slate-100 hover:border-primary/20 transition-all group/test">
+            <div className="mt-0.5">
+              {test.status === "pass" && <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />}
+              {test.status === "warn" && <AlertTriangle className="w-4 h-4 text-yellow-500 shrink-0" />}
+              {test.status === "fail" && <XCircle className="w-4 h-4 text-red-500 shrink-0" />}
+            </div>
+            <span className="text-[11px] font-black uppercase tracking-widest text-slate-500 group-hover/test:text-gray-900 transition-colors leading-relaxed italic">{test.label}</span>
           </div>
         ))}
       </div>
