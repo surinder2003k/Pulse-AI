@@ -18,7 +18,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <>
       {mounted && <NextTopLoader color="#FF3333" showSpinner={false} />}
-      <LoadingScreen />
       
       <ThemeProvider
         attribute="class"
