@@ -26,11 +26,9 @@ import anime from "animejs";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import PremiumAlert from "@/components/PremiumAlert";
-import Celebration from "@/components/Celebration";
 
 import Dropzone from "@/components/Dropzone";
 import RichTextEditor from "@/components/RichTextEditor";
-import SEOAnalyzer from "@/components/SEOAnalyzer";
 
 export default function CreatePostPage() {
   const router = useRouter();
@@ -43,7 +41,6 @@ export default function CreatePostPage() {
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [isSearchingImage, setIsSearchingImage] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [showCelebration, setShowCelebration] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -108,7 +105,7 @@ export default function CreatePostPage() {
         content: data.content,
         category: data.category,
         tags: Array.isArray(data.tags) ? data.tags.join(", ") : data.tags,
-        seoKeywords: data.seo_keywords || "",
+        seoKeywords: data.seoKeywords || data.meta_keywords || "",
         focusKeyword: data.focus_keyword || "",
         metaTitle: data.meta_title || "",
         metaDescription: data.meta_description || "",
@@ -290,6 +287,16 @@ export default function CreatePostPage() {
                         value={formData.metaDescription}
                         onChange={(e) => setFormData({...formData, metaDescription: e.target.value})}
                         className="min-h-[100px] bg-slate-50 border-slate-100 text-xs font-bold tracking-wider rounded-xl transition-all focus:bg-white p-4"
+                      />
+                   </div>
+
+                   <div className="space-y-3">
+                      <label className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Meta Keywords (Comma Separated)</label>
+                      <Input 
+                        placeholder="AI, TECHNOLOGY, INNOVATION..." 
+                        value={formData.seoKeywords}
+                        onChange={(e) => setFormData({...formData, seoKeywords: e.target.value})}
+                        className="h-12 bg-slate-50 border-slate-100 text-xs font-bold uppercase tracking-wider rounded-xl transition-all focus:bg-white"
                       />
                    </div>
                 </div>

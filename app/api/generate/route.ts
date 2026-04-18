@@ -51,7 +51,7 @@ export async function POST(req: Request) {
       ? `EXTERNAL LINKING (Partner): You MUST naturally link to 1 of these Xylos AI stories as a deeper resource: [${external.join(", ")}].` 
       : "";
 
-    const linksContext = `${internalText} ${externalText} IMPORTANT: Use natural anchor text. CRITICAL: You MUST use the EXACT URLs provided above. DO NOT alter them. You MUST use ONLY Markdown syntax: [Anchor Text](URL). NEVER use HTML tags like <a> or <b>. If you want to bold something, use **Double Asterisks**.`;
+    const linksContext = `${internalText} ${externalText} IMPORTANT: Use natural anchor text. CRITICAL: You MUST use the EXACT URLs provided above. DO NOT alter them. You MUST use ONLY HTML syntax: <a href="URL">Anchor Text</a>. NEVER use Markdown syntax like [text](url). For bold text, use <strong>.`;
 
     console.log("Step 2: Generating content directly from user prompt...");
     let postData: any;
@@ -63,9 +63,11 @@ export async function POST(req: Request) {
     Tone: Authoritative, Visionary, Tactical.
     
     IMPORTANT FORMATTING RULES:
-    1. Use well-formatted Markdown. Use <h2> and <h3> for headings.
-    2. Use <ul>, <ol>, and <li> for lists. Use **Bold** for emphasis.
-    3. INSERT ONE IMAGE PLACEHOLDER: You MUST place the string [[BODY_IMAGE_1]] naturally after the first 3-4 paragraphs where a visual would fit.
+    1. Use SEMANTIC HTML for the content.
+    2. Use <h2> and <h3> for headings.
+    3. Use <p> for paragraphs.
+    4. Use <ul>, <ol>, and <li> for lists. Use <strong> for emphasis.
+    5. INSERT TWO IMAGE PLACEHOLDERS: Use [[BODY_IMAGE_1]] and [[BODY_IMAGE_2]] exactly where a supporting visual makes sense.
     
     Format the response STRICTLY as a JSON object with these exact keys:
     {
@@ -73,13 +75,14 @@ export async function POST(req: Request) {
       "meta_title": "A custom SEO title for Google (max 60 chars)",
       "meta_description": "A compelling meta description (max 160 chars)",
       "focus_keyword": "The primary focus keyword for this article",
-      "seo_keywords": "4-5 comma separated keywords",
-      "content": "Full markdown content starting with <h2>Introduction</h2>. Place [[BODY_IMAGE_1]] in a suitable spot.",
+      "seoKeywords": "4-5 comma separated keywords",
+      "content": "Full HTML content starting with <h2>Introduction</h2>. Place [[BODY_IMAGE_1]] and [[BODY_IMAGE_2]] in suitable spots.",
       "excerpt": "A powerful short summary for cards/previews (max 160 chars)",
       "category": "Technology, Business, News, or Intelligence",
       "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"],
-      "imageSearchKeyword": "A generic 1-2 word English keyword for the feature image",
-      "bodyImageKeyword": "A specific keyword for the in-content visual ([[BODY_IMAGE_1]])",
+      "imageSearchKeyword": "A highly descriptive 2-3 word English keyword for the main feature image",
+      "bodyImageKeyword1": "A descriptive keyword for the first visual asset",
+      "bodyImageKeyword2": "A descriptive keyword for the second visual asset",
       "image_alt": "A descriptive ALT tag for visual assets"
     }
 
@@ -105,6 +108,7 @@ export async function POST(req: Request) {
     console.log("Step 2: Finding Visual Assets...");
     let featureImage = "https://images.unsplash.com/photo-1677442136019-21780ecad995";
     let bodyImage1 = "";
+    let bodyImage2 = "";
     
     try {
       // Feature Image
@@ -115,22 +119,36 @@ export async function POST(req: Request) {
         featureImage = featData?.results?.[0]?.urls?.regular || featureImage;
       }
 
-      // Body Image
-      const bodyKw = postData.bodyImageKeyword || featureKw;
-      const bodyRes = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(bodyKw)}&orientation=landscape&order_by=relevant&per_page=1&client_id=${UNSPLASH_ACCESS_KEY}`);
-      if (bodyRes.ok) {
-        const bodyData = await bodyRes.json();
-        bodyImage1 = bodyData?.results?.[0]?.urls?.regular || "";
+      // Body Image 1
+      const bodyKw1 = postData.bodyImageKeyword1 || featureKw;
+      const bodyRes1 = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(bodyKw1)}&orientation=landscape&order_by=relevant&per_page=1&client_id=${UNSPLASH_ACCESS_KEY}`);
+      if (bodyRes1.ok) {
+        const bodyData1 = await bodyRes1.json();
+        bodyImage1 = bodyData1?.results?.[0]?.urls?.regular || "";
+      }
+
+      // Body Image 2
+      const bodyKw2 = postData.bodyImageKeyword2 || featureKw;
+      const bodyRes2 = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(bodyKw2)}&orientation=landscape&order_by=relevant&per_page=1&client_id=${UNSPLASH_ACCESS_KEY}`);
+      if (bodyRes2.ok) {
+        const bodyData2 = await bodyRes2.json();
+        bodyImage2 = bodyData2?.results?.[0]?.urls?.regular || "";
       }
     } catch (imgErr) {
       console.warn("Visual synthesis partial failure.");
     }
 
-    // Inject images into content
+    // Inject images into content using premium figure/img tags
     if (bodyImage1) {
-      postData.content = postData.content.replace("[[BODY_IMAGE_1]]", `\n\n![${postData.image_alt || "Visual Context"}](${bodyImage1})\n\n`);
+      postData.content = postData.content.replace("[[BODY_IMAGE_1]]", `<figure class="my-8 rounded-3xl overflow-hidden border border-slate-100 shadow-sm"><img src="${bodyImage1}" alt="${postData.image_alt || "Visual Context"}" class="w-full h-auto object-cover"/><figcaption class="p-4 bg-slate-50 text-[10px] font-black uppercase tracking-widest text-slate-400 text-center italic border-t border-slate-100">Asset 01 // Narrative Context</figcaption></figure>`);
     } else {
       postData.content = postData.content.replace("[[BODY_IMAGE_1]]", "");
+    }
+
+    if (bodyImage2) {
+      postData.content = postData.content.replace("[[BODY_IMAGE_2]]", `<figure class="my-8 rounded-3xl overflow-hidden border border-slate-100 shadow-sm"><img src="${bodyImage2}" alt="${postData.image_alt || "Deep Tech Context"}" class="w-full h-auto object-cover"/><figcaption class="p-4 bg-slate-50 text-[10px] font-black uppercase tracking-widest text-slate-400 text-center italic border-t border-slate-100">Asset 02 // Strategic Intel</figcaption></figure>`);
+    } else {
+      postData.content = postData.content.replace("[[BODY_IMAGE_2]]", "");
     }
 
     // Step 3: Saving to DB...
@@ -162,7 +180,7 @@ export async function POST(req: Request) {
         meta_title: postData.meta_title,
         meta_description: postData.meta_description,
         focus_keyword: postData.focus_keyword,
-        seo_keywords: postData.seo_keywords,
+        seoKeywords: postData.seoKeywords,
         feature_image_url: featureImage,
         feature_image_alt: postData.image_alt || postData.title,
         status: "published",

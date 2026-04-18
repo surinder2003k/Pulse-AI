@@ -27,7 +27,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
         enableSystem={false}
         disableTransitionOnChange
       >
-        <SiteLoadSound />
         <ParticleBackground />
         <div className="relative flex min-h-screen flex-col">
           <Navbar />
@@ -36,22 +35,25 @@ export function Providers({ children }: { children: React.ReactNode }) {
           </main>
         </div>
         <Toaster 
-          position="top-center" 
+          position="bottom-right" 
           richColors 
-          expand={false}
+          closeButton
+          expand={true}
           toastOptions={{
             style: {
               background: 'white',
-              border: '1px solid #E2E8F0',
+              border: '1px solid #FF3333',
               color: '#0F172A',
-              borderRadius: '1rem',
-              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05)',
-              padding: '1rem 1.5rem',
-              fontSize: '0.875rem',
-              fontWeight: '600',
+              borderRadius: '1.25rem',
+              boxShadow: '0 20px 25px -5px rgba(255, 51, 51, 0.1)',
+              padding: '1.25rem 2rem',
+              fontSize: '0.75rem',
+              fontWeight: '800',
               textTransform: 'uppercase',
-              letterSpacing: '0.05em'
+              letterSpacing: '0.1em',
+              fontFamily: 'var(--font-space)'
             },
+            className: 'premium-toast',
           }}
         />
       </ThemeProvider>

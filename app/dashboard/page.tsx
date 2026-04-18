@@ -168,6 +168,14 @@ export default function DashboardOverview() {
     }
   };
 
+  const playHoverSound = (path: string) => {
+    try {
+      const audio = new Audio(path);
+      audio.volume = 0.3;
+      audio.play().catch(() => {});
+    } catch (e) {}
+  };
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
@@ -285,8 +293,12 @@ export default function DashboardOverview() {
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {userList.map((usr, i) => {
-                      const isSuperAdmin = usr.email === ADMIN_EMAIL || usr.email === "xyzg135@gmail.com";
-                      const isSelf = usr.id === clerkUser?.id;
+                      const isCurrentUserSuperAdmin = clerkUser?.emailAddresses[0]?.emailAddress === ADMIN_EMAIL;
+                      const isTargetSuperAdmin = usr.email === ADMIN_EMAIL;
+                      const isTargetSelf = usr.id === clerkUser?.id;
+                      
+                      // Only super admin can manage others. Cannot manage self or other super admins (though there should only be one).
+                      const canManage = isCurrentUserSuperAdmin && !isTargetSelf && !isTargetSuperAdmin;
                       
                       return (
                         <tr key={i} className="group hover:bg-slate-50/50 transition-all">
@@ -297,7 +309,7 @@ export default function DashboardOverview() {
                               </div>
                               <div className="flex flex-col gap-1">
                                 <span className="font-black text-gray-900 uppercase tracking-wider italic text-sm group-hover:text-primary transition-colors">
-                                  {usr.name} {isSelf && <span className="text-primary lowercase">(you)</span>}
+                                  {usr.name} {isTargetSelf && <span className="text-primary lowercase tracking-normal">(you)</span>}
                                 </span>
                                 <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">ID: {usr.id.slice(-6)}</span>
                               </div>
@@ -319,8 +331,7 @@ export default function DashboardOverview() {
                           </td>
                           <td className="px-12 py-10 text-right">
                             <div className="flex justify-end gap-3 opacity-40 group-hover:opacity-100 transition-all">
-                              {/* Override Protocols (Admin Toggle) */}
-                              {!isSuperAdmin && !isSelf ? (
+                              {canManage ? (
                                 <div className="flex gap-2">
                                   <button 
                                     onClick={() => handleUpdateRole(usr.id, usr.role)}
@@ -340,7 +351,7 @@ export default function DashboardOverview() {
                                   </button>
                                 </div>
                               ) : (
-                                <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 border border-slate-100 italic font-black text-[9px] uppercase tracking-tighter">
+                                <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 border border-slate-100 italic font-black text-[9px] uppercase tracking-tighter" title={isTargetSelf ? "Self-management restricted" : "Root access protected"}>
                                   <Lock className="h-4 w-4" />
                                 </div>
                               )}

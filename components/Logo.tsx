@@ -14,12 +14,9 @@ interface LogoProps {
 export default function Logo({ className, size = "md", showText = true, playSoundOnHover = false }: LogoProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   
-  const handleHover = () => {
-    if (!playSoundOnHover) return;
-    
-    // Create new audio instance on each hover to allow rapid clicks/hovers
-    const audio = new Audio("/sounds/anime-ahh.mp3");
-    audio.volume = 0.3;
+  const handleClick = () => {
+    const audio = new Audio("/sounds/ek-jhaat-bhar-ka-aadmi.mp3");
+    audio.volume = 0.5;
     audio.play().catch(() => {
       console.warn("Audio playback failed. User interaction might be required.");
     });
@@ -42,7 +39,7 @@ export default function Logo({ className, size = "md", showText = true, playSoun
   return (
     <div 
       className={cn("flex items-center gap-4 select-none group leading-none cursor-pointer", className)}
-      onMouseEnter={handleHover}
+      onClick={handleClick}
     >
       <div className={cn("relative flex items-center justify-center", sizes[size])}>
         {/* Diamond Shape */}
