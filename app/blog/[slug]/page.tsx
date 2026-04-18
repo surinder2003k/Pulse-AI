@@ -1,6 +1,7 @@
 import connectDB from "@/lib/mongodb";
 import Post, { IPost } from "@/models/Post";
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import { format } from "date-fns";
 import { formatDate, calculateReadingTime } from "@/lib/utils";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
