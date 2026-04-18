@@ -39,7 +39,7 @@ export default function MarkdownRenderer({ content, className }: MarkdownRendere
   );
 
   // Robust normalization for AI-generated text
-  const cleanContent = (raw: string) => {
+  const cleanContent = (raw: string, isHtml: boolean) => {
     if (!raw) return "";
     
     let text = raw.trim();
@@ -48,45 +48,41 @@ export default function MarkdownRenderer({ content, className }: MarkdownRendere
     text = text.replace(/^(Here is|Sure,|In this article|Today we will|This blog post).*\n/i, "");
 
     // 2. STRIP leading indentation (VITAL for Markdown detection)
-    // Most AI outputs use 2-4 spaces which prevents `#` from being a header
     text = text.split('\n').map(line => line.trimStart()).join('\n');
 
-    // 3. TRANSLATE HTML tags to Markdown (Hot-Swap Fix)
-    // Convert <b> and <strong> to **
-    text = text.replace(/<(b|strong).*?>(.*?)<\/\1>/gi, '**$2**');
-    // Convert <i> and <em> to *
-    text = text.replace(/<(i|em).*?>(.*?)<\/\1>/gi, '*$2*');
-    // Convert <a href="...">Text</a> to [Text](URL)
-    text = text.replace(/<a\s+href=["'](.*?)["'].*?>(.*?)<\/a>/gi, '[$2]($1)');
+    // Only perform character translations if it's NOT a full HTML document
+    if (!isHtml) {
+      // 3. TRANSLATE HTML tags to Markdown (Hot-Swap Fix)
+      text = text.replace(/<(b|strong).*?>(.*?)<\/\1>/gi, '**$2**');
+      text = text.replace(/<(i|em).*?>(.*?)<\/\1>/gi, '*$2*');
+      text = text.replace(/<a\s+href=["'](.*?)["'].*?>(.*?)<\/a>/gi, '[$2]($1)');
 
-    // 4. GLOBAL DOMAIN GUARD: Ensure any stray xylos-ai.com links use the correct staging domain
-    text = text.replace(/xylos-ai\.com/gi, 'xylosai.vercel.app');
-
-    // 5. Ensure double newlines for sections if the AI only sent single ones
-    // We target headers, lists, and bold text that likely starts a new context
-    if (!text.includes('\n\n')) {
-      text = text
-        .replace(/\n(?=#{1,6}\s)/g, '\n\n') // Before headers
-        .replace(/\n(?=[*+-]\s)/g, '\n\n')  // Before lists
-        .replace(/\n(?=\d+\.\s)/g, '\n\n');  // Before numbered lists
+      // 4. Force a double newline before every header if not present
+      text = text.replace(/([^\n])(\n?)(#{1,6}\s)/g, '$1\n\n$3');
+      // 5. Ensure EVERY header has a space
+      text = text.replace(/\n(#{1,6})([^\s#])/g, '\n$1 $2');
     }
 
-    // 4. Force a double newline before every header if not present
-    text = text.replace(/([^\n])(\n?)(#{1,6}\s)/g, '$1\n\n$3');
-
-    // 5. Ensure EVERY header has a space (Markdown requirement)
-    text = text.replace(/\n(#{1,6})([^\s#])/g, '\n$1 $2');
+    // Global domain guard for staging
+    text = text.replace(/xylos-ai\.com/gi, 'xylosai.vercel.app');
 
     return text;
   };
 
-  const processedContent = cleanContent(content);
+  const isHtml = containsHtml(content);
+  const processedContent = cleanContent(content, isHtml);
 
   return (
     <div className={cn(proseClasses, "rich-text-output")}>
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-        {processedContent}
-      </ReactMarkdown>
+      {isHtml ? (
+        <div className="html-content-wrapper">
+          {parse(processedContent)}
+        </div>
+      ) : (
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {processedContent}
+        </ReactMarkdown>
+      )}
     </div>
   );
 }
