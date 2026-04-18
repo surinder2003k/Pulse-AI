@@ -37,9 +37,9 @@ export default function Navbar() {
     )}>
       <div className="container mx-auto">
         <div className={cn(
-          "relative flex items-center justify-between p-4 px-6 md:px-10 rounded-[2rem] transition-all duration-1000 overflow-hidden",
+          "relative flex items-center justify-between p-4 px-6 md:px-10 rounded-2xl transition-all duration-700 overflow-hidden",
           isScrolled 
-            ? "bg-black/60 backdrop-blur-3xl shadow-skeuo-float border-white/10 border scale-[1.01]" 
+            ? "bg-white/90 backdrop-blur-xl shadow-premium border-gray-200 border scale-[1.01]" 
             : "bg-transparent border-transparent"
         )}>
           {/* Inner Light reflection effect for scrolled state */}
@@ -49,7 +49,7 @@ export default function Navbar() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="absolute inset-0 border border-white/5 rounded-[2rem] pointer-events-none" 
+                className="absolute inset-0 border border-gray-100 rounded-2xl pointer-events-none" 
               />
             )}
           </AnimatePresence>
@@ -69,49 +69,49 @@ export default function Navbar() {
                     key={link.name}
                     href={link.href}
                     className={cn(
-                      "text-[9px] font-black uppercase tracking-[0.4em] transition-all relative group py-2",
-                      isActive ? "text-primary italic" : "text-white/30 hover:text-white"
+                      "text-xs font-semibold uppercase tracking-widest transition-all relative group py-2",
+                      isActive ? "text-primary" : "text-gray-500 hover:text-gray-900"
                     )}
                   >
                     {link.name}
                     <span className={cn(
-                      "absolute -bottom-1 left-0 h-[1.5px] bg-primary transition-all duration-500 rounded-full",
-                      isActive ? "w-full shadow-[0_0_10px_rgba(255,51,51,0.5)]" : "w-0 group-hover:w-full"
+                      "absolute -bottom-1 left-0 h-[2px] bg-primary transition-all duration-300 rounded-full",
+                      isActive ? "w-full" : "w-0 group-hover:w-full"
                     )} />
                   </Link>
                 );
               })}
             </div>
 
-            <div className="h-6 w-[1px] bg-white/10" />
+            <div className="h-6 w-[1px] bg-gray-200" />
 
             <div className="flex items-center gap-6">
               {isSignedIn ? (
                 <div className="flex items-center gap-6">
-                  <Link href="/dashboard" className="flex items-center gap-2.5 text-[9px] font-black uppercase tracking-[0.3em] text-white/30 hover:text-white transition-all group">
-                    <LayoutDashboard className="w-3.5 h-3.5 text-primary group-hover:scale-110 transition-transform" />
+                  <Link href="/dashboard" className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-all group">
+                    <LayoutDashboard className="w-4 h-4 text-primary group-hover:scale-110 transition-transform" />
                     Terminal
                   </Link>
                   {isAdmin && (
-                    <Link href="/dashboard/create" className="flex items-center gap-2.5 text-[9px] font-black uppercase tracking-[0.3em] text-primary hover:text-glow-red transition-all group">
-                      <Zap className="w-3.5 h-3.5 fill-primary group-hover:scale-110 transition-transform" />
+                    <Link href="/dashboard/create" className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-primary hover:text-primary/80 transition-all group">
+                      <Zap className="w-4 h-4 fill-primary group-hover:scale-110 transition-transform" />
                       Initiate
                     </Link>
                   )}
-                  <div className="p-1 rounded-[12px] border border-white/10 bg-secondary/20 shadow-skeuo-button hover:shadow-skeuo-button-pressed transition-all">
+                  <div className="p-1 rounded-full border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all">
                     <UserButton afterSignOutUrl="/" />
                   </div>
                 </div>
               ) : (
                 <div className="flex items-center gap-6">
                   <SignInButton mode="modal">
-                    <button className="text-[9px] font-black uppercase tracking-[0.4em] text-white/30 hover:text-white transition-all">
-                      Access Login
+                    <button className="text-xs font-semibold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-all">
+                      Login
                     </button>
                   </SignInButton>
                   <SignUpButton mode="modal">
-                    <button className="bg-primary hover:glow-red-strong text-white text-[9px] font-black uppercase tracking-[0.4em] px-6 py-3 rounded-[1.2rem] transition-all flex items-center gap-2.5 group shadow-skeuo-float hover:scale-[1.02] active:scale-95">
-                      Join Network <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    <button className="bg-primary hover:bg-primary/90 text-white text-xs font-semibold uppercase tracking-widest px-6 py-3 rounded-full transition-all shadow-md hover:shadow-lg">
+                      Join Network
                     </button>
                   </SignUpButton>
                 </div>
@@ -121,7 +121,7 @@ export default function Navbar() {
 
           {/* Mobile Menu Toggle */}
           <button 
-            className="lg:hidden relative z-50 p-2.5 rounded-xl bg-secondary/10 border border-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-all shadow-skeuo-button"
+            className="lg:hidden relative z-50 p-2.5 rounded-full bg-gray-100 border border-gray-200 hover:bg-gray-200 text-gray-700 transition-all shadow-sm"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -137,34 +137,32 @@ export default function Navbar() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed inset-0 z-40 lg:hidden bg-black/98 backdrop-blur-3xl flex flex-col items-center justify-center p-10"
+            className="fixed inset-0 z-40 lg:hidden bg-white/95 backdrop-blur-xl flex flex-col items-center justify-center p-10"
           >
-             {/* Decorative Background Decor for Mobile */}
-            <div className="absolute top-1/4 left-1/4 w-[300px] h-[300px] bg-primary/10 rounded-full blur-[80px] -z-10" />
             
             <div className="flex flex-col items-center gap-10 text-center">
                <Logo size="md" />
-               <div className="h-[1px] w-20 bg-white/10" />
+               <div className="h-[1px] w-20 bg-gray-200" />
                
-               <div className="flex flex-col gap-4">
+               <div className="flex flex-col gap-6">
                  {navLinks.map((link) => (
                     <Link
                       key={link.name}
                       href={link.href}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="text-xl font-black uppercase tracking-tighter italic text-white/40 hover:text-primary transition-all active:scale-110"
+                      className="text-xl font-bold uppercase tracking-wider text-gray-700 hover:text-primary transition-all active:scale-110"
                     >
                       {link.name}
                     </Link>
                   ))}
                </div>
               
-              <div className="h-[1px] w-20 bg-white/10" />
+              <div className="h-[1px] w-20 bg-gray-200" />
 
               {isSignedIn ? (
                 <div className="flex flex-col items-center gap-8">
-                  <Link href="/dashboard" className="text-base font-black uppercase tracking-[0.4em] text-primary" onClick={() => setIsMobileMenuOpen(false)}>
-                    Enter Terminal
+                  <Link href="/dashboard" className="text-base font-bold uppercase tracking-widest text-primary" onClick={() => setIsMobileMenuOpen(false)}>
+                    Terminal
                   </Link>
                   <div className="scale-125">
                     <UserButton afterSignOutUrl="/" />
@@ -173,10 +171,10 @@ export default function Navbar() {
               ) : (
                 <div className="flex flex-col items-center gap-6">
                   <SignInButton mode="modal">
-                    <button className="text-lg font-black uppercase tracking-[0.4em] text-white/30">Login Protocol</button>
+                    <button className="text-sm font-bold uppercase tracking-widest text-gray-500">Login</button>
                   </SignInButton>
                   <SignUpButton mode="modal">
-                    <button className="bg-primary text-white text-sm font-black uppercase tracking-[0.2em] px-8 py-4 rounded-[1.25rem] shadow-skeuo-float">
+                    <button className="bg-primary text-white text-sm font-bold uppercase tracking-widest px-8 py-3 rounded-full shadow-md">
                       Join Network
                     </button>
                   </SignUpButton>

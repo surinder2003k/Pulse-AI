@@ -38,7 +38,7 @@ export default function Logo({ className, size = "md", showText = true }: LogoPr
             ease: "easeInOut",
           }}
           className={cn(
-            "border-2 border-primary rotate-45 flex items-center justify-center bg-black transition-all group-hover:shadow-glow-red",
+            "border-2 border-primary rotate-45 flex items-center justify-center bg-white transition-all group-hover:shadow-glow-red",
             size === "sm" ? "h-5 w-5 border" : 
             size === "md" ? "h-7 w-7" : 
             size === "lg" ? "h-12 w-12 border-[3px]" : "h-20 w-20 border-[4px]"
@@ -47,7 +47,7 @@ export default function Logo({ className, size = "md", showText = true }: LogoPr
           {/* Inner Pulse Dot */}
           <div className="relative flex -rotate-45">
             <span className={cn("animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60")}></span>
-            <span className={cn("relative inline-flex rounded-full bg-primary shadow-[0_0_20px_rgba(255,51,51,1)]", dotSizes[size])}></span>
+            <span className={cn("relative inline-flex rounded-full bg-primary shadow-[0_0_20px_rgba(255,51,51,0.5)]", dotSizes[size])}></span>
           </div>
         </motion.div>
 
@@ -62,7 +62,7 @@ export default function Logo({ className, size = "md", showText = true }: LogoPr
       {showText && (
         <div className="flex flex-col gap-0.5">
           <span className={cn(
-            "font-black tracking-tighter uppercase italic text-glow-red",
+            "font-black tracking-tighter uppercase italic text-gray-900 group-hover:text-primary transition-colors",
             size === "sm" ? "text-xl" : 
             size === "md" ? "text-3xl" : 
             size === "lg" ? "text-5xl" : "text-7xl"
@@ -71,7 +71,7 @@ export default function Logo({ className, size = "md", showText = true }: LogoPr
           </span>
           {size !== "sm" && (
             <span className={cn(
-              "font-black uppercase tracking-[0.5em] text-white/40 leading-none",
+              "font-black uppercase tracking-[0.5em] text-gray-400 leading-none",
               size === "md" ? "text-[8px]" : size === "lg" ? "text-[12px]" : "text-[16px]"
             )}>
               Design Intelligence

@@ -38,10 +38,10 @@ export default function CategoryFilter() {
           >
             <Badge
               className={cn(
-                "px-6 py-2.5 cursor-pointer rounded-full transition-all duration-500 font-black uppercase tracking-widest text-[10px] border",
+                "px-6 py-2.5 cursor-pointer rounded-full transition-all duration-300 font-bold uppercase tracking-widest text-xs border",
                 isActive 
-                  ? "bg-primary text-white border-primary glow-red shadow-skeuo-button scale-105" 
-                  : "bg-secondary/10 text-white/30 border-white/5 hover:bg-white/5 hover:text-white hover:border-white/10 shadow-skeuo-in"
+                  ? "bg-primary text-white border-primary shadow-sm scale-105" 
+                  : "bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100 hover:text-gray-900 shadow-sm"
               )}
             >
               {cat}

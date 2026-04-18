@@ -138,7 +138,7 @@ export async function GET(req: Request) {
         const { searchImage } = await import("@/lib/image-search");
         const searchKeyword = `${postData.imageSearchKeyword || postData.category} ${postData.title.split(' ').slice(0, 3).join(' ')}`;
         const images = await searchImage(searchKeyword);
-        const featureImage = (Array.isArray(images) ? images[0] : images) || "https://images.unsplash.com/photo-1677442136019-21780ecad995";
+        const featureImage = (Array.isArray(images) && images.length > 0 ? images[Math.floor(Math.random() * images.length)] : images) || "https://images.unsplash.com/photo-1677442136019-21780ecad995";
 
 
         // Step 3: Save to MongoDB

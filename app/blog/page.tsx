@@ -86,29 +86,26 @@ export default async function BlogPage({
   const totalPages = Math.ceil(count / pageSize);
 
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white relative">
-      {/* Background Decor */}
-      <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] -z-10" />
-      
-      <div className="flex flex-col gap-12 md:gap-16 pb-24 pt-16 px-4 md:px-6 container mx-auto">
+    <div className="flex flex-col min-h-screen bg-background text-foreground relative">
+      <div className="flex flex-col gap-10 md:gap-14 pb-24 pt-16 px-4 md:px-6 container mx-auto">
         {/* Header Section */}
         <div className="flex flex-col items-center text-center gap-4 relative">
-           <div className="flex items-center gap-3 bg-secondary/10 px-5 py-2 rounded-full border border-white/5 shadow-skeuo-in">
-              <Database className="h-3 w-3 text-primary animate-pulse" />
-              <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/40">Archive Access Protocol</span>
+           <div className="flex items-center gap-3 bg-primary/5 px-5 py-2 rounded-full border border-gray-200">
+              <Database className="h-3.5 w-3.5 text-primary" />
+              <span className="text-xs font-bold uppercase tracking-widest text-gray-500">Archive Access Protocol</span>
            </div>
            
-           <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter italic uppercase text-white leading-none">
-              Stories <span className="text-primary italic">Archive.</span>
+           <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 leading-tight">
+              Stories <span className="text-primary inline-block">Archive</span>
            </h1>
            
-           <p className="text-white/30 max-w-lg text-sm md:text-base font-medium uppercase tracking-tight italic">
-              Accessing <span className="text-primary font-black tracking-widest px-2">{count || 0}</span> modules across the grid.
+           <p className="text-gray-500 max-w-lg text-sm md:text-base font-medium">
+              Accessing <span className="text-primary font-bold">{count || 0}</span> modules across the grid.
            </p>
         </div>
 
         {/* Filter & Search Bar */}
-        <div className="flex flex-col lg:flex-row gap-6 items-center justify-between border-y border-white/5 py-6 bg-secondary/[0.01] shadow-skeuo-in px-6 md:px-10 rounded-[1.5rem]">
+        <div className="flex flex-col lg:flex-row gap-6 items-center justify-between border-y border-gray-100 py-6 bg-white shadow-sm px-6 md:px-10 rounded-3xl">
           <div className="w-full lg:w-auto overflow-x-auto no-scrollbar pb-1 lg:pb-0">
             <CategoryFilter />
           </div>
@@ -126,38 +123,36 @@ export default async function BlogPage({
               ))}
             </div>
           ) : (
-            <div className="py-32 px-10 text-center animate-in fade-in slide-in-from-bottom-10 duration-1000 bg-secondary/[0.03] rounded-[3rem] border border-white/5 shadow-skeuo-in relative overflow-hidden group">
-               <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+            <div className="py-24 px-8 text-center animate-in fade-in slide-in-from-bottom-10 duration-1000 bg-gray-50 rounded-3xl border border-gray-200 shadow-sm relative overflow-hidden group">
                
-               <div className="relative group inline-block mb-12">
-                  <div className="h-24 w-24 rounded-3xl bg-secondary/10 flex items-center justify-center shadow-skeuo-button border border-white/5 mx-auto">
-                     <Zap className="h-10 w-10 text-primary opacity-30 animate-pulse" />
+               <div className="relative group inline-block mb-10">
+                  <div className="h-20 w-20 rounded-2xl bg-white flex items-center justify-center shadow-sm border border-gray-200 mx-auto">
+                     <Zap className="h-8 w-8 text-primary opacity-50" />
                   </div>
-                  <div className="absolute -inset-4 blur-2xl bg-primary/10 opacity-50 -z-10" />
                </div>
                
-               <div className="space-y-6 max-w-lg mx-auto">
-                  <h2 className="text-3xl md:text-5xl font-black uppercase italic tracking-tighter leading-none text-white">
-                    Zero <span className="text-primary italic">Pulse</span> Detected
+               <div className="space-y-4 max-w-lg mx-auto">
+                  <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-gray-900">
+                    Zero Pulse Detected
                   </h2>
-                  <p className="text-white/30 font-bold uppercase tracking-widest text-[9px] leading-relaxed border-y border-white/5 py-6">
+                  <p className="text-gray-500 font-medium text-sm leading-relaxed border-y border-gray-200 py-6">
                     The requested data sequence is unavailable. Diagnostics suggest modifying parameters or returning to the base directory.
                   </p>
                </div>
 
-               <div className="mt-12 flex flex-col items-center gap-6">
-                  <p className="text-[9px] font-black uppercase tracking-[0.4em] text-white/20">Available Domains:</p>
-                  <div className="flex flex-wrap justify-center gap-4">
+               <div className="mt-10 flex flex-col items-center gap-6">
+                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Available Domains:</p>
+                  <div className="flex flex-wrap justify-center gap-3">
                      {["F1", "Football", "Cricket", "Tech"].map(cat => (
                         <Link key={cat} href={`/blog?category=${cat}`}>
-                           <button className="px-5 py-2.5 rounded-full bg-secondary/10 border border-white/5 text-[9px] font-black uppercase tracking-widest text-white/40 hover:text-primary hover:border-primary/20 transition-all shadow-skeuo-button">
+                           <button className="px-5 py-2 rounded-full bg-white border border-gray-200 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-primary hover:border-primary/30 transition-all shadow-sm">
                               {cat}
                            </button>
                         </Link>
                      ))}
                   </div>
-                  <Link href="/blog" className="mt-6">
-                     <button className="text-primary font-black uppercase tracking-widest text-[10px] hover:bg-white/5 px-8 py-3 rounded-full border border-primary/20 transition-all active:scale-95 shadow-skeuo-button">
+                  <Link href="/blog" className="mt-4">
+                     <button className="text-primary font-bold uppercase tracking-widest text-xs hover:bg-primary/5 px-8 py-3 rounded-full border border-primary/20 transition-all active:scale-95 shadow-sm">
                         Reset Uplink Matrix
                      </button>
                   </Link>
@@ -176,7 +171,7 @@ export default async function BlogPage({
 
       {/* Side Decorative Terminal Text */}
       <div className="fixed bottom-10 left-6 hidden xl:block pointer-events-none select-none">
-         <p className="text-[9px] font-black uppercase tracking-[0.8em] text-white/5 vertical-text">
+         <p className="text-[10px] font-bold uppercase tracking-[0.6em] text-gray-200 vertical-text">
             ARCHIVE // PULSE AI NETWORK V2.0
          </p>
       </div>

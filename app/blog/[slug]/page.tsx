@@ -1,7 +1,7 @@
 import connectDB from "@/lib/mongodb";
 import Post, { IPost } from "@/models/Post";
 import { notFound } from "next/navigation";
-import Image from "next/image";
+import { format } from "date-fns";
 import { formatDate, calculateReadingTime } from "@/lib/utils";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import ShareButtons from "@/components/ShareButtons";
@@ -114,44 +114,50 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
   const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL || ''}/blog/${post.slug}`;
 
   return (
-    <div className="bg-black min-h-screen text-white relative overflow-hidden">
+    <div className="bg-white min-h-screen text-gray-900 relative overflow-hidden">
       {/* Background Decor */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] -z-10 opacity-30" />
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] -z-10 opacity-50" />
       
       <article className="max-w-4xl mx-auto pb-40 pt-32 px-6 relative z-10">
-        <Link href="/blog" className="inline-flex items-center gap-3 text-white/30 hover:text-primary transition-all mb-16 group font-black uppercase tracking-[0.3em] text-[10px] shadow-skeuo-button bg-secondary/10 px-8 py-3 rounded-full border border-white/5">
-          <ChevronLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" /> Back to Terminal
+        <Link href="/blog" className="inline-flex items-center gap-3 text-gray-500 hover:text-gray-900 transition-all mb-16 group font-bold uppercase tracking-widest text-xs shadow-sm bg-gray-50 px-8 py-3 rounded-full border border-gray-200">
+          <ChevronLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" /> Back to Articles
         </Link>
 
         <header className="space-y-12 mb-20">
           <div className="flex flex-wrap items-center gap-6">
-            <Badge className="bg-primary/90 text-white border-none px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.4em] shadow-skeuo-button">
+            <Badge className="bg-primary/90 text-white border-none px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest shadow-sm">
               {post.category}
             </Badge>
-            <div className="flex items-center gap-8 text-[11px] text-white/40 font-black uppercase tracking-widest bg-secondary/10 shadow-skeuo-in px-8 py-3 rounded-full border border-white/5">
-              <span className="flex items-center gap-3"><Calendar className="h-4 w-4 text-primary" /> {formatDate(post.createdAt || post.published_at)}</span>
+            <div className="flex items-center gap-8 text-xs text-gray-500 font-bold uppercase tracking-wider bg-white shadow-sm px-8 py-3 rounded-full border border-gray-200">
+              <span className="flex items-center gap-3">
+                <Calendar className="h-4 w-4 text-primary" /> 
+                {(() => {
+                  const date = new Date(post.createdAt || post.published_at);
+                  return !isNaN(date.getTime()) ? format(date, 'MMM dd, yyyy • hh:mm a') : 'N/A';
+                })()}
+              </span>
               <span className="flex items-center gap-3"><Clock className="h-4 w-4 text-primary" /> {readingTime} READ</span>
             </div>
           </div>
 
           <div className="flex flex-col gap-6">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-white">
+            <h1 className="text-4xl md:text-5xl lg:text-5xl font-bold tracking-tight leading-[1.1] text-gray-900">
               {post.title}
             </h1>
             
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-8">
                <div className="flex gap-5">
-                  <div className="w-1.5 rounded-full bg-primary shadow-skeuo-button shrink-0 hidden md:block" />
-                  <p className="text-xl md:text-2xl text-white/60 font-medium leading-relaxed max-w-3xl">
+                  <div className="w-1.5 rounded-full bg-primary shrink-0 hidden md:block" />
+                  <p className="text-xl md:text-2xl text-gray-600 font-medium leading-relaxed max-w-3xl">
                      {post.excerpt}
                   </p>
                </div>
                
                {canEdit && (
                 <Link href={`/dashboard/edit/${post.slug}`}>
-                  <Button className="rounded-2xl h-16 px-10 bg-secondary/20 hover:bg-white/10 text-white shadow-skeuo-button border border-white/10 transition-all font-black uppercase tracking-widest text-xs flex items-center gap-4">
-                    <Pencil className="h-5 w-5 text-primary" />
-                    Edit Sequence
+                  <Button className="rounded-full h-14 px-8 bg-gray-50 hover:bg-gray-100 text-gray-900 shadow-sm border border-gray-200 transition-all font-bold uppercase tracking-wider text-xs flex items-center gap-4">
+                    <Pencil className="h-4 w-4 text-primary" />
+                    Edit Article
                   </Button>
                 </Link>
               )}
@@ -159,16 +165,15 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
           </div>
         </header>
 
-        <div className="relative aspect-[16/9] rounded-[4rem] overflow-hidden mb-24 border border-white/5 bg-secondary/10 shadow-skeuo-float">
+        <div className="relative aspect-[16/9] rounded-3xl overflow-hidden mb-24 border border-gray-200 bg-gray-50 shadow-sm">
           <Image
             src={post.feature_image_url || "https://images.unsplash.com/photo-1677442136019-21780ecad995"}
             alt={post.feature_image_alt || post.title}
             fill
-            className="object-cover grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-1000 transform hover:scale-[1.02]"
+            className="object-cover transition-all duration-1000 transform hover:scale-[1.02]"
             priority
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
         </div>
 
         <div className="relative prose-container">
@@ -176,22 +181,22 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
         </div>
 
         {/* Global Share & Author Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between py-12 border-y border-white/5 gap-12 mt-32 bg-secondary/[0.03] px-12 rounded-[3.5rem] shadow-skeuo-in">
+        <div className="flex flex-col md:flex-row md:items-center justify-between py-12 border-y border-gray-100 gap-12 mt-32 bg-gray-50 px-12 rounded-3xl shadow-sm">
           <div className="flex items-center gap-8">
-            <div className="h-24 w-24 rounded-3xl bg-secondary/10 flex items-center justify-center shadow-skeuo-button border border-white/10 rotate-2 group hover:rotate-0 transition-transform">
-               <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20">
-                  <User className="h-8 w-8 text-primary" />
+            <div className="h-20 w-20 rounded-2xl bg-white flex items-center justify-center shadow-sm border border-gray-200">
+               <div className="h-14 w-14 rounded-xl bg-primary/5 flex items-center justify-center border border-primary/10">
+                  <User className="h-6 w-6 text-primary" />
                </div>
             </div>
             <div>
-              <p className="font-black text-3xl text-white leading-none italic uppercase tracking-tighter">{authorName}</p>
+              <p className="font-bold text-2xl text-gray-900 leading-none tracking-tight">{authorName}</p>
               <div className="flex items-center gap-3 mt-4">
                  <Zap className="h-3 w-3 text-primary animate-pulse" />
-                 <p className="text-[10px] text-white/30 font-black uppercase tracking-[0.4em]">{authorRole}</p>
+                 <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">{authorRole}</p>
               </div>
             </div>
           </div>
-          <div className="bg-black/40 p-4 rounded-3xl shadow-skeuo-button border border-white/5">
+          <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-200">
              <ShareButtons url={shareUrl} title={post.title} />
           </div>
         </div>
@@ -199,7 +204,7 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
         {post.tags && post.tags.length > 0 && (
           <div className="flex flex-wrap gap-4 mt-24">
             {post.tags.map((tag: string) => (
-              <Badge key={tag} className="bg-secondary/10 border-white/5 text-white/30 hover:text-primary hover:border-primary/20 transition-all cursor-default px-8 py-4 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest shadow-skeuo-button hover:shadow-skeuo-button-pressed">
+              <Badge key={tag} className="bg-gray-50 border-gray-200 text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all cursor-default px-6 py-3 rounded-full text-xs font-bold shadow-sm">
                 #{tag}
               </Badge>
             ))}
@@ -207,10 +212,10 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
         )}
 
         {/* Next Story / Related Content */}
-        <section className="mt-40 border-t border-white/5 pt-32">
-          <div className="flex items-center gap-4 mb-20">
-             <div className="w-12 h-1 bg-primary shadow-skeuo-button" />
-             <h2 className="text-3xl font-black uppercase italic tracking-tighter">Related <span className="text-primary italic">Intelligence</span></h2>
+        <section className="mt-32 border-t border-gray-100 pt-24">
+          <div className="flex items-center gap-4 mb-16">
+             <div className="w-8 h-1 bg-primary rounded-full" />
+             <h2 className="text-3xl font-bold tracking-tight text-gray-900">Related Articles</h2>
           </div>
           <RelatedPosts currentSlug={post.slug} category={post.category} />
         </section>

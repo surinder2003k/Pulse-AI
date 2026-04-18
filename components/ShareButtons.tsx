@@ -58,7 +58,7 @@ export default function ShareButtons({ url, title }: ShareButtonsProps) {
       <Button
         onClick={handleNativeShare}
         variant="outline"
-        className="bg-primary/10 border-primary/20 text-primary hover:bg-primary hover:text-white rounded-full px-6 h-10 flex items-center gap-2 shadow-skeuo-button active:shadow-skeuo-button-pressed transition-all font-black uppercase tracking-widest text-[10px] border border-white/10"
+        className="bg-primary-50 border-primary-200 text-primary hover:bg-primary hover:text-white rounded-full px-6 h-10 flex items-center gap-2 shadow-sm transition-all font-bold uppercase tracking-wider text-xs border"
       >
         <Share2 className="h-4 w-4" /> Share Post
       </Button>
@@ -66,7 +66,7 @@ export default function ShareButtons({ url, title }: ShareButtonsProps) {
       <Button
         variant="outline"
         size="icon"
-        className="h-10 w-10 bg-secondary/30 border-white/10 rounded-full hover:text-primary shadow-skeuo-button active:shadow-skeuo-button-pressed transition-all"
+        className="h-10 w-10 bg-white border-gray-200 text-gray-500 rounded-full hover:text-primary hover:bg-gray-50 shadow-sm transition-all"
         onClick={copyToClipboard}
         title="Copy Link"
       >

@@ -3,6 +3,9 @@ import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Providers } from "../components/Providers";
+import ScrollToTop from "@/components/ScrollToTop";
+import AuthErrorRelay from "@/components/AuthErrorRelay";
+import SiteLoadSound from "@/components/SiteLoadSound";
 import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -64,7 +67,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport = {
-  themeColor: "#000000",
+  themeColor: "#ffffff",
 };
 
 export default function RootLayout({
@@ -117,6 +120,9 @@ export default function RootLayout({
         <ClerkProvider>
           <Providers>
             {children}
+            <ScrollToTop />
+            <AuthErrorRelay />
+            <SiteLoadSound />
           </Providers>
         </ClerkProvider>
       </body>

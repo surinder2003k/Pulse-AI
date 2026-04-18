@@ -22,13 +22,13 @@ export default function Pagination({ totalPages }: PaginationProps) {
   };
 
   return (
-    <div className="flex items-center justify-center gap-4 mt-12 py-8 border-t border-white/5">
+    <div className="flex items-center justify-center gap-4 mt-12 py-8 border-t border-gray-100">
       <Button
         variant="outline"
         size="sm"
         disabled={currentPage <= 1}
         onClick={() => handlePageChange(currentPage - 1)}
-        className="rounded-full bg-white/5 border-white/5 hover:border-primary/50 transition-colors"
+        className="rounded-full bg-white border-gray-200 text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-colors shadow-sm"
       >
         <ChevronLeft className="h-4 w-4 mr-1" /> Previous
       </Button>
@@ -41,8 +41,8 @@ export default function Pagination({ totalPages }: PaginationProps) {
             size="icon"
             onClick={() => handlePageChange(i + 1)}
             className={cn(
-              "h-9 w-9 rounded-full",
-              currentPage === i + 1 ? "bg-primary text-primary-foreground shadow-cyan-soft" : "text-muted-foreground hover:text-white"
+              "h-9 w-9 rounded-full font-semibold",
+              currentPage === i + 1 ? "bg-primary text-white shadow-sm" : "text-gray-500 hover:text-gray-900 hover:bg-gray-100"
             )}
           >
             {i + 1}
@@ -55,7 +55,7 @@ export default function Pagination({ totalPages }: PaginationProps) {
         size="sm"
         disabled={currentPage >= totalPages}
         onClick={() => handlePageChange(currentPage + 1)}
-        className="rounded-full bg-white/5 border-white/5 hover:border-primary/50 transition-colors"
+        className="rounded-full bg-white border-gray-200 text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-colors shadow-sm"
       >
         Next <ChevronRight className="h-4 w-4 ml-1" />
       </Button>

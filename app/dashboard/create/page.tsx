@@ -26,6 +26,7 @@ import anime from "animejs";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import PremiumAlert from "@/components/PremiumAlert";
+import Celebration from "@/components/Celebration";
 
 import Dropzone from "@/components/Dropzone";
 import RichTextEditor from "@/components/RichTextEditor";
@@ -42,6 +43,7 @@ export default function CreatePostPage() {
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [isSearchingImage, setIsSearchingImage] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -158,8 +160,9 @@ export default function CreatePostPage() {
       
       if (!res.ok) throw new Error("Failed to save post.");
 
-      showAlert("success", "Success", "Post has been published successfully.");
-      setTimeout(() => router.push("/dashboard/posts"), 2000);
+      setShowCelebration(true);
+      showAlert("success", "Protocol Success", "Biological asset successfully deployed to the network.");
+      setTimeout(() => router.push("/dashboard/posts"), 6000);
     } catch (error: any) {
       showAlert("error", "Error", error.message);
     } finally {
@@ -169,6 +172,7 @@ export default function CreatePostPage() {
 
   return (
     <div className="container mx-auto max-w-6xl py-12 px-6">
+      <Celebration trigger={showCelebration} />
       <PremiumAlert 
         isVisible={alert.isVisible}
         type={alert.type}

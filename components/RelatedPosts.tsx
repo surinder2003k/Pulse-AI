@@ -23,14 +23,11 @@ export default async function RelatedPosts({ currentSlug, category }: RelatedPos
   const posts = JSON.parse(JSON.stringify(postsRaw));
 
   return (
-    <div className="space-y-10">
-      <div className="flex items-center justify-between border-b border-white/5 pb-6">
-        <h3 className="text-3xl font-black italic">Related Stories</h3>
-      </div>
+    <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
         {posts.map((post: any) => (
           <Link key={post.slug} href={`/blog/${post.slug}`} className="group flex flex-col gap-4">
-            <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-white/5 bg-secondary/20">
+            <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-sm">
               <Image
                 src={post.feature_image_url || "https://images.unsplash.com/photo-1677442136019-21780ecad995"}
                 alt={post.title}
@@ -38,9 +35,9 @@ export default async function RelatedPosts({ currentSlug, category }: RelatedPos
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
               />
             </div>
-            <div className="space-y-2">
-              <p className="text-[10px] text-primary font-black uppercase tracking-widest">{formatDate(post.created_at)}</p>
-              <h4 className="font-bold text-lg line-clamp-2 group-hover:text-primary transition-colors leading-tight italic">
+            <div className="space-y-2 px-1">
+              <p className="text-xs text-primary font-bold uppercase tracking-wider">{formatDate(post.created_at)}</p>
+              <h4 className="font-bold text-lg text-gray-900 line-clamp-2 group-hover:text-primary transition-colors leading-snug">
                 {post.title}
               </h4>
             </div>

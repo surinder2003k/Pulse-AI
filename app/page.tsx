@@ -34,15 +34,13 @@ export default async function HomePage() {
   const gridPosts = allPosts.slice(0, 6);
 
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white relative overflow-hidden">
-      <ParticleBackground />
+    <div className="flex flex-col min-h-screen bg-background text-foreground relative overflow-hidden">
       
       {/* 1. Hero Section */}
       <AnimatedHero />
 
-      {/* 2. Stats/Editorial Hub Bar */}
       <section 
-        className="animate-in fade-in zoom-in-95 duration-1000 relative z-10 py-10 md:py-16 border-y border-white/5 glass-dark shadow-premium"
+        className="animate-in fade-in zoom-in-95 duration-1000 relative z-10 py-10 md:py-16 border-y border-gray-100 bg-white shadow-sm"
       >
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-12 md:gap-16">
@@ -53,14 +51,12 @@ export default async function HomePage() {
               { label: "Engine Uptime", val: "24/7" },
             ].map((stat) => (
               <div key={stat.label} className="group cursor-default relative">
-                <div className="text-3xl md:text-5xl font-black text-white tracking-tighter italic group-hover:text-primary transition-all duration-500">
+                <div className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight group-hover:text-primary transition-all duration-500">
                   {stat.val}
                 </div>
-                <div className="text-[8px] uppercase font-black tracking-[0.6em] text-white/20 mt-3 border-l-2 border-primary/20 pl-4 group-hover:border-primary transition-colors">
+                <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mt-2 border-l-2 border-gray-200 pl-4 group-hover:border-primary transition-colors">
                   {stat.label}
                 </div>
-                {/* Subtle Glow behind */}
-                <div className="absolute -inset-4 bg-primary/0 group-hover:bg-primary/5 rounded-full blur-2xl transition-all duration-500" />
               </div>
             ))}
           </div>
@@ -69,14 +65,14 @@ export default async function HomePage() {
 
 
       {/* 4. Latest Stories Grid */}
-      <section className="relative z-10 py-20 md:py-24 bg-secondary/[0.02] border-y border-white/5">
+      <section className="relative z-10 py-20 md:py-24 bg-gray-50 border-y border-gray-100">
         <div className="container mx-auto px-6">
-          <div className="flex items-center justify-between mb-12 md:mb-16">
-            <h2 className="text-2xl md:text-4xl font-black text-white tracking-tighter uppercase italic">
-              Latest <span className="text-primary italic">Stories.</span>
+          <div className="flex items-center justify-between mb-12 flex-wrap gap-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">
+              Latest Stories
             </h2>
-            <Link href="/blog" className="text-[9px] font-black uppercase tracking-widest text-primary flex items-center gap-2 hover:translate-x-2 transition-all shadow-glow-red px-6 py-3 rounded-full bg-black/40 border border-primary/20 glass hover:bg-primary/10">
-               Access Intelligence Archive <ChevronRight className="h-3 w-3" />
+            <Link href="/blog" className="text-sm font-semibold text-primary flex items-center gap-2 hover:translate-x-2 transition-all px-6 py-2.5 rounded-full border border-primary/20 bg-primary/5 hover:bg-primary/10">
+               Access Intelligence Archive <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
 
@@ -89,42 +85,39 @@ export default async function HomePage() {
       </section>
 
       {/* 5. Editorial Philosophy */}
-      <section className="relative z-10 py-24 md:py-32 overflow-hidden">
+      <section className="relative z-10 py-20 md:py-28 overflow-hidden bg-white">
         <div className="container mx-auto px-6 text-center">
-          <div className="max-w-3xl mx-auto space-y-12 md:space-y-16">
-            <h2 className="text-3xl md:text-5xl font-black text-white italic uppercase tracking-tighter leading-none mb-6">
-              Why We <span className="text-primary italic text-glow-red">Obsess</span> Over Quality
+          <div className="max-w-3xl mx-auto space-y-10 md:space-y-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight leading-snug mb-4">
+              Why We <span className="text-primary">Obsess</span> Over Quality
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 text-left">
-              <p className="text-base md:text-lg text-white/50 font-medium leading-relaxed uppercase tracking-tight">
+              <p className="text-lg text-gray-600 leading-relaxed font-medium">
                 Most AI blogs just regurgitate data. We engineer stories. Our algorithms are tuned to find the pulse of a topic, while our editorial team ensures the human soul remains intact. This is where intelligence meets passion.
               </p>
-              <p className="text-base md:text-lg text-white/50 font-medium leading-relaxed uppercase tracking-tight">
+              <p className="text-lg text-gray-600 leading-relaxed font-medium">
                 Our mission is simple: to provide high-octane reports that move you. Whether it's the roar of an F1 engine or the silence of a deep neural network, we capture the essence of what matters. Read deep, stay tuned.
               </p>
             </div>
             <div className="pt-6 flex justify-center">
-              <Link href="/sign-up" className="bg-primary hover:glow-red-strong text-white px-10 md:px-14 py-5 md:py-6 rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.4em] transition-all transform hover:scale-[1.03] shadow-soft">
+              <Link href="/sign-up" className="bg-primary hover:bg-primary/90 text-white px-10 md:px-12 py-4 rounded-full text-sm font-bold tracking-widest uppercase transition-all shadow-md hover:shadow-lg">
                 Join the Network
               </Link>
             </div>
           </div>
         </div>
-        
-        {/* Abstract Background Element */}
-        <div className="absolute -bottom-1/4 -right-1/4 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[180px] pointer-events-none -z-10" />
       </section>
 
       {/* 6. Footer Terminal Theme */}
-      <footer className="relative z-10 py-16 md:py-20 border-t border-white/5 bg-black">
+      <footer className="relative z-10 py-12 md:py-16 border-t border-gray-100 bg-gray-50">
         <div className="container mx-auto px-6">
           <div className="flex flex-col items-center gap-10">
              <div className="flex flex-col items-center gap-5">
                 <Logo size="md" />
-                <div className="flex items-center gap-2 text-white/20">
-                   <div className="w-10 h-[1px] bg-white/10" />
-                   <p className="text-[9px] font-black uppercase tracking-[0.5em]">Terminal Protocol 2.0</p>
-                   <div className="w-10 h-[1px] bg-white/10" />
+                <div className="flex items-center gap-4 text-gray-400">
+                   <div className="w-12 h-[1px] bg-gray-200" />
+                   <p className="text-xs font-semibold uppercase tracking-widest text-gray-500">Pulse AI Protocol 2.0</p>
+                   <div className="w-12 h-[1px] bg-gray-200" />
                 </div>
              </div>
              
@@ -135,14 +128,14 @@ export default async function HomePage() {
                   { name: "Archive", href: "/blog" },
                   { name: "Terminal", href: "/admin" }
                 ].map(link => (
-                  <Link key={link.name} href={link.href} className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 hover:text-primary transition-colors duration-300">
+                  <Link key={link.name} href={link.href} className="text-sm font-semibold tracking-wider text-gray-500 hover:text-gray-900 transition-colors duration-300">
                     {link.name}
                   </Link>
                 ))}
              </div>
              
              <div className="text-center pt-8">
-                <span className="text-[9px] font-black uppercase tracking-[0.8em] text-white/10">
+                <span className="text-xs font-semibold uppercase tracking-widest text-gray-400">
                   © 2024 PULSE AI NETWORK. ALL RIGHTS RESERVED.
                 </span>
              </div>
