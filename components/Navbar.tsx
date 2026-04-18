@@ -56,7 +56,7 @@ export default function Navbar() {
 
           {/* Logo Section */}
           <Link href="/" className="relative z-50 group">
-            <Logo size="sm" />
+            <Logo size="sm" playSoundOnHover={true} />
           </Link>
 
           {/* Desktop Navigation */}

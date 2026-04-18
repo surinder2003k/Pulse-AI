@@ -2,14 +2,29 @@
 
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useRef } from "react";
 
 interface LogoProps {
   className?: string;
   size?: "sm" | "md" | "lg" | "xl";
   showText?: boolean;
+  playSoundOnHover?: boolean;
 }
 
-export default function Logo({ className, size = "md", showText = true }: LogoProps) {
+export default function Logo({ className, size = "md", showText = true, playSoundOnHover = false }: LogoProps) {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  
+  const handleHover = () => {
+    if (!playSoundOnHover) return;
+    
+    // Create new audio instance on each hover to allow rapid clicks/hovers
+    const audio = new Audio("/sounds/anime-ahh.mp3");
+    audio.volume = 0.3;
+    audio.play().catch(() => {
+      console.warn("Audio playback failed. User interaction might be required.");
+    });
+  };
+
   const sizes = {
     sm: "h-6",
     md: "h-8",
@@ -25,7 +40,10 @@ export default function Logo({ className, size = "md", showText = true }: LogoPr
   };
 
   return (
-    <div className={cn("flex items-center gap-4 select-none group leading-none", className)}>
+    <div 
+      className={cn("flex items-center gap-4 select-none group leading-none cursor-pointer", className)}
+      onMouseEnter={handleHover}
+    >
       <div className={cn("relative flex items-center justify-center", sizes[size])}>
         {/* Diamond Shape */}
         <motion.div

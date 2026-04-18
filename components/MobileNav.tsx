@@ -8,12 +8,12 @@ import { useUser } from "@clerk/nextjs";
 import { motion } from "framer-motion";
 
 const primaryNav = [
-  { name: "Overview", icon: Home, href: "/dashboard" },
-  { name: "Stories", icon: FileText, href: "/dashboard/posts" },
+  { name: "Home", icon: Home, href: "/dashboard" },
+  { name: "Posts", icon: FileText, href: "/dashboard/posts" },
   { name: "Create", icon: PlusCircle, href: "/dashboard/create" },
 ];
 
-const adminNavItem = { name: "AI", icon: ShieldCheck, href: "/admin" };
+const adminNavItem = { name: "Admin", icon: ShieldCheck, href: "/admin" };
 
 export default function MobileNav() {
   const pathname = usePathname();
@@ -23,9 +23,9 @@ export default function MobileNav() {
   const navItems = isAdmin ? [...primaryNav, adminNavItem] : primaryNav;
 
   return (
-    <nav className="md:hidden fixed bottom-10 left-6 right-6 z-50 bg-black/60 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] shadow-premium overflow-hidden glass-dark pb-safe">
+    <nav className="md:hidden fixed bottom-8 left-6 right-6 z-50 bg-white/90 backdrop-blur-2xl border border-slate-200 rounded-[2.5rem] shadow-premium overflow-hidden pb-safe">
       {/* Cinematic Pulse Background */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(229,9,20,0.05),transparent_70%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(0,0,0,0.02),transparent_70%)] pointer-events-none" />
       
       <div className="flex items-center justify-around h-20 relative z-10">
         {navItems.map((item) => {
@@ -40,7 +40,7 @@ export default function MobileNav() {
               href={item.href}
               className={cn(
                 "flex flex-col items-center justify-center gap-1.5 transition-all duration-500 relative px-4",
-                isActive ? "text-primary scale-110" : "text-white/20 hover:text-white/50"
+                isActive ? "text-primary scale-110" : "text-slate-400 hover:text-slate-900"
               )}
             >
               {isActive && (
@@ -52,10 +52,10 @@ export default function MobileNav() {
               <item.icon
                 className={cn(
                   "h-5 w-5 transition-all duration-500",
-                  isActive ? "drop-shadow-glow" : ""
+                  isActive ? "drop-shadow-sm" : ""
                 )}
               />
-              <span className="text-[8px] font-black uppercase tracking-[0.2em] italic">
+              <span className="text-[7px] font-black uppercase tracking-[0.2em] italic">
                 {item.name}
               </span>
             </Link>

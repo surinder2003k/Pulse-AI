@@ -182,60 +182,60 @@ export default function CreatePostPage() {
       />
 
       <div className="mb-10 relative">
-        <div className="absolute -left-6 top-1/2 -translate-y-1/2 w-1 h-12 bg-primary rounded-full shadow-[0_0_15px_rgba(255,51,51,0.5)]" />
-        <h1 className="text-4xl font-black tracking-tighter uppercase italic text-glow-red">
-          Tactical <span className="text-white">Workspace</span>
+        <div className="absolute -left-6 top-1/2 -translate-y-1/2 w-1 h-12 bg-primary rounded-full shadow-glow-red" />
+        <h1 className="text-4xl font-black tracking-tighter uppercase italic text-gray-900">
+          Tactical <span className="text-slate-300">Workspace</span>
         </h1>
-        <p className="text-white/40 mt-2 font-mono text-xs uppercase tracking-[0.2em]">
+        <p className="text-slate-400 mt-2 font-mono text-xs uppercase tracking-[0.2em]">
           Protocol: Content Generation // Status: Ready
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
-          <Card className="glass-dark border-white/5 shadow-premium overflow-hidden">
+          <Card className="bg-white border-slate-200 shadow-sm overflow-hidden rounded-[3rem]">
             <div className="h-1 bg-gradient-to-r from-primary/50 via-primary to-primary/50" />
-            <CardHeader className="bg-white/5 py-4 border-b border-white/5">
+            <CardHeader className="bg-slate-50/50 py-5 border-b border-slate-100">
               <div className="flex items-center gap-3">
                 <Layout className="h-4 w-4 text-primary" />
-                <CardTitle className="text-sm font-black uppercase tracking-widest italic">Draft Core</CardTitle>
+                <CardTitle className="text-xs font-black uppercase tracking-widest italic text-gray-900">Draft Core</CardTitle>
               </div>
             </CardHeader>
-            <CardContent className="p-8">
-              <form onSubmit={handleSubmit} className="space-y-8">
-                <div className="space-y-3">
+            <CardContent className="p-8 md:p-10">
+              <form onSubmit={handleSubmit} className="space-y-10">
+                <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Editorial Title</label>
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Editorial Title</label>
                     <span className="text-[10px] font-mono text-primary/60 italic">01 // IDENTITY</span>
                   </div>
                   <Input 
                     placeholder="ENTER HEADLINE..." 
                     value={formData.title}
                     onChange={(e) => setFormData({...formData, title: e.target.value})}
-                    className="h-14 text-xl font-black italic bg-white/[0.03] border-white/10 focus:border-primary/50 transition-all placeholder:text-white/10 uppercase"
+                    className="h-16 text-2xl font-black italic bg-slate-50 border-slate-100 focus:border-primary/50 focus:bg-white transition-all placeholder:text-slate-300 uppercase rounded-2xl"
                   />
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Narrative Excerpt</label>
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Narrative Excerpt</label>
                     <span className="text-[10px] font-mono text-primary/60 italic">02 // CONTEXT</span>
                   </div>
                   <Textarea 
                     placeholder="BRIEF SUMMARY..." 
                     value={formData.excerpt}
                     onChange={(e) => setFormData({...formData, excerpt: e.target.value})}
-                    className="min-h-[100px] bg-white/[0.03] border-white/10 focus:border-primary/50 transition-all placeholder:text-white/10 italic text-sm"
+                    className="min-h-[120px] bg-slate-50 border-slate-100 focus:border-primary/50 focus:bg-white transition-all placeholder:text-slate-300 italic text-sm rounded-2xl p-6"
                   />
                 </div>
 
-                <div className="space-y-4 pt-4 border-t border-white/5">
+                <div className="space-y-6 pt-6 border-t border-slate-100">
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Manuscript Body</label>
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Manuscript Body</label>
                     <span className="text-[10px] font-mono text-primary/60 italic">03 // INTEL</span>
                   </div>
                   
-                  <div className="bg-white/[0.02] rounded-xl border border-white/5 p-4 mb-4">
+                  <div className="bg-slate-50/50 rounded-3xl border border-slate-100 p-6 mb-6">
                     <SEOAnalyzer 
                       title={formData.title} 
                       content={formData.content} 
@@ -246,30 +246,31 @@ export default function CreatePostPage() {
                     />
                   </div>
 
-                  <div className="glass-dark rounded-xl border border-white/5 p-1">
+                  <div className="bg-white rounded-3xl border border-slate-200 p-1 shadow-sm overflow-hidden">
                     {mounted ? (
                       <RichTextEditor 
                         value={formData.content}
                         onChange={(val) => setFormData({...formData, content: val})}
                       />
                     ) : (
-                      <div className="h-96 w-full bg-white/5 animate-pulse rounded-lg border border-white/5" />
+                      <div className="h-96 w-full bg-slate-50 animate-pulse rounded-2xl border border-slate-100" />
                     )}
                   </div>
                 </div>
 
-                <div className="flex justify-end gap-4 pt-8 border-t border-white/5">
+                <div className="flex justify-end gap-4 pt-10 border-t border-slate-100">
                   <Button 
                     variant="outline" 
+                    type="button"
                     onClick={() => router.back()}
-                    className="bg-transparent border-white/10 hover:bg-white/5 hover:border-white/20 transition-all font-black uppercase italic tracking-widest text-xs"
+                    className="h-14 px-8 bg-transparent border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all font-black uppercase italic tracking-widest text-xs rounded-2xl"
                   >
                     Abort
                   </Button>
                   <Button 
                     type="submit"
                     disabled={isPublishing} 
-                    className="bg-primary hover:bg-primary/90 text-white min-w-[180px] h-12 shadow-glow-red border-none font-black uppercase italic tracking-widest text-xs transition-all active:scale-95"
+                    className="bg-primary hover:bg-primary/90 text-white min-w-[200px] h-14 shadow-glow-red border-none font-black uppercase italic tracking-widest text-xs transition-all active:scale-95 rounded-2xl"
                   >
                     {isPublishing ? (
                       <Loader2 className="animate-spin mr-2 h-4 w-4" />
@@ -286,28 +287,28 @@ export default function CreatePostPage() {
 
         <div className="space-y-8">
           {/* AI Helper Card */}
-          <Card className="glass-dark border-primary/20 bg-primary/[0.03] shadow-glow-red shadow-sm overflow-hidden group">
-            <div className="h-1 bg-primary/40 group-hover:bg-primary transition-colors" />
-            <CardHeader className="py-4 bg-primary/[0.05] border-b border-primary/10">
+          <Card className="bg-white border-primary/20 shadow-sm overflow-hidden group rounded-[3rem]">
+            <div className="h-1 bg-primary/10 group-hover:bg-primary transition-colors duration-500" />
+            <CardHeader className="py-5 bg-primary/[0.02] border-b border-primary/5">
               <div className="flex items-center gap-3">
                 <Sparkles className="h-4 w-4 text-primary animate-pulse" />
-                <CardTitle className="text-sm font-black uppercase tracking-widest italic text-white/80">Neural Assistant</CardTitle>
+                <CardTitle className="text-xs font-black uppercase tracking-widest italic text-gray-900">Neural Assistant</CardTitle>
               </div>
             </CardHeader>
-            <CardContent className="p-6 space-y-6">
-              <div className="space-y-2">
+            <CardContent className="p-8 space-y-8">
+              <div className="space-y-4">
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60">Topic Prompt</label>
                 <Textarea 
                   placeholder="WHAT IS THE NEW FRONTIER?" 
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
-                  className="bg-black/40 border-primary/20 focus:border-primary/50 min-h-[120px] text-sm italic placeholder:text-primary/20 uppercase tracking-wider"
+                  className="bg-slate-50 border-slate-100 focus:border-primary/50 focus:bg-white min-h-[140px] text-sm italic placeholder:text-slate-300 uppercase tracking-wider rounded-2xl p-6"
                 />
               </div>
               <Button 
                 onClick={handleGenerate}
                 disabled={isGenerating}
-                className="w-full h-12 bg-primary hover:bg-primary/90 text-white shadow-glow-red font-black uppercase italic tracking-widest text-xs transition-all hover:scale-[1.02] active:scale-95 border-none"
+                className="w-full h-14 bg-primary hover:bg-primary/90 text-white shadow-glow-red font-black uppercase italic tracking-widest text-xs transition-all hover:scale-[1.02] active:scale-95 border-none rounded-2xl"
               >
                 {isGenerating ? (
                   <Loader2 className="animate-spin mr-2 h-4 w-4" />
@@ -320,17 +321,17 @@ export default function CreatePostPage() {
           </Card>
 
           {/* Settings & Image Card */}
-          <Card className="glass-dark border-white/5 shadow-premium">
-            <CardHeader className="py-4 bg-white/5 border-b border-white/5">
+          <Card className="bg-white border-slate-200 shadow-sm rounded-[3rem] overflow-hidden">
+            <CardHeader className="py-5 bg-slate-50/50 border-b border-slate-100">
               <div className="flex items-center gap-3">
                 <Zap className="h-4 w-4 text-primary" />
-                <CardTitle className="text-sm font-black uppercase tracking-widest italic">Asset Config</CardTitle>
+                <CardTitle className="text-xs font-black uppercase tracking-widest italic text-gray-900">Asset Config</CardTitle>
               </div>
             </CardHeader>
-            <CardContent className="p-6 space-y-8">
-              <div className="space-y-3">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Cover Identity</label>
-                <div className="p-1 glass-dark rounded-xl border border-white/5 group hover:border-primary/30 transition-all">
+            <CardContent className="p-8 space-y-10">
+              <div className="space-y-4">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Cover Identity</label>
+                <div className="p-1 bg-slate-50 rounded-3xl border border-slate-100 group hover:border-primary/30 transition-all overflow-hidden">
                   <Dropzone 
                     onUpload={(url) => setFormData({...formData, featureImage: url})} 
                     currentImage={formData.featureImage} 
@@ -338,9 +339,9 @@ export default function CreatePostPage() {
                 </div>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Visual Database</label>
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Visual Database</label>
                   {searchResults.length > 0 && (
                     <button 
                       onClick={() => setSearchResults([])}
@@ -356,20 +357,20 @@ export default function CreatePostPage() {
                     value={imageSearchQuery}
                     onChange={(e) => setImageSearchQuery(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleImageSearch()}
-                    className="flex-1 h-10 bg-black/40 border-white/10 uppercase text-xs"
+                    className="flex-1 h-12 bg-slate-50 border-slate-100 uppercase text-xs rounded-xl"
                   />
                   <Button 
                     onClick={handleImageSearch}
                     disabled={isSearchingImage}
                     variant="secondary"
-                    className="px-3 h-10 glass-dark border-white/10 hover:border-primary/50 transition-all"
+                    className="px-4 h-12 bg-white border-slate-200 hover:border-primary/50 transition-all rounded-xl shadow-sm"
                   >
                     {isSearchingImage ? <Loader2 className="h-4 w-4 animate-spin text-primary" /> : <Search className="h-4 w-4 text-primary" />}
                   </Button>
                 </div>
 
                 {searchResults.length > 0 && (
-                  <div className="grid grid-cols-2 gap-2 mt-4 max-h-[250px] overflow-y-auto p-3 border border-white/5 rounded-xl bg-black/40 custom-scrollbar">
+                  <div className="grid grid-cols-2 gap-2 mt-4 max-h-[300px] overflow-y-auto p-4 border border-slate-100 rounded-3xl bg-slate-50/50 custom-scrollbar">
                     {searchResults.map((url, i) => (
                       <div 
                         key={i}
@@ -377,7 +378,7 @@ export default function CreatePostPage() {
                           setFormData({...formData, featureImage: url});
                           toast.success("Identity Locked.");
                         }}
-                        className={`relative aspect-video cursor-pointer overflow-hidden rounded-lg border transition-all group ${formData.featureImage === url ? 'ring-2 ring-primary border-primary' : 'border-white/5 hover:border-primary/50'}`}
+                        className={`relative aspect-video cursor-pointer overflow-hidden rounded-2xl border transition-all group ${formData.featureImage === url ? 'ring-2 ring-primary border-primary' : 'border-slate-200 hover:border-primary/50'}`}
                       >
                         <img 
                           src={url} 
@@ -387,10 +388,10 @@ export default function CreatePostPage() {
                           `}
                         />
                         <div className={`absolute inset-0 transition-opacity flex items-center justify-center
-                          ${formData.featureImage === url ? 'bg-primary/20 opacity-100' : 'bg-primary/10 opacity-0 group-hover:opacity-100'}
+                          ${formData.featureImage === url ? 'bg-primary/10 opacity-100' : 'bg-primary/5 opacity-0 group-hover:opacity-100'}
                         `}>
-                          <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full
-                            ${formData.featureImage === url ? 'bg-primary text-white shadow-glow-red' : 'bg-black/80 text-white cursor-pointer'}
+                          <span className={`text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-full
+                            ${formData.featureImage === url ? 'bg-primary text-white shadow-glow-red' : 'bg-white text-gray-900 border border-slate-200'}
                           `}>
                             {formData.featureImage === url ? 'Active' : 'Deploy'}
                           </span>
@@ -401,59 +402,59 @@ export default function CreatePostPage() {
                 )}
               </div>
 
-              <div className="pt-6 border-t border-white/5 space-y-4">
+              <div className="pt-8 border-t border-slate-100 space-y-6">
                 <div className="flex items-center gap-2 text-primary font-black uppercase tracking-widest text-[10px] italic">
                   <ShieldCheck className="h-3 w-3" />
                   SEO Protocol
                 </div>
                 
-                <div className="grid grid-cols-1 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-[9px] font-black uppercase tracking-[0.2em] text-white/40">Category</label>
+                <div className="grid grid-cols-1 gap-6">
+                  <div className="space-y-3">
+                    <label className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Category</label>
                     <div className="relative">
                       <select 
                         value={formData.category}
                         onChange={(e) => setFormData({...formData, category: e.target.value})}
-                        className="w-full glass-dark border border-white/10 rounded-lg h-10 px-4 text-xs font-black uppercase italic tracking-widest text-white/80 focus:border-primary/50 outline-none appearance-none cursor-pointer"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl h-12 px-5 text-xs font-black uppercase italic tracking-widest text-gray-900 focus:border-primary/50 outline-none appearance-none cursor-pointer"
                       >
                         <option>Technology</option>
                         <option>Design</option>
                         <option>Intelligence</option>
                         <option>Future</option>
                       </select>
-                      <div className="absolute right-4 top-1/2 -translate-y-1/2 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[4px] border-t-primary pointer-events-none" />
+                      <div className="absolute right-5 top-1/2 -translate-y-1/2 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[4px] border-t-primary pointer-events-none" />
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="text-[9px] font-black uppercase tracking-[0.2em] text-white/40">Tags (CSV)</label>
+                  <div className="space-y-3">
+                    <label className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Tags (CSV)</label>
                     <Input 
                       placeholder="AI, FUTURE, INTEL..." 
                       value={formData.tags}
                       onChange={(e) => setFormData({...formData, tags: e.target.value})}
-                      className="h-10 bg-black/40 border-white/10 text-xs uppercase tracking-widest placeholder:text-white/5"
+                      className="h-12 bg-slate-50 border-slate-100 text-xs uppercase tracking-widest placeholder:text-slate-300 rounded-xl"
                     />
                   </div>
                 </div>
 
-                <div className="space-y-4 pt-4">
-                  <div className="space-y-2">
-                    <label className="text-[9px] font-black uppercase tracking-[0.2em] text-white/40">Focus Vector</label>
+                <div className="space-y-6 pt-6">
+                  <div className="space-y-3">
+                    <label className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Focus Vector</label>
                     <Input 
                       placeholder="ENTER KEYWORD..." 
                       value={formData.focusKeyword}
                       onChange={(e) => setFormData({...formData, focusKeyword: e.target.value})}
-                      className="bg-black/40 border-white/10 text-xs italic uppercase placeholder:text-white/5"
+                      className="h-12 bg-slate-50 border-slate-100 text-xs italic uppercase placeholder:text-slate-300 rounded-xl"
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="text-[9px] font-black uppercase tracking-[0.2em] text-white/40">Meta Signature</label>
+                  <div className="space-y-3">
+                    <label className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Meta Signature</label>
                     <Textarea 
                       placeholder="CUSTOM SIGNATURE..." 
                       value={formData.metaDescription}
                       onChange={(e) => setFormData({...formData, metaDescription: e.target.value})}
-                      className="min-h-[80px] text-[10px] bg-black/40 border-white/10 tracking-wider text-white/60"
+                      className="min-h-[100px] text-[11px] bg-slate-50 border-slate-100 tracking-wider text-slate-500 rounded-xl p-4"
                     />
                   </div>
                 </div>

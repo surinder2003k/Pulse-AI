@@ -5,7 +5,6 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Providers } from "../components/Providers";
 import ScrollToTop from "@/components/ScrollToTop";
 import AuthErrorRelay from "@/components/AuthErrorRelay";
-import SiteLoadSound from "@/components/SiteLoadSound";
 import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -122,7 +121,6 @@ export default function RootLayout({
             {children}
             <ScrollToTop />
             <AuthErrorRelay />
-            <SiteLoadSound />
           </Providers>
         </ClerkProvider>
       </body>
