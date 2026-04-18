@@ -56,48 +56,43 @@ export async function POST(req: Request) {
     console.log("Step 2: Generating content directly from user prompt...");
     let postData: any;
 
-    const directPrompt = `You are an expert technical editorial writer for a premium digital publication named Pulse AI. Write a high-end, authoritative, and fully SEO-optimized article based exactly on this topic:
-    "${userPrompt}"
+    const directPrompt = `You are an elite technical editorial architect for Pulse AI. Write a definitive, high-end editorial piece based on: "${userPrompt}"
     
-    The article MUST be detailed, approximately 1200 to 1800 words. 
-    Tone: Authoritative, Visionary, Tactical.
+    CRITICAL REQUIREMENTS:
+    1. EXHAUSTIVE CONTENT: Approx 1200-1800 words. Deep analysis, tactical insights, and visionary perspective.
+    2. METADATA MASTERY: Every JSON field MUST be filled with premium, punchy, and SEO-optimized text. No field should be empty.
+    3. SEARCH COMPLIANCE: Use focus_keyword naturally in <h2> headings and first paragraph.
     
-    IMPORTANT FORMATTING RULES:
-    1. Use SEMANTIC HTML for the content.
-    2. Use <h2> and <h3> for headings.
-    3. Use <p> for paragraphs.
-    4. Use <ul>, <ol>, and <li> for lists. Use <strong> for emphasis.
-    5. INSERT TWO IMAGE PLACEHOLDERS: Use [[BODY_IMAGE_1]] and [[BODY_IMAGE_2]] exactly where a supporting visual makes sense.
+    FORMATTING:
+    - Content in SEMANTIC HTML (<h2>, <h3>, <p>, <ul>, <strong>).
+    - Insert [[BODY_IMAGE_1]] and [[BODY_IMAGE_2]] at strategic mid-points.
     
-    Format the response STRICTLY as a JSON object with these exact keys:
+    STRICT JSON SCHEMA:
     {
-      "title": "A highly engaging, editorial-grade title",
-      "meta_title": "A custom SEO title for Google (max 60 chars)",
-      "meta_description": "A compelling meta description (max 160 chars)",
-      "focus_keyword": "The primary focus keyword for this article",
-      "seoKeywords": "4-5 comma separated keywords",
-      "content": "Full HTML content starting with <h2>Introduction</h2>. Place [[BODY_IMAGE_1]] and [[BODY_IMAGE_2]] in suitable spots.",
-      "excerpt": "A powerful short summary for cards/previews (max 160 chars)",
+      "title": "Editorial Headline (Punchy, All Caps Style)",
+      "meta_title": "SEO Title | Maximum 60 Chars",
+      "meta_description": "Engaging Search Snippet | Maximum 160 Chars",
+      "focus_keyword": "Primary SEO Keyword",
+      "seoKeywords": "4-5 targeting keywords, comma separated",
+      "content": "Full HTML starting with <h2>Introduction</h2>",
+      "excerpt": "Compelling 2-sentence hook for the feed",
       "category": "Technology, Business, News, or Intelligence",
-      "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"],
-      "imageSearchKeyword": "A highly descriptive 2-3 word English keyword for the main feature image",
-      "bodyImageKeyword1": "A descriptive keyword for the first visual asset",
-      "bodyImageKeyword2": "A descriptive keyword for the second visual asset",
-      "image_alt": "A descriptive ALT tag for visual assets"
+      "tags": ["Tag1", "Tag2", "Tag3"],
+      "imageSearchKeyword": "Vivid 2-word keyword for thumbnail image",
+      "bodyImageKeyword1": "Contextual keyword for body visual 1",
+      "bodyImageKeyword2": "Contextual keyword for body visual 2",
+      "image_alt": "Descriptive accessibility text for all visual assets"
     }
 
     ${linksContext}
-    
-    Return ONLY JSON. No external markdown, no conversational text.`;
+    Return ONLY JSON. No conversational filler.`;
 
     try {
-      console.log("Attempting generation using Multi-Provider Fallback...");
+      console.log("Attempting generation...");
       const text = await generateContentWithFallback(directPrompt);
-      
       const jsonStart = text.indexOf('{');
       const jsonEnd = text.lastIndexOf('}') + 1;
       postData = JSON.parse(text.substring(jsonStart, jsonEnd));
-      
       console.log("AI generated post successfully:", postData.title);
     } catch (aiError: any) {
       console.error("All AI Providers Failed:", aiError);
@@ -138,7 +133,7 @@ export async function POST(req: Request) {
       console.warn("Visual synthesis partial failure.");
     }
 
-    // Inject images into content using premium figure/img tags
+    // Inject images into content
     if (bodyImage1) {
       postData.content = postData.content.replace("[[BODY_IMAGE_1]]", `<figure class="my-8 rounded-3xl overflow-hidden border border-slate-100 shadow-sm"><img src="${bodyImage1}" alt="${postData.image_alt || "Visual Context"}" class="w-full h-auto object-cover"/><figcaption class="p-4 bg-slate-50 text-[10px] font-black uppercase tracking-widest text-slate-400 text-center italic border-t border-slate-100">Asset 01 // Narrative Context</figcaption></figure>`);
     } else {
@@ -183,12 +178,11 @@ export async function POST(req: Request) {
         seoKeywords: postData.seoKeywords,
         feature_image_url: featureImage,
         feature_image_alt: postData.image_alt || postData.title,
-        status: "published",
-        is_ai_generated: true,
-        published_at: new Date()
+        status: "draft", // Saved as draft
+        is_ai_generated: true
       });
 
-      console.log("Generation Success! Post deployed:", newPost.slug);
+      console.log("Generation Success! Post deployed as draft:", newPost.slug);
       return NextResponse.json(newPost);
     } catch (dbError: any) {
       console.warn("Local Registry Save Failed:", dbError.message);
@@ -202,7 +196,6 @@ export async function POST(req: Request) {
 
   } catch (error: any) {
     console.error("FINAL GENERATION ERROR:", error.message);
-    // Explicitly fail to the frontend instead of sending dummy fallback text
     return NextResponse.json({ error: error.message || "Failed to generate post" }, { status: 500 });
   }
 }

@@ -85,12 +85,19 @@ export default function CreatePostPage() {
     } catch (e) {}
   };
 
+  const [generationStep, setGenerationStep] = useState<string>("");
+
   const handleGenerate = async () => {
     if (!prompt) return toast.error("Please enter a topic first.");
     setIsGenerating(true);
+    setGenerationStep("Analyzing Topic...");
     const toastId = toast.loading("AI is generating content...");
     
     try {
+      setTimeout(() => setGenerationStep("Drafting Editorial Content..."), 2000);
+      setTimeout(() => setGenerationStep("Synthesizing SEO Metadata..."), 5000);
+      setTimeout(() => setGenerationStep("Fetching Visual Assets..."), 8000);
+
       const res = await fetch("/api/generate", { 
         method: "POST",
         body: JSON.stringify({ prompt })
@@ -98,6 +105,7 @@ export default function CreatePostPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Generation failed");
       
+      setGenerationStep("Populating Terminal...");
       setGeneratedPostId(data._id || null);
       setFormData({
         title: data.title,
@@ -119,6 +127,7 @@ export default function CreatePostPage() {
       showAlert("error", "Error", error.message);
     } finally {
       setIsGenerating(false);
+      setGenerationStep("");
     }
   };
 

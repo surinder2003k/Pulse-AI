@@ -41,7 +41,7 @@ const PostSchema = new Schema<IPost>({
   meta_title: { type: String },
   meta_description: { type: String },
   focus_keyword: { type: String },
-  status: { type: String, enum: ['draft', 'published'], default: 'published' },
+  status: { type: String, enum: ['draft', 'published'], default: 'draft' },
   is_ai_generated: { type: Boolean, default: false },
   author_name: { type: String },
   author_image: { type: String },
