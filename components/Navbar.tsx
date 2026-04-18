@@ -27,7 +27,7 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Intelligence", href: "/blog" },
-    { name: "Archive", href: "/blog?category=All" },
+    { name: "About Us", href: "/about" },
   ];
 
   return (

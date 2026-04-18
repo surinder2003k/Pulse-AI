@@ -48,6 +48,14 @@ export default function AnimatedHero() {
     
   }, []);
 
+  const playHoverSound = (path: string) => {
+    try {
+      const audio = new Audio(path);
+      audio.volume = 0.3;
+      audio.play().catch(() => {});
+    } catch (e) {}
+  };
+
   return (
     <section ref={containerRef} className="pt-24 pb-24 md:pt-32 md:pb-40 flex flex-col items-center text-center gap-8 md:gap-14 px-6 md:px-8 relative overflow-hidden min-h-[90vh] justify-center bg-background">
       {/* Soft Background Glow */}
@@ -87,7 +95,10 @@ export default function AnimatedHero() {
       
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 mt-6 z-10 w-full max-w-md sm:max-w-none px-4 sm:px-0">
         <Link href="/dashboard" className="w-full sm:w-auto">
-          <button className="hero-btn opacity-0 w-full sm:w-auto group relative overflow-hidden rounded-[2rem] px-10 md:px-14 h-14 md:h-16 text-[11px] font-black uppercase tracking-[0.4em] text-white transition-all bg-primary hover:glow-red-strong shadow-premium hover:scale-[1.05] active:scale-95 flex items-center justify-center gap-4">
+          <button 
+            onMouseEnter={() => playHoverSound('/sounds/fahhhhhhhhhhhhhh.mp3')}
+            className="hero-btn opacity-0 w-full sm:w-auto group relative overflow-hidden rounded-[2rem] px-10 md:px-14 h-14 md:h-16 text-[11px] font-black uppercase tracking-[0.4em] text-white transition-all bg-primary hover:glow-red-strong shadow-premium hover:scale-[1.05] active:scale-95 flex items-center justify-center gap-4"
+          >
             <span className="relative z-10 flex items-center gap-4">
               Initialize Dashboard <Zap className="h-4 w-4 fill-white" />
             </span>
@@ -95,9 +106,9 @@ export default function AnimatedHero() {
           </button>
         </Link>
         
-        <Link href="/blog" className="w-full sm:w-auto">
+        <Link href="/about" className="w-full sm:w-auto">
           <button className="hero-btn opacity-0 w-full sm:w-auto group rounded-full px-10 md:px-14 h-14 md:h-16 text-xs font-bold uppercase tracking-widest text-gray-700 transition-all bg-white border border-gray-200 hover:bg-gray-50 shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center gap-4 hover:border-primary/30">
-            Browse Archive <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform text-primary" />
+            About Us <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform text-primary" />
           </button>
         </Link>
       </div>

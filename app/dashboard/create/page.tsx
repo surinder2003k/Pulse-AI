@@ -80,6 +80,14 @@ export default function CreatePostPage() {
     setAlert({ isVisible: true, type, title, message });
   };
 
+  const playHoverSound = (soundPath: string) => {
+    try {
+      const audio = new Audio(soundPath);
+      audio.volume = 0.4;
+      audio.play().catch(() => {});
+    } catch (e) {}
+  };
+
   const handleGenerate = async () => {
     if (!prompt) return toast.error("Please enter a topic first.");
     setIsGenerating(true);
@@ -100,7 +108,7 @@ export default function CreatePostPage() {
         content: data.content,
         category: data.category,
         tags: Array.isArray(data.tags) ? data.tags.join(", ") : data.tags,
-        seoKeywords: data.seoKeywords || "",
+        seoKeywords: data.seo_keywords || "",
         focusKeyword: data.focus_keyword || "",
         metaTitle: data.meta_title || "",
         metaDescription: data.meta_description || "",
@@ -108,7 +116,7 @@ export default function CreatePostPage() {
         featureImageAlt: data.feature_image_alt || data.image_alt || data.title || ""
       });
       toast.dismiss(toastId);
-      showAlert("success", "Content Ready", "AI has successfully generated the draft.");
+      showAlert("success", "Synthesis Complete", "AI has successfully generated the high-end editorial draft.");
     } catch (error: any) {
       toast.dismiss(toastId);
       showAlert("error", "Error", error.message);
@@ -160,9 +168,8 @@ export default function CreatePostPage() {
       
       if (!res.ok) throw new Error("Failed to save post.");
 
-      setShowCelebration(true);
-      showAlert("success", "Protocol Success", "Biological asset successfully deployed to the network.");
-      setTimeout(() => router.push("/dashboard/posts"), 6000);
+      showAlert("success", "Protocol Success", "Asset successfully deployed to the network matrix.");
+      setTimeout(() => router.push("/dashboard/posts"), 2000);
     } catch (error: any) {
       showAlert("error", "Error", error.message);
     } finally {
@@ -172,7 +179,6 @@ export default function CreatePostPage() {
 
   return (
     <div className="container mx-auto max-w-6xl py-12 px-6">
-      <Celebration trigger={showCelebration} />
       <PremiumAlert 
         isVisible={alert.isVisible}
         type={alert.type}
@@ -230,22 +236,11 @@ export default function CreatePostPage() {
                 </div>
 
                 <div className="space-y-6 pt-6 border-t border-slate-100">
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center justify-between mb-4">
                     <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Manuscript Body</label>
                     <span className="text-[10px] font-mono text-primary/60 italic">03 // INTEL</span>
                   </div>
                   
-                  <div className="bg-slate-50/50 rounded-3xl border border-slate-100 p-6 mb-6">
-                    <SEOAnalyzer 
-                      title={formData.title} 
-                      content={formData.content} 
-                      seoKeywords={formData.seoKeywords} 
-                      focusKeyword={formData.focusKeyword}
-                      metaTitle={formData.metaTitle}
-                      metaDescription={formData.metaDescription}
-                    />
-                  </div>
-
                   <div className="bg-white rounded-3xl border border-slate-200 p-1 shadow-sm overflow-hidden">
                     {mounted ? (
                       <RichTextEditor 
@@ -256,6 +251,47 @@ export default function CreatePostPage() {
                       <div className="h-96 w-full bg-slate-50 animate-pulse rounded-2xl border border-slate-100" />
                     )}
                   </div>
+                </div>
+
+                {/* WordPress Style SEO Section */}
+                <div className="space-y-8 pt-10 border-t border-slate-100">
+                   <div className="flex items-center gap-3">
+                      <div className="p-2 bg-primary/5 rounded-xl border border-primary/10">
+                        <Search className="h-4 w-4 text-primary" />
+                      </div>
+                      <h3 className="text-xs font-black uppercase tracking-widest italic text-gray-900">SEO Infrastructure</h3>
+                   </div>
+
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <div className="space-y-3">
+                        <label className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Meta Title</label>
+                        <Input 
+                          placeholder="GOOGLE HEADLINE..." 
+                          value={formData.metaTitle}
+                          onChange={(e) => setFormData({...formData, metaTitle: e.target.value})}
+                          className="h-12 bg-slate-50 border-slate-100 text-xs font-bold uppercase tracking-wider rounded-xl transition-all focus:bg-white"
+                        />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Focus Keyword</label>
+                        <Input 
+                          placeholder="TARGET KEYWORD..." 
+                          value={formData.focusKeyword}
+                          onChange={(e) => setFormData({...formData, focusKeyword: e.target.value})}
+                          className="h-12 bg-slate-50 border-slate-100 text-xs font-bold uppercase tracking-wider rounded-xl transition-all focus:bg-white"
+                        />
+                      </div>
+                   </div>
+
+                   <div className="space-y-3">
+                      <label className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Meta Description</label>
+                      <Textarea 
+                        placeholder="SEARCH RESULT SNIPPET..." 
+                        value={formData.metaDescription}
+                        onChange={(e) => setFormData({...formData, metaDescription: e.target.value})}
+                        className="min-h-[100px] bg-slate-50 border-slate-100 text-xs font-bold tracking-wider rounded-xl transition-all focus:bg-white p-4"
+                      />
+                   </div>
                 </div>
 
                 <div className="flex justify-end gap-4 pt-10 border-t border-slate-100">
@@ -270,6 +306,7 @@ export default function CreatePostPage() {
                   <Button 
                     type="submit"
                     disabled={isPublishing} 
+                    onMouseEnter={() => playHoverSound('/sounds/ek-jhaat-bhar-ka-aadmi.mp3')}
                     className="bg-primary hover:bg-primary/90 text-white min-w-[200px] h-14 shadow-glow-red border-none font-black uppercase italic tracking-widest text-xs transition-all active:scale-95 rounded-2xl"
                   >
                     {isPublishing ? (
@@ -405,7 +442,7 @@ export default function CreatePostPage() {
               <div className="pt-8 border-t border-slate-100 space-y-6">
                 <div className="flex items-center gap-2 text-primary font-black uppercase tracking-widest text-[10px] italic">
                   <ShieldCheck className="h-3 w-3" />
-                  SEO Protocol
+                  Classification
                 </div>
                 
                 <div className="grid grid-cols-1 gap-6">
@@ -418,7 +455,7 @@ export default function CreatePostPage() {
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl h-12 px-5 text-xs font-black uppercase italic tracking-widest text-gray-900 focus:border-primary/50 outline-none appearance-none cursor-pointer"
                       >
                         <option>Technology</option>
-                        <option>Design</option>
+                        <option>Business</option>
                         <option>Intelligence</option>
                         <option>Future</option>
                       </select>
@@ -433,28 +470,6 @@ export default function CreatePostPage() {
                       value={formData.tags}
                       onChange={(e) => setFormData({...formData, tags: e.target.value})}
                       className="h-12 bg-slate-50 border-slate-100 text-xs uppercase tracking-widest placeholder:text-slate-300 rounded-xl"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-6 pt-6">
-                  <div className="space-y-3">
-                    <label className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Focus Vector</label>
-                    <Input 
-                      placeholder="ENTER KEYWORD..." 
-                      value={formData.focusKeyword}
-                      onChange={(e) => setFormData({...formData, focusKeyword: e.target.value})}
-                      className="h-12 bg-slate-50 border-slate-100 text-xs italic uppercase placeholder:text-slate-300 rounded-xl"
-                    />
-                  </div>
-
-                  <div className="space-y-3">
-                    <label className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Meta Signature</label>
-                    <Textarea 
-                      placeholder="CUSTOM SIGNATURE..." 
-                      value={formData.metaDescription}
-                      onChange={(e) => setFormData({...formData, metaDescription: e.target.value})}
-                      className="min-h-[100px] text-[11px] bg-slate-50 border-slate-100 tracking-wider text-slate-500 rounded-xl p-4"
                     />
                   </div>
                 </div>

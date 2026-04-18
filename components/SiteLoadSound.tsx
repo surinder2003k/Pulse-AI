@@ -60,7 +60,7 @@ export default function SiteLoadSound() {
 
   return (
     <audio ref={audioRef} preload="auto">
-      <source src="/sounds/anime-ahh.mp3" type="audio/mpeg" />
+      <source src="/sounds/romanceeeeeeeeeeeeee.mp3" type="audio/mpeg" />
     </audio>
   );
 }

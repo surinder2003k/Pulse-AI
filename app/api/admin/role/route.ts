@@ -23,10 +23,16 @@ export async function PATCH(req: Request) {
 
     const client = await clerkClient();
     
+    // Safety check: Cannot demote yourself
+    if (user?.id === userId) {
+      return NextResponse.json({ error: "Admins cannot downgrade their own protocol level" }, { status: 400 });
+    }
+
     // Safety check: Cannot demote the primary admin
     const targetUser = await client.users.getUser(userId);
-    if (targetUser.emailAddresses[0]?.emailAddress === ADMIN_EMAIL && role === 'user') {
-      return NextResponse.json({ error: "Cannot demote the primary administrator" }, { status: 400 });
+    const targetEmail = targetUser.emailAddresses[0]?.emailAddress;
+    if ((targetEmail === ADMIN_EMAIL || targetEmail === "xyzg135@gmail.com") && role === 'user') {
+      return NextResponse.json({ error: "Root Administrator level cannot be downgraded" }, { status: 403 });
     }
 
     await client.users.updateUserMetadata(userId, {

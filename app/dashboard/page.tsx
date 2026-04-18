@@ -17,7 +17,9 @@ import {
   Users,
   Activity,
   ShieldCheck,
-  Zap
+  Zap,
+  Trash2,
+  Lock
 } from "lucide-react";
 
 import Link from "next/link";
@@ -26,31 +28,122 @@ import { Progress } from "@/components/ui/progress";
 import { cn, ADMIN_EMAIL } from "@/lib/utils";
 
 export default function DashboardOverview() {
+  const { user: clerkUser } = useUser();
   const [user, setUser] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUsersLoading, setIsUsersLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+
   const [stats, setStats] = useState({
-    totalUsers: 3,
-    systemPosts: 38,
+    totalUsers: 0,
+    systemPosts: 0,
     successRate: "98.4%",
     apiHealth: "Healthy"
   });
-  const [userList, setUserList] = useState([
-    { name: "No Name", email: "alexicer371@algam.com", role: "user", joined: "2026-04-01" },
-    { name: "Mohit", email: "sendtestmail1@gmail.com", role: "user", joined: "2026-03-28" },
-    { name: "Tutuherere Aman", email: "xyzg135@gmail.com", role: "admin", joined: "2026-02-28" }
-  ]);
+  
+  const [userList, setUserList] = useState<any[]>([]);
   const [isAutomating, setIsAutomating] = useState(false);
   const [automationProgress, setAutomationProgress] = useState(0);
 
   useEffect(() => {
-    async function checkAuth() {
-      const res = await fetch("/api/auth/status");
-      const data = await res.json();
-      setIsAdmin(data.isAdmin);
-      setUser(data.user);
+    async function initDashboard() {
+      setIsLoading(true);
+      try {
+        const res = await fetch("/api/auth/status");
+        const data = await res.json();
+        setIsAdmin(data.isAdmin);
+        setUser(data.user);
+
+        if (data.isAdmin) {
+          fetchUsers();
+          fetchStats();
+        }
+      } catch (err) {
+        toast.error("Failed to establish secure uplink");
+      } finally {
+        setIsLoading(false);
+      }
     }
-    checkAuth();
+    initDashboard();
   }, []);
+
+  const fetchUsers = async () => {
+    setIsUsersLoading(true);
+    try {
+      const res = await fetch("/api/admin/users");
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setUserList(data);
+        setStats(prev => ({ ...prev, totalUsers: data.length }));
+      }
+    } catch (err) {
+      toast.error("Failed to propagate user matrix");
+    } finally {
+      setIsUsersLoading(false);
+    }
+  };
+
+  const fetchStats = async () => {
+    try {
+      const res = await fetch("/api/admin/stats");
+      const data = await res.json();
+      setStats(prev => ({
+        ...prev,
+        systemPosts: data.totalPosts || 0,
+        apiHealth: data.apiHealth || "Healthy"
+      }));
+    } catch (err) {
+      console.error("Stats sync failed");
+    }
+  };
+
+  const handleUpdateRole = async (userId: string, currentRole: string) => {
+    const newRole = currentRole === "admin" ? "user" : "admin";
+    setActionLoading(userId);
+    const toastId = toast.loading(`Reconfiguring protocol to ${newRole.toUpperCase()}...`);
+
+    try {
+      const res = await fetch("/api/admin/role", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, role: newRole })
+      });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || "Override failed");
+
+      toast.success("Protocol updated successfully", { id: toastId });
+      fetchUsers();
+    } catch (error: any) {
+      toast.error(error.message, { id: toastId });
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleDeleteUser = async (userId: string) => {
+    if (!confirm("Are you sure you want to purge this asset from the network?")) return;
+    
+    setActionLoading(userId);
+    const toastId = toast.loading("Purging asset from matrix...");
+
+    try {
+      const res = await fetch(`/api/admin/users?userId=${userId}`, {
+        method: "DELETE"
+      });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || "Purge failed");
+
+      toast.success("Asset successfully purged", { id: toastId });
+      fetchUsers();
+    } catch (error: any) {
+      toast.error(error.message, { id: toastId });
+    } finally {
+      setActionLoading(null);
+    }
+  };
 
   const handleRunAutomation = async () => {
     setIsAutomating(true);
@@ -62,7 +155,8 @@ export default function DashboardOverview() {
       const res = await fetch("/api/automate");
       if (!res.ok) throw new Error("Automation failed");
       setAutomationProgress(100);
-      toast.success(`Success! Generated 2 trending posts.`, { id: toastId });
+      toast.success(`Success! Generated trending posts.`, { id: toastId });
+      fetchStats();
       setTimeout(() => {
         setIsAutomating(false);
         setAutomationProgress(0);
@@ -73,6 +167,15 @@ export default function DashboardOverview() {
       setAutomationProgress(0);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
+        <Loader2 className="h-12 w-12 text-primary animate-spin" />
+        <p className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-400 animate-pulse">Establishing Secure Uplink...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-12 pb-20 relative p-6 md:p-10">
@@ -101,6 +204,7 @@ export default function DashboardOverview() {
           {isAdmin && (
             <Button 
               onClick={handleRunAutomation}
+              onMouseEnter={() => playHoverSound('/sounds/fahhhhhhhhhhhhhh.mp3')}
               disabled={isAutomating}
               className="h-14 px-10 rounded-2xl bg-white hover:bg-slate-50 text-gray-900 border border-slate-200 shadow-sm transition-all font-black uppercase italic tracking-widest text-[11px] flex gap-3 group active:scale-95"
             >
@@ -150,73 +254,108 @@ export default function DashboardOverview() {
       </div>
 
       {/* Community Management Table */}
-      <div className="space-y-8 pt-12 border-t border-slate-200 relative">
-        <div className="flex items-center gap-4">
-           <Users className="h-6 w-6 text-primary" />
-           <div className="space-y-1">
-             <h2 className="text-3xl font-black tracking-tighter uppercase italic text-gray-900">Access <span className="text-slate-300">/ Network</span></h2>
-             <p className="text-[9px] font-mono text-slate-400 uppercase tracking-[0.4em]">Protocol: User-Registry // Level: Restricted</p>
-           </div>
-           <Badge className="bg-primary/5 text-primary border-primary/20 ml-auto rounded-full px-5 py-2 font-black text-[10px] uppercase tracking-widest backdrop-blur-2xl italic">System_Admin_Session</Badge>
-        </div>
+      {isAdmin && (
+        <div className="space-y-8 pt-12 border-t border-slate-200 relative">
+          <div className="flex items-center gap-4">
+             <Users className="h-6 w-6 text-primary" />
+             <div className="space-y-1">
+               <h2 className="text-3xl font-black tracking-tighter uppercase italic text-gray-900">Access <span className="text-slate-300">/ Network</span></h2>
+               <p className="text-[9px] font-mono text-slate-400 uppercase tracking-[0.4em]">Protocol: User-Registry // Level: Restricted</p>
+             </div>
+             <Badge className="bg-primary/5 text-primary border-primary/20 ml-auto rounded-full px-5 py-2 font-black text-[10px] uppercase tracking-widest backdrop-blur-2xl italic">System_Admin_Session</Badge>
+          </div>
 
-        <div className="rounded-[4rem] border border-slate-200 bg-white overflow-hidden shadow-premium group">
-          <div className="overflow-x-auto overflow-y-hidden">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-slate-50/50 border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-[0.5em]">
-                  <th className="px-12 py-10">Entity</th>
-                  <th className="px-12 py-10">Credentials</th>
-                  <th className="px-12 py-10 text-center">Protocol</th>
-                  <th className="px-12 py-10 text-center">Sequence</th>
-                  <th className="px-12 py-10 text-right">Overrides</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {userList.map((usr, i) => (
-                  <tr key={i} className="group hover:bg-slate-50/50 transition-all">
-                    <td className="px-12 py-10">
-                      <div className="flex items-center gap-5">
-                        <div className="h-12 w-12 rounded-2xl bg-slate-50 flex items-center justify-center border border-slate-100 shadow-sm group-hover:border-primary/30 transition-all duration-500">
-                           <span className="text-primary font-black uppercase tracking-tighter text-sm italic">{usr.name.charAt(0)}</span>
-                        </div>
-                        <div className="flex flex-col gap-1">
-                          <span className="font-black text-gray-900 uppercase tracking-wider italic text-sm group-hover:text-primary transition-colors">{usr.name}</span>
-                          <span className="text-[10px] font-mono text-slate-400">UUID: {Math.random().toString(16).slice(2, 8).toUpperCase()}</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-12 py-10">
-                      <span className="text-xs font-bold text-slate-500 font-mono tracking-tight">{usr.email}</span>
-                    </td>
-                    <td className="px-12 py-10 text-center">
-                      <Badge className={cn(
-                        "rounded-full px-5 py-2 text-[10px] font-black uppercase tracking-widest italic transition-all",
-                        usr.role === 'admin' ? "bg-primary text-white" : "bg-slate-100 text-slate-500 border-slate-200"
-                      )}>
-                        {usr.role}
-                      </Badge>
-                    </td>
-                    <td className="px-12 py-10 text-center">
-                      <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">{usr.joined}</span>
-                    </td>
-                    <td className="px-12 py-10 text-right">
-                       <div className="flex justify-end gap-3 opacity-40 group-hover:opacity-100 transition-all">
-                          <button className="h-10 w-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm active:scale-95">
-                             <ShieldCheck className="h-5 w-5" />
-                          </button>
-                          <button className="h-10 w-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all shadow-sm active:scale-95">
-                             <Activity className="h-5 w-5" />
-                          </button>
-                       </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="rounded-[4rem] border border-slate-200 bg-white overflow-hidden shadow-premium group min-h-[400px]">
+            {isUsersLoading ? (
+              <div className="flex flex-col items-center justify-center p-20 space-y-4">
+                <Loader2 className="h-8 w-8 text-primary animate-spin" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Syncing Registry...</span>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse min-w-[800px]">
+                  <thead>
+                    <tr className="bg-slate-50/50 border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-[0.5em]">
+                      <th className="px-12 py-10">Entity</th>
+                      <th className="px-12 py-10">Credentials</th>
+                      <th className="px-12 py-10 text-center">Protocol</th>
+                      <th className="px-12 py-10 text-center">Sequence</th>
+                      <th className="px-12 py-10 text-right">Overrides</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {userList.map((usr, i) => {
+                      const isSuperAdmin = usr.email === ADMIN_EMAIL || usr.email === "xyzg135@gmail.com";
+                      const isSelf = usr.id === clerkUser?.id;
+                      
+                      return (
+                        <tr key={i} className="group hover:bg-slate-50/50 transition-all">
+                          <td className="px-12 py-10">
+                            <div className="flex items-center gap-5">
+                              <div className="h-12 w-12 rounded-2xl bg-slate-50 flex items-center justify-center border border-slate-100 shadow-sm group-hover:border-primary/30 transition-all duration-500">
+                                <span className="text-primary font-black uppercase tracking-tighter text-sm italic">{usr.name.charAt(0)}</span>
+                              </div>
+                              <div className="flex flex-col gap-1">
+                                <span className="font-black text-gray-900 uppercase tracking-wider italic text-sm group-hover:text-primary transition-colors">
+                                  {usr.name} {isSelf && <span className="text-primary lowercase">(you)</span>}
+                                </span>
+                                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">ID: {usr.id.slice(-6)}</span>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-12 py-10">
+                            <span className="text-xs font-bold text-slate-500 font-mono tracking-tight">{usr.email}</span>
+                          </td>
+                          <td className="px-12 py-10 text-center">
+                            <Badge className={cn(
+                              "rounded-full px-5 py-2 text-[10px] font-black uppercase tracking-widest italic transition-all",
+                              usr.role === 'admin' ? "bg-primary text-white" : "bg-slate-100 text-slate-500 border-slate-200"
+                            )}>
+                              {usr.role}
+                            </Badge>
+                          </td>
+                          <td className="px-12 py-10 text-center">
+                            <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">{usr.joined}</span>
+                          </td>
+                          <td className="px-12 py-10 text-right">
+                            <div className="flex justify-end gap-3 opacity-40 group-hover:opacity-100 transition-all">
+                              {/* Override Protocols (Admin Toggle) */}
+                              {!isSuperAdmin && !isSelf ? (
+                                <div className="flex gap-2">
+                                  <button 
+                                    onClick={() => handleUpdateRole(usr.id, usr.role)}
+                                    disabled={actionLoading === usr.id}
+                                    className="h-10 w-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm active:scale-95 disabled:opacity-50"
+                                    title={usr.role === 'admin' ? "Demote to User" : "Promote to Admin"}
+                                  >
+                                    {actionLoading === usr.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-5 w-5" />}
+                                  </button>
+                                  <button 
+                                    onClick={() => handleDeleteUser(usr.id)}
+                                    disabled={actionLoading === usr.id}
+                                    className="h-10 w-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all shadow-sm active:scale-95 disabled:opacity-50"
+                                    title="Purge Asset"
+                                  >
+                                    {actionLoading === usr.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-5 w-5" />}
+                                  </button>
+                                </div>
+                              ) : (
+                                <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 border border-slate-100 italic font-black text-[9px] uppercase tracking-tighter">
+                                  <Lock className="h-4 w-4" />
+                                </div>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
-      </div>
+      )}
 
       {/* Progress Overlay for Automation */}
       {isAutomating && (

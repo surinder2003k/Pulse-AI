@@ -56,35 +56,31 @@ export async function POST(req: Request) {
     console.log("Step 2: Generating content directly from user prompt...");
     let postData: any;
 
-    // DIRECT USER PROMPT: No personas, no hardcoded tone. Just the user's exact topic/instructions.
-    // We only append the format requirement so it returns usable JSON.
-    const directPrompt = `You are an expert technical editorial writer. Write a highly optimized, fully SEO-friendly, comprehensive article based exactly on this topic:
+    const directPrompt = `You are an expert technical editorial writer for a premium digital publication named Pulse AI. Write a high-end, authoritative, and fully SEO-optimized article based exactly on this topic:
     "${userPrompt}"
     
-    The article MUST be detailed and lengthy, approximately 1500 to 2000 words.
+    The article MUST be detailed, approximately 1200 to 1800 words. 
+    Tone: Authoritative, Visionary, Tactical.
     
     IMPORTANT FORMATTING RULES:
-    1. Use well-formatted Markdown.
-    2. Use <h2> and <h3> for headings.
-    3. Use <ul>, <ol>, and <li> for lists.
-    4. CRITICAL STRUCTURAL RULES:
-       - Start EVERY line at column 0 (no leading spaces/indentation).
-       - Use DOUBLE NEWLINES (\n\n) between every paragraph.
-       - Use DOUBLE NEWLINES before every heading.
-       - Ensure a space follows every '#' in headers (e.g. '## Header').
+    1. Use well-formatted Markdown. Use <h2> and <h3> for headings.
+    2. Use <ul>, <ol>, and <li> for lists. Use **Bold** for emphasis.
+    3. INSERT ONE IMAGE PLACEHOLDER: You MUST place the string [[BODY_IMAGE_1]] naturally after the first 3-4 paragraphs where a visual would fit.
     
     Format the response STRICTLY as a JSON object with these exact keys:
     {
-      "title": "A highly engaging, SEO-optimized title",
+      "title": "A highly engaging, editorial-grade title",
       "meta_title": "A custom SEO title for Google (max 60 chars)",
       "meta_description": "A compelling meta description (max 160 chars)",
       "focus_keyword": "The primary focus keyword for this article",
-      "content": "<h2>Introduction</h2><p>First paragraph here...</p><p>Second paragraph...</p><h3>Key Benefits</h3><ul><li>Point 1</li><li>Point 2</li></ul><p>Conclusion paragraph...</p>",
+      "seo_keywords": "4-5 comma separated keywords",
+      "content": "Full markdown content starting with <h2>Introduction</h2>. Place [[BODY_IMAGE_1]] in a suitable spot.",
       "excerpt": "A powerful short summary for cards/previews (max 160 chars)",
-      "category": "Technology, Business, News, or whichever fits best",
-      "tags": ["seo-tag1", "seo-tag2", "seo-tag3", "seo-tag4", "seo-tag5"],
-      "imageSearchKeyword": "A generic 1-2 word English keyword (like 'technology', 'city') for Unsplash",
-      "image_alt": "A descriptive ALT tag for the feature image"
+      "category": "Technology, Business, News, or Intelligence",
+      "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"],
+      "imageSearchKeyword": "A generic 1-2 word English keyword for the feature image",
+      "bodyImageKeyword": "A specific keyword for the in-content visual ([[BODY_IMAGE_1]])",
+      "image_alt": "A descriptive ALT tag for visual assets"
     }
 
     ${linksContext}
@@ -102,25 +98,43 @@ export async function POST(req: Request) {
       console.log("AI generated post successfully:", postData.title);
     } catch (aiError: any) {
       console.error("All AI Providers Failed:", aiError);
-      throw new Error("All AI Providers exhausted their quotas or failed. Please try again later.");
+      throw new Error("Neural Synthesis Interrupted: " + aiError.message);
     }
 
-    // Step 2: Unsplash Images
-    console.log("Step 2: Finding Visuals...");
+    // Step 2: Unsplash Visual Synthesis
+    console.log("Step 2: Finding Visual Assets...");
     let featureImage = "https://images.unsplash.com/photo-1677442136019-21780ecad995";
+    let bodyImage1 = "";
+    
     try {
-      const searchKeyword = postData.imageSearchKeyword || postData.category || "technology";
-      const imageRes = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(searchKeyword)}&orientation=landscape&order_by=relevant&per_page=1&client_id=${UNSPLASH_ACCESS_KEY}`);
-      if (imageRes.ok) {
-        const imageData = await imageRes.json();
-        featureImage = imageData?.results?.[0]?.urls?.regular || featureImage;
+      // Feature Image
+      const featureKw = postData.imageSearchKeyword || postData.category || "technology";
+      const featRes = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(featureKw)}&orientation=landscape&order_by=relevant&per_page=1&client_id=${UNSPLASH_ACCESS_KEY}`);
+      if (featRes.ok) {
+        const featData = await featRes.json();
+        featureImage = featData?.results?.[0]?.urls?.regular || featureImage;
+      }
+
+      // Body Image
+      const bodyKw = postData.bodyImageKeyword || featureKw;
+      const bodyRes = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(bodyKw)}&orientation=landscape&order_by=relevant&per_page=1&client_id=${UNSPLASH_ACCESS_KEY}`);
+      if (bodyRes.ok) {
+        const bodyData = await bodyRes.json();
+        bodyImage1 = bodyData?.results?.[0]?.urls?.regular || "";
       }
     } catch (imgErr) {
-      console.warn("Unsplash fetching failed.");
+      console.warn("Visual synthesis partial failure.");
+    }
+
+    // Inject images into content
+    if (bodyImage1) {
+      postData.content = postData.content.replace("[[BODY_IMAGE_1]]", `\n\n![${postData.image_alt || "Visual Context"}](${bodyImage1})\n\n`);
+    } else {
+      postData.content = postData.content.replace("[[BODY_IMAGE_1]]", "");
     }
 
     // Step 3: Saving to DB...
-    console.log("Step 3: Saving to DB...");
+    console.log("Step 3: Committing to Global Matrix...");
     
     let slug = slugifyLib(postData.title, { lower: true, strict: true });
     
@@ -148,6 +162,7 @@ export async function POST(req: Request) {
         meta_title: postData.meta_title,
         meta_description: postData.meta_description,
         focus_keyword: postData.focus_keyword,
+        seo_keywords: postData.seo_keywords,
         feature_image_url: featureImage,
         feature_image_alt: postData.image_alt || postData.title,
         status: "published",
@@ -155,11 +170,10 @@ export async function POST(req: Request) {
         published_at: new Date()
       });
 
-      console.log("Generation Success! Post created:", newPost.slug);
+      console.log("Generation Success! Post deployed:", newPost.slug);
       return NextResponse.json(newPost);
     } catch (dbError: any) {
-      console.warn("MongoDB Save Failed (Possible Duplicate):", dbError.message);
-      // If saving fails (e.g. duplicate slug), we still return the generated data so they can see it
+      console.warn("Local Registry Save Failed:", dbError.message);
       return NextResponse.json({
         ...postData,
         _id: null,
