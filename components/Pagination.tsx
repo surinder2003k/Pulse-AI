@@ -81,5 +81,3 @@ export default function Pagination({ totalPages }: PaginationProps) {
     </div>
   );
 }
-
-import { cn } from "@/lib/utils";
