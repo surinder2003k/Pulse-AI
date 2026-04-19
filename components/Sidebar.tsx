@@ -35,7 +35,7 @@ export default function Sidebar() {
 
   return (
     <aside className="hidden md:flex flex-col w-72 bg-white border-r border-slate-200 h-screen sticky top-0 z-50 overflow-hidden relative">
-      <div className="p-10 pb-8 flex flex-col gap-2">
+      <div className="pt-32 p-10 pb-8 flex flex-col gap-2">
         <span className="text-[7px] font-mono text-gray-400 uppercase tracking-[0.5em]">Secure Uplink // {user?.id?.slice(-8).toUpperCase() || "GUEST"}</span>
       </div>
 

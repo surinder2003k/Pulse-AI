@@ -25,10 +25,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  if (pathname.startsWith('/dashboard') || pathname.startsWith('/admin')) {
-    return null;
-  }
-
   const isAdmin = user?.primaryEmailAddress?.emailAddress === ADMIN_EMAIL;
 
   const navLinks = [

@@ -61,6 +61,13 @@ export default function MarkdownRenderer({ content, className }: MarkdownRendere
       text = text.replace(/([^\n])(\n?)(#{1,6}\s)/g, '$1\n\n$3');
       // 5. Ensure EVERY header has a space
       text = text.replace(/\n(#{1,6})([^\s#])/g, '\n$1 $2');
+    } else {
+      // 3. TRANSLATE basic Markdown back to HTML for broken old posts that mix HTML figures with Markdown
+      text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      text = text.replace(/(?<!\w)\*(.*?)\*(?!\w)/g, '<em>$1</em>');
+      text = text.replace(/^###\s+(.*)$/gm, '<h3>$1</h3>');
+      text = text.replace(/^##\s+(.*)$/gm, '<h2>$1</h2>');
+      text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
     }
 
     // Global domain guard for staging

@@ -51,7 +51,7 @@ export async function POST(req: Request) {
       ? `EXTERNAL LINKING (Partner): You MUST naturally link to 1 of these Xylos AI stories as a deeper resource: [${external.join(", ")}].` 
       : "";
 
-    const linksContext = `${internalText} ${externalText} IMPORTANT: Use natural anchor text. CRITICAL: You MUST use the EXACT URLs provided above. DO NOT alter them. You MUST use ONLY HTML syntax: <a href="URL">Anchor Text</a>. NEVER use Markdown syntax like [text](url). For bold text, use <strong>.`;
+    const linksContext = `${internalText} ${externalText} IMPORTANT: Use natural anchor text. CRITICAL: You MUST use ONLY Markdown link syntax: [Anchor Text](URL). DO NOT use HTML tags for links.`;
 
     console.log("Step 2: Generating content directly from user prompt...");
     let postData: any;
@@ -61,11 +61,12 @@ export async function POST(req: Request) {
     CRITICAL REQUIREMENTS:
     1. EXHAUSTIVE CONTENT: Approx 1200-1800 words. Deep analysis, tactical insights, and visionary perspective.
     2. METADATA MASTERY: Every JSON field MUST be filled with premium, punchy, and SEO-optimized text. No field should be empty.
-    3. SEARCH COMPLIANCE: Use focus_keyword naturally in <h2> headings and first paragraph.
+    3. SEARCH COMPLIANCE: Use focus_keyword naturally in headers and first paragraph.
     
     FORMATTING:
-    - Content in SEMANTIC HTML (<h2>, <h3>, <p>, <ul>, <strong>).
-    - Insert [[BODY_IMAGE_1]] and [[BODY_IMAGE_2]] at strategic mid-points.
+    - Content MUST be in pure MARKDOWN (##, ###, **, *, -, etc). 
+    - NEVER use HTML tags (no <h2>, <p>, etc.).
+    - Insert [[BODY_IMAGE_1]] and [[BODY_IMAGE_2]] at strategic mid-points on their own lines.
     
     STRICT JSON SCHEMA:
     {
@@ -74,7 +75,7 @@ export async function POST(req: Request) {
       "meta_description": "Engaging Search Snippet | Maximum 160 Chars",
       "focus_keyword": "Primary SEO Keyword",
       "seoKeywords": "4-5 targeting keywords, comma separated",
-      "content": "Full HTML starting with <h2>Introduction</h2>",
+      "content": "Full Markdown content starting with ## Introduction",
       "excerpt": "Compelling 2-sentence hook for the feed",
       "category": "Technology, Business, News, or Intelligence",
       "tags": ["Tag1", "Tag2", "Tag3"],
@@ -135,13 +136,13 @@ export async function POST(req: Request) {
 
     // Inject images into content
     if (bodyImage1) {
-      postData.content = postData.content.replace("[[BODY_IMAGE_1]]", `<figure class="my-8 rounded-3xl overflow-hidden border border-slate-100 shadow-sm"><img src="${bodyImage1}" alt="${postData.image_alt || "Visual Context"}" class="w-full h-auto object-cover"/><figcaption class="p-4 bg-slate-50 text-[10px] font-black uppercase tracking-widest text-slate-400 text-center italic border-t border-slate-100">Asset 01 // Narrative Context</figcaption></figure>`);
+      postData.content = postData.content.replace("[[BODY_IMAGE_1]]", `\n\n![Asset 01 // Narrative Context](${bodyImage1})\n\n`);
     } else {
       postData.content = postData.content.replace("[[BODY_IMAGE_1]]", "");
     }
 
     if (bodyImage2) {
-      postData.content = postData.content.replace("[[BODY_IMAGE_2]]", `<figure class="my-8 rounded-3xl overflow-hidden border border-slate-100 shadow-sm"><img src="${bodyImage2}" alt="${postData.image_alt || "Deep Tech Context"}" class="w-full h-auto object-cover"/><figcaption class="p-4 bg-slate-50 text-[10px] font-black uppercase tracking-widest text-slate-400 text-center italic border-t border-slate-100">Asset 02 // Strategic Intel</figcaption></figure>`);
+      postData.content = postData.content.replace("[[BODY_IMAGE_2]]", `\n\n![Asset 02 // Strategic Intel](${bodyImage2})\n\n`);
     } else {
       postData.content = postData.content.replace("[[BODY_IMAGE_2]]", "");
     }
