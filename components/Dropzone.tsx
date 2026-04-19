@@ -40,7 +40,8 @@ export default function Dropzone({ onUpload, currentImage }: DropzoneProps) {
         onUpload(data.url);
         toast.success("Image uploaded successfully!");
       } else {
-        toast.error(data.error || "Upload failed.");
+        const errorMsg = data.details ? `${data.error}: ${data.details}` : (data.error || "Upload failed.");
+        toast.error(errorMsg);
       }
     } catch {
       toast.error("Error uploading image.");
