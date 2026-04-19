@@ -13,78 +13,60 @@ export default function ScrollAudio({ audioSrc }: ScrollAudioProps) {
 
   useEffect(() => {
     // Initialize audio
-    audioRef.current = new Audio(audioSrc);
-    audioRef.current.loop = true;
-    audioRef.current.volume = 0.4;
-    audioRef.current.preload = "auto";
+    const audio = new Audio(audioSrc);
+    audio.loop = true;
+    audio.volume = 0.3; // More subtle
+    audio.preload = "auto";
+    audioRef.current = audio;
 
-    let hasInteracted = false;
+    let isUnlocked = false;
 
-    const unlockAudio = async () => {
-      if (hasInteracted) return;
-      if (!audioRef.current) return;
-
+    const unlock = async () => {
+      if (isUnlocked || !audioRef.current) return;
       try {
-        console.log("Unlocking audio channel via user gesture...");
-        // Fast play/pause to unlock the channel
         await audioRef.current.play();
         audioRef.current.pause();
-        hasInteracted = true;
-        
-        // Remove listeners once unlocked
-        window.removeEventListener("click", unlockAudio);
-        window.removeEventListener("touchstart", unlockAudio);
-        window.removeEventListener("keydown", unlockAudio);
-      } catch (err) {
-        console.warn("Audio unlock failed (waiting for valid gesture):", err);
+        audioRef.current.currentTime = 0;
+        isUnlocked = true;
+        window.removeEventListener("click", unlock);
+        window.removeEventListener("touchstart", unlock);
+        window.removeEventListener("scroll", unlock);
+      } catch (e) {
+        console.warn("Audio unlock failed:", e);
       }
     };
 
-    window.addEventListener("click", unlockAudio, { once: false });
-    window.addEventListener("touchstart", unlockAudio, { once: false });
-    window.addEventListener("keydown", unlockAudio, { once: false });
-
-    const startPlaying = async () => {
-      if (audioRef.current && audioRef.current.paused) {
-        try {
-          await audioRef.current.play();
-          setIsPlaying(true);
-        } catch (err) {
-          // If direct play fails, it usually means it's still locked
-          console.warn("Play blocked (still locked?):", err);
-        }
-      }
-    };
-
-    const stopPlaying = () => {
-      if (audioRef.current && !audioRef.current.paused) {
-        audioRef.current.pause();
-        setIsPlaying(false);
-      }
-    };
+    window.addEventListener("click", unlock);
+    window.addEventListener("touchstart", unlock);
+    window.addEventListener("scroll", unlock);
 
     const handleScroll = () => {
-      // Start playing on scroll
-      startPlaying();
+      if (!audioRef.current) return;
 
-      // Clear existing timeout
+      if (audioRef.current.paused) {
+        audioRef.current.play().catch(() => {});
+        setIsPlaying(true);
+      }
+
       if (scrollTimeoutRef.current) {
         clearTimeout(scrollTimeoutRef.current);
       }
 
-      // Set timeout to stop playing after scroll stops
       scrollTimeoutRef.current = setTimeout(() => {
-        stopPlaying();
-      }, 400); // Slightly faster response
+        if (audioRef.current && !audioRef.current.paused) {
+          audioRef.current.pause();
+          setIsPlaying(false);
+        }
+      }, 150); // Faster stop for better responsiveness
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("click", unlockAudio);
-      window.removeEventListener("touchstart", unlockAudio);
-      window.removeEventListener("keydown", unlockAudio);
+      window.removeEventListener("click", unlock);
+      window.removeEventListener("touchstart", unlock);
+      window.removeEventListener("scroll", unlock);
       
       if (scrollTimeoutRef.current) {
         clearTimeout(scrollTimeoutRef.current);

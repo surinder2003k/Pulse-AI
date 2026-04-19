@@ -229,116 +229,128 @@ export default function DashboardPostsPage() {
       <div className="rounded-[3rem] border border-slate-200 bg-white overflow-hidden shadow-premium">
         <div className="overflow-x-auto">
           <Table>
-            <TableHeader className="bg-slate-50/50">
-              <TableRow className="border-slate-100 hover:bg-transparent uppercase tracking-[0.4em] text-[10px] font-black italic text-slate-400">
-                <TableHead className="w-16 py-8 px-10">
+            <TableHeader className="border-b border-slate-100 bg-slate-50/30">
+              <TableRow className="border-none hover:bg-transparent uppercase tracking-[0.2em] text-[10px] font-bold text-slate-400">
+                <TableHead className="w-12 py-4 pl-8 text-center">#</TableHead>
+                <TableHead className="w-12 py-4 px-2">
                   <input 
                     type="checkbox" 
                     checked={selectedIds.size === posts.length && posts.length > 0} 
                     onChange={toggleSelectAll}
-                    className="h-6 w-6 rounded-lg border-2 border-slate-200 bg-white appearance-none cursor-pointer checked:bg-primary checked:border-primary transition-all relative overflow-hidden shadow-sm"
+                    className="h-4 w-4 rounded border-slate-200 bg-white appearance-none cursor-pointer checked:bg-primary checked:border-primary transition-all relative overflow-hidden"
                   />
                 </TableHead>
-                <TableHead className="py-8">Asset Title / Identifier</TableHead>
-                <TableHead className="py-8">Domain</TableHead>
-                <TableHead className="py-8 text-center">Frequency</TableHead>
-                <TableHead className="py-8">Logged At</TableHead>
-                <TableHead className="text-right px-10 py-8">Protocols</TableHead>
+                <TableHead className="py-4 pl-4">Title / Identity</TableHead>
+                <TableHead className="py-4 hidden md:table-cell">Category</TableHead>
+                <TableHead className="py-4 text-center">Status</TableHead>
+                <TableHead className="py-4 hidden lg:table-cell">Date Logged</TableHead>
+                <TableHead className="text-right pr-8 py-4">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading || !user ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-40">
-                     <div className="flex flex-col items-center gap-6 animate-pulse">
-                        <Zap className="h-10 w-10 text-primary animate-bounce shadow-glow-red" />
-                        <span className="font-black tracking-[0.5em] uppercase text-xs text-slate-300">Establishing Satellite Link...</span>
+                  <TableCell colSpan={7} className="text-center py-32">
+                     <div className="flex flex-col items-center gap-4 animate-pulse">
+                        <Zap className="h-8 w-8 text-primary animate-bounce shadow-glow-red" />
+                        <span className="font-bold tracking-[0.3em] uppercase text-[10px] text-slate-400">Syncing Network Assets...</span>
                      </div>
                   </TableCell>
                 </TableRow>
               ) : posts.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-40">
-                     <div className="max-w-xs mx-auto space-y-4 opacity-30">
-                        <FileText className="h-12 w-12 mx-auto" />
-                        <p className="font-black uppercase tracking-widest text-sm italic">Library Empty</p>
+                  <TableCell colSpan={7} className="text-center py-32">
+                     <div className="max-w-xs mx-auto space-y-3 opacity-20">
+                        <FileText className="h-10 w-10 mx-auto" />
+                        <p className="font-bold uppercase tracking-widest text-[10px]">Library Empty</p>
                      </div>
                   </TableCell>
                 </TableRow>
               ) : (
-                posts.map((post) => {
+                posts.map((post, index) => {
                   const postId = (post._id || post.id) as string;
                   const isSelected = selectedIds.has(postId);
                   const isDeleting = actionLoading === postId + "_delete";
                   const isTogglingStatus = actionLoading === postId + "_status";
                   return (
-                    <TableRow key={postId} className={`border-slate-100 transition-all group ${isSelected ? 'bg-primary/5' : 'hover:bg-slate-50/50'}`}>
-                      <TableCell className="px-10 py-8">
+                    <TableRow key={postId} className={`border-none transition-all group ${isSelected ? 'bg-primary/5' : 'hover:bg-slate-50'}`}>
+                      <TableCell className="pl-8 py-3 text-center text-[11px] font-bold text-slate-400">
+                        {index + 1}
+                      </TableCell>
+                      <TableCell className="px-2 py-3">
                         <input 
                           type="checkbox" 
                           checked={isSelected}
                           onChange={() => toggleSelect(postId)}
-                          className="h-6 w-6 rounded-lg border-2 border-slate-200 bg-white appearance-none cursor-pointer checked:bg-primary checked:border-primary transition-all shadow-sm"
+                          className="h-4 w-4 rounded border-slate-200 bg-white appearance-none cursor-pointer checked:bg-primary checked:border-primary transition-all"
                         />
                       </TableCell>
-                      <TableCell className="max-w-[400px] py-10">
-                        <div className="flex items-center gap-8">
-                          <div className="relative h-24 w-36 shrink-0 overflow-hidden rounded-2xl border border-slate-100 bg-slate-50 shadow-sm">
+                      <TableCell className="py-3 pl-4">
+                        <div className="flex items-center gap-4">
+                          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-slate-100 bg-slate-50 shadow-sm">
                             <Image 
                               src={post.feature_image_url || "https://images.unsplash.com/photo-1677442136019-21780ecad995"} 
                               alt={post.title} 
                               fill 
-                              className="object-cover grayscale-0 opacity-100 transition-all duration-700 group-hover:scale-110" 
+                              className="object-cover transition-all duration-500 group-hover:scale-110" 
                             />
                           </div>
-                          <div className="space-y-2">
-                             <span className="font-black text-xl tracking-tight uppercase italic group-hover:text-primary transition-colors block leading-none text-gray-900">{post.title}</span>
-                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">{post.slug}</span>
+                          <div className="flex flex-col min-w-0">
+                             <span className="font-bold text-sm tracking-tight text-gray-900 truncate group-hover:text-primary transition-colors">{post.title}</span>
+                             <span className="text-[10px] font-medium text-slate-400 truncate uppercase tracking-wider">{post.slug}</span>
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="text-[10px] font-black border-slate-200 text-slate-500 uppercase tracking-[0.2em] px-4 py-1.5 rounded-full bg-slate-50">
+                      <TableCell className="hidden md:table-cell py-3">
+                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 py-1 bg-slate-100 rounded-md">
                            {post.category || "General"}
-                        </Badge>
+                        </span>
                       </TableCell>
-                      <TableCell className="text-center">
-                        <Badge className={cn(
-                          "text-[10px] font-black uppercase border-none px-4 py-1.5 rounded-full transition-all shadow-sm",
-                          post.status === "published" ? "bg-primary text-white" : "bg-slate-100 text-slate-400"
+                      <TableCell className="text-center py-3">
+                        <div className={cn(
+                          "inline-flex h-2 w-2 rounded-full mr-2",
+                          post.status === "published" ? "bg-primary animate-pulse shadow-glow-red" : "bg-slate-300"
+                        )} />
+                        <span className={cn(
+                          "text-[10px] font-bold uppercase tracking-widest",
+                          post.status === "published" ? "text-primary" : "text-slate-400"
                         )}>
                           {post.status}
-                        </Badge>
+                        </span>
                       </TableCell>
-                      <TableCell className="text-[10px] text-slate-400 font-black uppercase tracking-tighter italic">
+                      <TableCell className="hidden lg:table-cell py-3 text-[10px] text-slate-400 font-bold uppercase tracking-tight">
                          {formatDate((post.createdAt || post.published_at || post.created_at || "") as string)}
                       </TableCell>
-                      <TableCell className="text-right px-10">
-                        <div className="flex items-center justify-end gap-3 opacity-40 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0 transition-all duration-300">
+                      <TableCell className="text-right pr-8 py-3">
+                        <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                           <Link href={`/blog/${post.slug}`} target="_blank">
-                             <button className="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-gray-900 hover:border-slate-300 transition-all shadow-sm active:scale-95">
-                                <ExternalLink className="h-5 w-5" />
-                             </button>
+                             <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-slate-400 hover:text-gray-900 hover:bg-slate-200 transition-all">
+                                <ExternalLink className="h-4 w-4" />
+                             </Button>
                           </Link>
                           <Link href={`/dashboard/edit/${post.slug}`}>
-                             <button className="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-gray-900 hover:border-slate-300 transition-all shadow-sm active:scale-95">
-                                <Pencil className="h-5 w-5" />
-                             </button>
+                             <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-slate-400 hover:text-gray-900 hover:bg-slate-200 transition-all">
+                                <Pencil className="h-4 w-4" />
+                             </Button>
                           </Link>
-                          <button
-                            className="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/30 transition-all shadow-sm active:scale-95"
+                          <Button
+                            variant="ghost" 
+                            size="icon"
+                            className="h-8 w-8 rounded-lg text-slate-400 hover:text-primary hover:bg-primary/10 transition-all"
                             onClick={() => handleToggleStatus(post)}
                             disabled={isTogglingStatus || isDeleting}
                           >
-                            {isTogglingStatus ? <Loader2 className="h-5 w-5 animate-spin" /> : post.status === "published" ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                          </button>
-                          <button
-                            className="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-300 hover:text-red-500 hover:border-red-200 transition-all shadow-sm active:scale-95"
+                            {isTogglingStatus ? <Loader2 className="h-4 w-4 animate-spin" /> : post.status === "published" ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          </Button>
+                          <Button
+                            variant="ghost" 
+                            size="icon"
+                            className="h-8 w-8 rounded-lg text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all"
                             onClick={() => handleDeleteClick(post)}
                             disabled={isDeleting || isTogglingStatus}
                           >
-                            {isDeleting ? <Loader2 className="h-5 w-5 animate-spin" /> : <Trash2 className="h-5 w-5" />}
-                          </button>
+                            {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>

@@ -117,7 +117,7 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
 
   return (
     <div className="bg-white min-h-screen text-gray-900 relative overflow-hidden">
-      <ScrollAudio audioSrc="/sounds/romanceeeeeeeeeeeeee.mp3" />
+      <ScrollAudio audioSrc="/sounds/ek-jhaat-bhar-ka-aadmi.mp3" />
       {/* Background Decor */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] -z-10 opacity-50" />
       

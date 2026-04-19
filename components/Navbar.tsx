@@ -30,6 +30,14 @@ export default function Navbar() {
     { name: "About Us", href: "/about" },
   ];
 
+  const playHoverSound = (path: string) => {
+    try {
+      const audio = new Audio(path);
+      audio.volume = 0.2;
+      audio.play().catch(() => {});
+    } catch (e) {}
+  };
+
   return (
     <nav className={cn(
       "fixed top-0 left-0 right-0 z-50 transition-all duration-700",
@@ -55,8 +63,12 @@ export default function Navbar() {
           </AnimatePresence>
 
           {/* Logo Section */}
-          <Link href="/" className="relative z-50 group">
-            <Logo size="sm" playSoundOnHover={true} />
+          <Link 
+            href="/" 
+            className="relative z-50 group"
+            onMouseEnter={() => playHoverSound('/sounds/anime-ahh.mp3')}
+          >
+            <Logo size="sm" playSoundOnHover={false} />
           </Link>
 
           {/* Desktop Navigation */}
@@ -129,59 +141,134 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu - Sidebar Style */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed inset-0 z-40 lg:hidden bg-white/95 backdrop-blur-xl flex flex-col items-center justify-center p-10"
-          >
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden"
+            />
             
-            <div className="flex flex-col items-center gap-10 text-center">
-               <Logo size="md" />
-               <div className="h-[1px] w-20 bg-gray-200" />
-               
-               <div className="flex flex-col gap-6">
-                 {navLinks.map((link) => (
-                    <Link
-                      key={link.name}
-                      href={link.href}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="text-xl font-bold uppercase tracking-wider text-gray-700 hover:text-primary transition-all active:scale-110"
-                    >
-                      {link.name}
-                    </Link>
-                  ))}
-               </div>
-              
-              <div className="h-[1px] w-20 bg-gray-200" />
+            {/* Sidebar */}
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed right-0 top-0 bottom-0 w-[80%] max-w-[320px] bg-white z-50 lg:hidden shadow-2xl flex flex-col"
+            >
+              {/* Header / Brand */}
+              <div className="p-8 border-b border-gray-100 flex items-center justify-between">
+                <Logo size="sm" />
+                <button 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2 rounded-full bg-gray-50 hover:bg-gray-100 transition-colors"
+                >
+                  <X className="w-5 h-5 text-gray-500" />
+                </button>
+              </div>
 
-              {isSignedIn ? (
-                <div className="flex flex-col items-center gap-8">
-                  <Link href="/dashboard" className="text-base font-bold uppercase tracking-widest text-primary" onClick={() => setIsMobileMenuOpen(false)}>
-                    Terminal
-                  </Link>
-                  <div className="scale-125">
-                    <UserButton afterSignOutUrl="/" />
+              {/* User Section */}
+              <div className="p-8 bg-gray-50/50">
+                {isSignedIn ? (
+                  <div className="flex items-center gap-4">
+                    <div className="p-1 rounded-full bg-white border border-gray-200 shadow-sm">
+                      <UserButton afterSignOutUrl="/" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-xs font-black uppercase tracking-widest text-gray-900 truncate max-w-[150px]">
+                        {user.fullName || "User Active"}
+                      </span>
+                      <span className="text-[10px] font-bold text-primary uppercase tracking-tighter">
+                        Network Member
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-3">
+                    <SignInButton mode="modal">
+                      <button className="w-full text-[10px] font-black uppercase tracking-[0.2em] py-4 rounded-xl border border-gray-200 text-gray-500 hover:text-gray-900 transition-all">
+                        Login Terminal
+                      </button>
+                    </SignInButton>
+                  </div>
+                )}
+              </div>
+
+              {/* Navigation List */}
+              <div className="flex-1 overflow-y-auto p-8 space-y-8">
+                <div>
+                  <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-300 mb-6 flex items-center gap-3">
+                    <div className="h-[1px] w-4 bg-gray-200" />
+                    Core Protocol
+                  </h4>
+                  <div className="flex flex-col gap-4">
+                    {navLinks.map((link) => (
+                      <Link
+                        key={link.name}
+                        href={link.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center justify-between group"
+                      >
+                        <span className="text-sm font-bold uppercase tracking-widest text-gray-700 group-hover:text-primary transition-colors">
+                          {link.name}
+                        </span>
+                        <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                      </Link>
+                    ))}
+                    {isSignedIn && (
+                      <Link
+                        href="/dashboard"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center justify-between group"
+                      >
+                        <span className="text-sm font-bold uppercase tracking-widest text-primary">
+                          Initialize Dashboard
+                        </span>
+                        <LayoutDashboard className="w-4 h-4 text-primary" />
+                      </Link>
+                    )}
                   </div>
                 </div>
-              ) : (
-                <div className="flex flex-col items-center gap-6">
-                  <SignInButton mode="modal">
-                    <button className="text-sm font-bold uppercase tracking-widest text-gray-500">Login</button>
-                  </SignInButton>
-                  <SignUpButton mode="modal">
-                    <button className="bg-primary text-white text-sm font-bold uppercase tracking-widest px-8 py-3 rounded-full shadow-md">
-                      Join Network
-                    </button>
-                  </SignUpButton>
+
+                {isAdmin && (
+                  <div>
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-300 mb-6 flex items-center gap-3">
+                      <div className="h-[1px] w-4 bg-gray-200" />
+                      Management
+                    </h4>
+                    <Link
+                      href="/dashboard/create"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center justify-between group"
+                    >
+                      <span className="text-sm font-bold uppercase tracking-widest text-primary">
+                         AI Asset Manager
+                      </span>
+                      <Zap className="w-4 h-4 text-primary fill-primary" />
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              {/* Exit Network */}
+              {isSignedIn && (
+                <div className="p-8 border-t border-gray-100 mt-auto">
+                   <Link href="/sign-in" className="flex items-center gap-3 text-gray-400 hover:text-red-500 transition-all group">
+                      <div className="h-10 w-10 rounded-xl border border-gray-200 flex items-center justify-center group-hover:border-red-200 group-hover:bg-red-50 transition-all">
+                        <X className="w-5 h-5" />
+                      </div>
+                      <span className="text-[10px] font-black uppercase tracking-[0.3em]">Exit Network</span>
+                   </Link>
                 </div>
               )}
-            </div>
-          </motion.div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </nav>

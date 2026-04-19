@@ -4,10 +4,9 @@ import { useEffect, useState } from "react";
 import { ThemeProvider } from "./theme-provider";
 import { Toaster } from "./ui/sonner";
 import NextTopLoader from "nextjs-toploader";
-import LoadingScreen from "./LoadingScreen";
+import SplashLoader from "./SplashLoader";
 import ParticleBackground from "./ParticleBackground";
 import Navbar from "./Navbar";
-
 import SiteLoadSound from "./SiteLoadSound";
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -19,6 +18,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <>
+      <SplashLoader />
       {mounted && <NextTopLoader color="#FF3333" showSpinner={false} />}
       
       <ThemeProvider
