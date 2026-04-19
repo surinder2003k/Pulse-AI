@@ -19,7 +19,8 @@ import {
   ShieldCheck,
   Zap,
   Trash2,
-  Lock
+  Lock,
+  Shield
 } from "lucide-react";
 
 import Link from "next/link";
