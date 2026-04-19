@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 import Dropzone from "@/components/Dropzone";
 import RichTextEditor from "@/components/RichTextEditor";
 
@@ -38,6 +39,7 @@ export default function CreatePostPage() {
   const [imageSearchQuery, setImageSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [isSearchingImage, setIsSearchingImage] = useState(false);
+  const [imageMode, setImageMode] = useState<"search" | "upload">("search");
 
   useEffect(() => {
     setMounted(true);
@@ -187,16 +189,16 @@ export default function CreatePostPage() {
           {/* Header Area */}
           <div className="mb-10 animate-in fade-in slide-in-from-top-4 duration-500">
             <div className="flex items-center gap-2 mb-4">
-              <div className="flex items-center justify-center h-6 w-6 bg-indigo-100 rounded-full">
-                <Globe className="h-3 w-3 text-indigo-600" />
+              <div className="flex items-center justify-center h-6 w-6 bg-primary/10 rounded-full">
+                <Globe className="h-3 w-3 text-primary" />
               </div>
-              <p className="text-[9px] font-black text-indigo-600 uppercase tracking-[0.3em]">Create New Post</p>
+              <p className="text-[9px] font-black text-primary uppercase tracking-[0.3em]">Create New Post</p>
             </div>
             
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
               <div>
                 <h1 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 uppercase leading-none">
-                  CREATE <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-600 italic">POST</span>
+                  CREATE <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-orange-600 italic">POST</span>
                 </h1>
                 <p className="text-sm font-medium text-slate-500 mt-3 max-w-xl">
                   Write your story manually or generate using AI Assistant.
@@ -214,7 +216,7 @@ export default function CreatePostPage() {
                 <Button 
                   onClick={handleSubmit} 
                   disabled={isPublishing} 
-                  className="h-12 px-8 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-90 text-white font-bold uppercase tracking-widest text-[10px] shadow-lg shadow-indigo-500/20 transition-all"
+                  className="h-12 px-8 rounded-2xl bg-gradient-to-r from-primary to-red-600 hover:opacity-90 text-white font-bold uppercase tracking-widest text-[10px] shadow-lg shadow-primary/20 transition-all"
                 >
                   {isPublishing ? <Loader2 className="h-4 w-4 animate-spin" /> : "Publish Article"}
                   <ShieldCheck className="h-4 w-4 ml-2" />
@@ -237,7 +239,7 @@ export default function CreatePostPage() {
                    placeholder="Enter title..." 
                    value={formData.title}
                    onChange={(e) => setFormData({...formData, title: e.target.value})}
-                   className="h-16 text-3xl font-bold bg-[#F8FAFC] border border-slate-100 rounded-2xl px-6 focus-visible:ring-1 focus-visible:ring-indigo-500/30 placeholder:text-slate-300"
+                   className="h-16 text-3xl font-bold bg-[#F8FAFC] border border-slate-100 rounded-2xl px-6 focus-visible:ring-1 focus-visible:ring-primary/30 placeholder:text-slate-300"
                  />
               </div>
 
@@ -255,7 +257,7 @@ export default function CreatePostPage() {
                    placeholder="A concise executive summary for SEO meta tags..." 
                    value={formData.excerpt}
                    onChange={(e) => setFormData({...formData, excerpt: e.target.value})}
-                   className="min-h-[100px] text-base font-medium bg-[#F8FAFC] border border-slate-100 rounded-2xl px-6 py-5 focus-visible:ring-1 focus-visible:ring-indigo-500/30 placeholder:text-slate-300 resize-none"
+                   className="min-h-[100px] text-base font-medium bg-[#F8FAFC] border border-slate-100 rounded-2xl px-6 py-5 focus-visible:ring-1 focus-visible:ring-primary/30 placeholder:text-slate-300 resize-none"
                  />
               </div>
 
@@ -286,7 +288,7 @@ export default function CreatePostPage() {
                    </div>
                    <div>
                      <p className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-400">Readability Score</p>
-                     <p className="text-xs font-bold text-slate-900 mt-1">EST. <span className="text-indigo-600 italic">{Math.max(1, Math.ceil((formData.content.length > 0 ? formData.content.trim().split(/\s+/).length : 0) / 200))} MIN</span> READING TIME</p>
+                     <p className="text-xs font-bold text-slate-900 mt-1">EST. <span className="text-primary italic">{Math.max(1, Math.ceil((formData.content.length > 0 ? formData.content.trim().split(/\s+/).length : 0) / 200))} MIN</span> READING TIME</p>
                    </div>
                  </div>
                  <div className="text-right">
@@ -308,79 +310,106 @@ export default function CreatePostPage() {
           {/* Visual Asset Panel */}
           <div className="bg-white rounded-[2rem] border border-slate-200 p-8 shadow-sm">
             <div className="flex items-center gap-3 mb-6">
-              <div className="h-8 w-8 rounded-xl bg-indigo-50 flex items-center justify-center">
-                <ImageIcon className="h-4 w-4 text-indigo-500" />
+              <div className="h-8 w-8 rounded-xl bg-primary/5 flex items-center justify-center">
+                <ImageIcon className="h-4 w-4 text-primary" />
               </div>
               <h3 className="text-sm font-black text-slate-900">Featured Image</h3>
             </div>
             
             <div className="flex p-1 bg-slate-50 rounded-xl mb-6 border border-slate-100">
-              <div className="flex-1 bg-indigo-500 rounded-lg text-white text-[10px] uppercase tracking-widest font-bold h-8 flex items-center justify-center cursor-default">Search</div>
-              <div className="flex-1 text-slate-400 text-[10px] uppercase tracking-widest font-bold h-8 flex items-center justify-center cursor-pointer hover:bg-slate-100 rounded-lg transition-all" onClick={() => toast.info('Direct Upload coming soon. Use Search.')}>Upload</div>
-            </div>
-
-            <div className="relative mb-6">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300" />
-              <Input 
-                placeholder="Search global images..." 
-                value={imageSearchQuery}
-                onChange={(e) => setImageSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleImageSearch()}
-                className="h-12 bg-white border border-slate-200 rounded-xl pl-11 pr-24 text-xs font-medium placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-indigo-500/30"
-              />
-              <Button 
-                onClick={handleImageSearch} 
-                className="absolute right-1.5 top-1/2 -translate-y-1/2 h-9 px-4 bg-indigo-500 hover:bg-indigo-600 rounded-lg text-[9px] uppercase tracking-widest font-bold shadow-none"
+              <div 
+                onClick={() => setImageMode("search")}
+                className={cn(
+                  "flex-1 rounded-lg text-[10px] uppercase tracking-widest font-bold h-8 flex items-center justify-center cursor-pointer transition-all",
+                  imageMode === "search" ? "bg-primary text-white shadow-sm" : "text-slate-400 hover:bg-slate-100"
+                )}
               >
-                {isSearchingImage ? <Loader2 className="h-3 w-3 animate-spin" /> : "Find"}
-              </Button>
+                Search
+              </div>
+              <div 
+                onClick={() => setImageMode("upload")}
+                className={cn(
+                  "flex-1 rounded-lg text-[10px] uppercase tracking-widest font-bold h-8 flex items-center justify-center cursor-pointer transition-all",
+                  imageMode === "upload" ? "bg-primary text-white shadow-sm" : "text-slate-400 hover:bg-slate-100"
+                )}
+              >
+                Upload
+              </div>
             </div>
 
-            {searchResults.length > 0 ? (
-              <div className="grid grid-cols-2 gap-2 max-h-[200px] overflow-y-auto custom-scrollbar p-1">
-                {searchResults.map((url, i) => (
-                  <div 
-                    key={url}
-                    onClick={() => setFormData({...formData, featureImage: url})}
-                    className={`relative aspect-video rounded-xl overflow-hidden cursor-pointer border-2 transition-all ${formData.featureImage === url ? 'border-indigo-500 ring-4 ring-indigo-500/20' : 'border-transparent hover:border-slate-300'}`}
+            {imageMode === "search" ? (
+              <>
+                <div className="relative mb-6">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300" />
+                  <Input 
+                    placeholder="Search global images..." 
+                    value={imageSearchQuery}
+                    onChange={(e) => setImageSearchQuery(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleImageSearch()}
+                    className="h-12 bg-white border border-slate-200 rounded-xl pl-11 pr-24 text-xs font-medium placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-primary/30"
+                  />
+                  <Button 
+                    onClick={handleImageSearch} 
+                    className="absolute right-1.5 top-1/2 -translate-y-1/2 h-9 px-4 bg-primary hover:bg-primary/90 rounded-lg text-[9px] uppercase tracking-widest font-bold shadow-none"
                   >
-                     <img src={url} alt="" className="w-full h-full object-cover" />
-                     {formData.featureImage === url && (
-                       <div className="absolute inset-0 bg-indigo-500/20 flex items-center justify-center">
-                         <div className="bg-white rounded-full p-1.5 shadow-sm">
-                           <Zap className="h-3 w-3 text-indigo-500" />
-                         </div>
-                       </div>
-                     )}
+                    {isSearchingImage ? <Loader2 className="h-3 w-3 animate-spin" /> : "Find"}
+                  </Button>
+                </div>
+
+                {searchResults.length > 0 ? (
+                  <div className="grid grid-cols-2 gap-2 max-h-[200px] overflow-y-auto custom-scrollbar p-1">
+                    {searchResults.map((url, i) => (
+                      <div 
+                        key={url}
+                        onClick={() => setFormData({...formData, featureImage: url})}
+                        className={`relative aspect-video rounded-xl overflow-hidden cursor-pointer border-2 transition-all ${formData.featureImage === url ? 'border-primary ring-4 ring-primary/20' : 'border-transparent hover:border-slate-300'}`}
+                      >
+                         <img src={url} alt="" className="w-full h-full object-cover" />
+                         {formData.featureImage === url && (
+                           <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                             <div className="bg-white rounded-full p-1.5 shadow-sm">
+                               <Zap className="h-3 w-3 text-primary" />
+                             </div>
+                           </div>
+                         )}
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            ) : formData.featureImage ? (
-                <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden border border-slate-100">
-                    <img src={formData.featureImage} alt="Feature" className="w-full h-full object-cover" />
-                    <Button variant="ghost" onClick={() => setFormData({...formData, featureImage: ""})} className="absolute top-2 right-2 h-8 w-8 bg-white/50 backdrop-blur-md rounded-full shadow-sm p-0 text-slate-800 hover:bg-red-500 hover:text-white transition-all">
-                        <X className="h-4 w-4" />
-                    </Button>
-                </div>
+                ) : formData.featureImage ? (
+                    <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden border border-slate-100">
+                        <img src={formData.featureImage} alt="Feature" className="w-full h-full object-cover" />
+                        <Button variant="ghost" onClick={() => setFormData({...formData, featureImage: ""})} className="absolute top-2 right-2 h-8 w-8 bg-white/50 backdrop-blur-md rounded-full shadow-sm p-0 text-slate-800 hover:bg-red-500 hover:text-white transition-all">
+                            <X className="h-4 w-4" />
+                        </Button>
+                    </div>
+                ) : (
+                    <div className="h-32 rounded-2xl border border-dashed border-slate-200 bg-slate-50 flex flex-col items-center justify-center gap-2 text-slate-300">
+                        <ImageIcon className="h-6 w-6 opacity-50" />
+                        <p className="text-[9px] uppercase tracking-widest font-bold">No Assets Found</p>
+                    </div>
+                )}
+              </>
             ) : (
-                <div className="h-32 rounded-2xl border border-dashed border-slate-200 bg-slate-50 flex flex-col items-center justify-center gap-2 text-slate-300">
-                    <ImageIcon className="h-6 w-6 opacity-50" />
-                    <p className="text-[9px] uppercase tracking-widest font-bold">No Assets Found</p>
-                </div>
+              <div className="p-1">
+                <Dropzone 
+                  onUpload={(url) => setFormData({...formData, featureImage: url})} 
+                  currentImage={formData.featureImage}
+                />
+              </div>
             )}
           </div>
 
           {/* AI Co-Author Panel */}
-          <div className="relative p-1 rounded-[2rem] bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 overflow-hidden shadow-sm">
+           <div className="relative p-1 rounded-[2rem] bg-gradient-to-br from-primary/5 to-orange-50/30 border border-primary/10 overflow-hidden shadow-sm">
             <div className="absolute inset-0 bg-white/40 backdrop-blur-sm"></div>
             
             <div className="absolute -top-10 -right-10 opacity-10">
-              <Zap className="h-40 w-40 text-indigo-600" />
+              <Zap className="h-40 w-40 text-primary" />
             </div>
 
             <div className="relative bg-white/80 backdrop-blur-md p-7 rounded-[1.8rem] space-y-6">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-2xl bg-indigo-500 shadow-md shadow-indigo-500/20 flex items-center justify-center">
+                <div className="h-10 w-10 rounded-2xl bg-primary shadow-md shadow-primary/20 flex items-center justify-center">
                   <Sparkles className="h-4 w-4 text-white" />
                 </div>
                 <h3 className="text-base font-black text-slate-900 tracking-tight">AI Assistant</h3>
@@ -391,14 +420,14 @@ export default function CreatePostPage() {
                   placeholder="Briefly describe the story topic (e.g., 'The future of clean energy in the Himalayas')..." 
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
-                  className="min-h-[140px] bg-white border border-slate-200/60 rounded-2xl text-xs font-medium placeholder:text-slate-300 p-5 focus-visible:ring-1 focus-visible:ring-indigo-500/30 transition-all resize-none shadow-sm"
+                  className="min-h-[140px] bg-white border border-slate-200/60 rounded-2xl text-xs font-medium placeholder:text-slate-300 p-5 focus-visible:ring-1 focus-visible:ring-primary/30 transition-all resize-none shadow-sm"
                 />
               </div>
 
               <Button 
                 onClick={handleGenerate}
                 disabled={isGenerating}
-                className="w-full h-14 bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl shadow-lg shadow-indigo-500/20 transition-all active:scale-95 group"
+                className="w-full h-14 bg-gradient-to-r from-primary to-orange-600 hover:opacity-90 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl shadow-lg shadow-primary/20 transition-all active:scale-95 group"
               >
                  {isGenerating ? <Loader2 className="h-5 w-5 animate-spin" /> : (
                   <>
@@ -412,8 +441,8 @@ export default function CreatePostPage() {
           {/* SEO Matrix Panel */}
           <div className="bg-white rounded-[2rem] border border-slate-200 p-8 shadow-sm space-y-8">
             <div className="flex items-center gap-3 mb-2">
-              <div className="h-8 w-8 rounded-xl bg-purple-50 flex items-center justify-center">
-                <Layout className="h-4 w-4 text-purple-500 rotate-90" />
+              <div className="h-8 w-8 rounded-xl bg-primary/5 flex items-center justify-center">
+                <Layout className="h-4 w-4 text-primary rotate-90" />
               </div>
               <h3 className="text-sm font-black text-slate-900">SEO & Settings</h3>
             </div>
@@ -425,14 +454,14 @@ export default function CreatePostPage() {
                   <Globe className="h-3 w-3 text-slate-400" />
                   <label className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em]">Link (Slug)</label>
                 </div>
-                <span className="text-[8px] bg-indigo-50 text-indigo-500 px-2 py-0.5 rounded font-bold uppercase tracking-widest">Auto</span>
+                <span className="text-[8px] bg-primary/10 text-primary px-2 py-0.5 rounded font-bold uppercase tracking-widest">Auto</span>
               </div>
               <div className="relative">
                 <Input 
                   placeholder="clean-url-slug" 
                   value={formData.slug}
                   onChange={(e) => setFormData({...formData, slug: e.target.value})}
-                  className="h-12 bg-[#F8FAFC] border border-slate-100 rounded-xl text-xs font-medium pl-[60px] text-slate-500 focus-visible:ring-1 focus-visible:ring-indigo-500/30"
+                  className="h-12 bg-[#F8FAFC] border border-slate-100 rounded-xl text-xs font-medium pl-[60px] text-slate-500 focus-visible:ring-1 focus-visible:ring-primary/30"
                 />
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-300">/blog/</span>
               </div>
@@ -452,7 +481,7 @@ export default function CreatePostPage() {
                 placeholder="Enter SEO title..." 
                 value={formData.metaTitle}
                 onChange={(e) => setFormData({...formData, metaTitle: e.target.value})}
-                className="h-12 bg-white border border-slate-200 rounded-xl text-xs font-medium focus-visible:ring-1 focus-visible:ring-indigo-500/30"
+                className="h-12 bg-white border border-slate-200 rounded-xl text-xs font-medium focus-visible:ring-1 focus-visible:ring-primary/30"
               />
             </div>
 
@@ -469,7 +498,7 @@ export default function CreatePostPage() {
                 placeholder="Summarize for Google snippets..." 
                 value={formData.metaDescription}
                 onChange={(e) => setFormData({...formData, metaDescription: e.target.value})}
-                className="min-h-[100px] bg-[#F8FAFC] border border-slate-100 rounded-xl text-xs font-medium p-4 focus-visible:ring-1 focus-visible:ring-indigo-500/30 resize-none"
+                className="min-h-[100px] bg-[#F8FAFC] border border-slate-100 rounded-xl text-xs font-medium p-4 focus-visible:ring-1 focus-visible:ring-primary/30 resize-none"
               />
             </div>
 
@@ -483,7 +512,7 @@ export default function CreatePostPage() {
                 placeholder="comma, separated, keywords" 
                 value={formData.seoKeywords}
                 onChange={(e) => setFormData({...formData, seoKeywords: e.target.value})}
-                className="h-12 bg-white border border-slate-200 rounded-xl text-xs font-medium focus-visible:ring-1 focus-visible:ring-indigo-500/30"
+                className="h-12 bg-white border border-slate-200 rounded-xl text-xs font-medium focus-visible:ring-1 focus-visible:ring-primary/30"
               />
             </div>
             
@@ -496,7 +525,7 @@ export default function CreatePostPage() {
               <select 
                 value={formData.category}
                 onChange={(e) => setFormData({...formData, category: e.target.value})}
-                className="w-full bg-white border border-slate-200 rounded-xl h-12 px-4 text-xs font-bold uppercase tracking-widest text-slate-900 outline-none focus-visible:ring-1 focus-visible:ring-indigo-500/30 appearance-none"
+                className="w-full bg-white border border-slate-200 rounded-xl h-12 px-4 text-xs font-bold uppercase tracking-widest text-slate-900 outline-none focus-visible:ring-1 focus-visible:ring-primary/30 appearance-none"
               >
                   <option>Technology</option>
                   <option>Business</option>
