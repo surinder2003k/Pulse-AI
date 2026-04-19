@@ -7,6 +7,7 @@ import { SoundProvider } from "@/components/SoundProvider";
 import ScrollToTop from "@/components/ScrollToTop";
 import AuthErrorRelay from "@/components/AuthErrorRelay";
 import Script from "next/script";
+import Navbar from "@/components/Navbar";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space" });
@@ -82,6 +83,8 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="preconnect" href="https://www.google-analytics.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+        <meta name="google-adsense-account" content="ca-pub-1636293815318839" />
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1636293815318839" crossOrigin="anonymous"></script>
       </head>
       <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans min-h-screen bg-background text-foreground antialiased`}>
         {/* Google Tag Manager - Integrated via next/script for optimal performance */}
@@ -120,6 +123,7 @@ export default function RootLayout({
         <ClerkProvider>
           <SoundProvider>
             <Providers>
+              <Navbar />
               {children}
               <ScrollToTop />
               <AuthErrorRelay />

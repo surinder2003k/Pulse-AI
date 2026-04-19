@@ -56,6 +56,7 @@ export default function CreatePostPage() {
 
   const [formData, setFormData] = useState({
     title: "",
+    slug: "",
     excerpt: "",
     content: "",
     category: "Technology",
@@ -88,6 +89,7 @@ export default function CreatePostPage() {
       setGeneratedPostId(data._id || null);
       setFormData({
         title: data.title || "",
+        slug: data.slug || "",
         excerpt: data.excerpt || "",
         content: data.content || "",
         category: data.category || "Technology",
@@ -128,13 +130,14 @@ export default function CreatePostPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title) return toast.error("IDENTITY (TITLE) IS REQUIRED.");
+    if (!formData.title) return toast.error("TITLE IS REQUIRED.");
     setIsPublishing(true);
     
     try {
       const postPayload = {
         ...formData,
-        tags: formData.tags.split(",").map(t => t.trim()),
+        slug: formData.slug || formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''),
+        tags: typeof formData.tags === 'string' ? formData.tags.split(",").map(t => t.trim()).filter(Boolean) : formData.tags,
         status: "published"
       };
 
@@ -175,8 +178,8 @@ export default function CreatePostPage() {
             <Pen className="h-4 w-4 text-primary" />
           </div>
           <div>
-            <h1 className="text-sm font-black uppercase tracking-[0.2em] text-slate-900 leading-none">Intelligence Forge</h1>
-            <p className="text-[9px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Post Construction Terminal</p>
+            <h1 className="text-sm font-black uppercase tracking-[0.2em] text-slate-900 leading-none">Create Post</h1>
+            <p className="text-[9px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Dashboard &gt; New</p>
           </div>
         </div>
 
@@ -194,7 +197,7 @@ export default function CreatePostPage() {
             className="h-10 px-8 bg-primary hover:bg-primary/90 text-white text-[10px] font-bold uppercase tracking-widest rounded-lg shadow-sm"
           >
             {isPublishing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4 mr-2" />}
-            Deploy Post
+            Publish Post
           </Button>
         </div>
       </header>
@@ -204,7 +207,7 @@ export default function CreatePostPage() {
         <div className="flex-1 overflow-y-auto p-10 lg:p-14 custom-scrollbar lg:border-r border-slate-200">
           <div className="max-w-4xl mx-auto space-y-12">
             <div className="space-y-4">
-               <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Main Identity (Title)</label>
+               <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Title</label>
                <Input 
                  placeholder="ENTER HEADLINE..." 
                  value={formData.title}
@@ -215,7 +218,18 @@ export default function CreatePostPage() {
             </div>
 
             <div className="space-y-4">
-               <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Contextual Excerpt</label>
+               <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Permalink / URL Slug</label>
+               <Input 
+                 placeholder="your-post-slug" 
+                 value={formData.slug}
+                 onChange={(e) => setFormData({...formData, slug: e.target.value})}
+                 className="h-10 text-sm font-medium bg-transparent border-none px-0 focus-visible:ring-0 placeholder:text-slate-200 text-slate-500"
+               />
+               <div className="h-[1px] w-full bg-slate-100" />
+            </div>
+
+            <div className="space-y-4">
+               <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Summary & Description</label>
                <Textarea 
                  placeholder="BRIEF SUMMARY..." 
                  value={formData.excerpt}
@@ -225,7 +239,7 @@ export default function CreatePostPage() {
             </div>
 
             <div className="space-y-6">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Intel Manuscript</label>
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Content</label>
               <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
                 {mounted ? (
                   <RichTextEditor 
@@ -248,10 +262,10 @@ export default function CreatePostPage() {
               <div className="p-6 bg-primary/[0.03] rounded-2xl border border-primary/10 space-y-6">
                  <div className="flex items-center gap-2">
                    <Sparkles className="h-4 w-4 text-primary" />
-                   <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-900">Neural Synthesis</h3>
+                   <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-900">AI Assistant</h3>
                  </div>
                  <div className="space-y-3">
-                   <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Topic Blueprint</label>
+                   <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Topic Details</label>
                    <Textarea 
                      placeholder="SPECIFY RESEARCH TOPIC..." 
                      value={prompt}
@@ -265,14 +279,14 @@ export default function CreatePostPage() {
                    className="w-full h-12 bg-primary hover:bg-primary/90 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-xl shadow-sm transition-all active:scale-95"
                  >
                    {isGenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <BrainCircuit className="h-4 w-4 mr-2" />}
-                   Synthesize Asset
+                   Generate Blog Post
                  </Button>
               </div>
 
               <div className="space-y-6 pt-6 border-t border-slate-100">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="h-4 w-4 text-slate-400" />
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-900">Classification</h3>
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-900">Categories & Tags</h3>
                 </div>
                 <div className="grid grid-cols-1 gap-4">
                   <div className="space-y-2">
@@ -305,7 +319,7 @@ export default function CreatePostPage() {
             <div className="space-y-8 animate-in fade-in slide-in-from-right-2 duration-300 pt-6 border-t border-slate-100">
               <div className="flex items-center gap-2">
                 <Globe className="h-4 w-4 text-slate-400" />
-                <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-900">SEO Infrastructure</h3>
+                <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-900">SEO Settings</h3>
               </div>
 
               <div className="space-y-6">
@@ -352,7 +366,7 @@ export default function CreatePostPage() {
             <div className="space-y-8 animate-in fade-in slide-in-from-right-2 duration-300 pt-6 border-t border-slate-100">
               <div className="flex items-center gap-2">
                 <ImageIcon className="h-4 w-4 text-slate-400" />
-                <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-900">Visual Assets</h3>
+                <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-900">Featured Image & Media</h3>
               </div>
 
               <div className="space-y-6">

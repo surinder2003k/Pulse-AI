@@ -186,6 +186,7 @@ export async function POST(req: Request) {
       return NextResponse.json({
         ...postData,
         _id: newPost._id,
+        slug: slug,
         feature_image_url: featureImage,
         feature_image_alt: postData.image_alt || postData.title,
         content: postData.content
@@ -195,6 +196,7 @@ export async function POST(req: Request) {
       return NextResponse.json({
         ...postData,
         _id: null,
+        slug: slug,
         feature_image_url: featureImage,
         content: postData.content
       });

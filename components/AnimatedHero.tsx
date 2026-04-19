@@ -105,8 +105,7 @@ export default function AnimatedHero() {
         
         <Link href="/about" className="w-full sm:w-auto">
           <button 
-            onMouseEnter={() => playHoverSound('/sounds/gopgopgop.mp3')}
-            className="hero-btn opacity-0 w-full sm:w-auto group rounded-full px-10 md:px-14 h-14 md:h-16 text-xs font-bold uppercase tracking-widest text-gray-700 transition-all bg-white border border-gray-200 hover:bg-gray-50 shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center gap-4 hover:border-primary/30"
+            className="w-full sm:w-auto group rounded-full px-10 md:px-14 h-14 md:h-16 text-xs font-bold uppercase tracking-widest text-gray-700 transition-all bg-white border border-gray-200 hover:bg-gray-50 shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center gap-4 hover:border-primary/30"
           >
             About Us <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform text-primary" />
           </button>

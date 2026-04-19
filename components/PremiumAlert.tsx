@@ -60,54 +60,51 @@ export default function PremiumAlert({
       {isVisible && (
         <div className="fixed bottom-8 right-8 z-[9999] max-w-sm w-full">
           <motion.div
-            initial={{ opacity: 0, y: 100, scale: 0.9, rotateX: 45 }}
-            animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
-            exit={{ opacity: 0, scale: 0.8, filter: "blur(10px)" }}
-            transition={{ type: "spring", damping: 20, stiffness: 300 }}
+            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className={cn(
-              "glass-premium rounded-[2rem] p-8 border-l-4 overflow-hidden relative group shadow-2xl",
-              type === "success" ? "border-l-primary" : "border-l-primary/40"
+              "bg-white rounded-xl shadow-2xl border p-6 overflow-hidden relative",
+              type === "error" ? "border-red-200" : "border-slate-200"
             )}
           >
-            {/* Background Glow */}
-            <div className={cn(
-              "absolute -top-1/2 -right-1/4 w-full h-full opacity-20 blur-[60px] rounded-full",
-              type === "success" ? "bg-primary" : "bg-black"
-            )} />
-
-            <div className="relative z-10 space-y-6">
+            <div className="relative z-10 space-y-5">
               <div className="flex gap-4">
-                <div className="mt-1">{icons[type]}</div>
+                <div className="mt-0.5">{icons[type]}</div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-black uppercase tracking-[0.3em] text-xs text-white mb-2 italic">
+                  <h4 className="font-bold text-slate-900 text-sm mb-1">
                     {title}
                   </h4>
-                  <p className="text-xs text-white/60 leading-[1.6] font-medium italic">
+                  <p className="text-sm text-slate-500 leading-relaxed font-medium">
                     {message}
                   </p>
                 </div>
                 <button
                   onClick={onClose}
-                  className="h-8 w-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-all border border-white/10 active:scale-90 shrink-0"
+                  className="h-8 w-8 rounded-md hover:bg-slate-100 flex items-center justify-center transition-all text-slate-400 hover:text-slate-900 shrink-0"
                 >
-                  <X className="h-4 w-4 text-white" />
+                  <X className="h-4 w-4" />
                 </button>
               </div>
 
               {onConfirm && (
-                <div className="flex gap-3 pt-2">
+                <div className="flex gap-3 pt-3 border-t border-slate-100">
                   <Button 
                     variant="ghost" 
                     onClick={onClose}
-                    className="flex-1 rounded-full h-12 border border-white/5 text-[10px] font-black uppercase tracking-widest italic"
+                    className="flex-1 h-10 text-xs font-semibold text-slate-600 hover:text-slate-900"
                   >
                     Cancel
                   </Button>
                   <Button 
                     onClick={handleConfirm}
-                    className="flex-1 rounded-full h-12 bg-primary hover:bg-primary/90 text-white text-[10px] font-black uppercase tracking-widest italic shadow-lg active:scale-95 transition-all"
+                    className={cn(
+                      "flex-1 h-10 text-xs font-semibold text-white shadow-sm transition-all",
+                      type === "error" ? "bg-red-500 hover:bg-red-600" : "bg-primary hover:bg-primary/90"
+                    )}
                   >
-                    Confirm <ArrowRight className="ml-2 h-3 w-3" />
+                    Confirm
                   </Button>
                 </div>
               )}
@@ -115,9 +112,12 @@ export default function PremiumAlert({
 
             {/* Progress Bar (only for auto-closing alerts) */}
             {!onConfirm && (
-              <div className="absolute bottom-0 left-0 h-1 bg-white/5 w-full overflow-hidden">
+              <div className="absolute bottom-0 left-0 h-1 bg-slate-100 w-full overflow-hidden">
                 <motion.div
-                  className="h-full bg-primary"
+                  className={cn(
+                    "h-full",
+                    type === "success" ? "bg-primary" : "bg-red-500"
+                  )}
                   style={{ width: `${progress}%` }}
                 />
               </div>
