@@ -11,20 +11,20 @@ interface MarkdownRendererProps {
 
 export default function MarkdownRenderer({ content, className }: MarkdownRendererProps) {
   const proseClasses = cn(
-    "prose prose-slate max-w-none font-inter", // Removed prose-invert for white background contrast
-    "prose-headings:font-black prose-headings:tracking-tighter prose-headings:uppercase prose-headings:text-slate-900",
-    "prose-h1:text-4xl md:prose-h1:text-6xl prose-h1:leading-none prose-h1:mb-12",
-    "prose-h2:text-2xl md:prose-h2:text-4xl prose-h2:mt-20 prose-h2:mb-8 prose-h2:border-l-[6px] prose-h2:border-primary prose-h2:pl-8 prose-h2:text-slate-900",
-    "prose-h3:text-xl md:prose-h3:text-2xl prose-h3:mt-12 prose-h3:mb-6 prose-h3:text-slate-900",
-    "prose-p:text-lg md:prose-p:text-xl prose-p:leading-[1.8] prose-p:text-slate-600 prose-p:mb-10 prose-p:font-medium",
-    "prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-black transition-all",
-    "prose-ul:my-10 prose-ul:list-disc prose-li:text-slate-600 prose-li:leading-relaxed prose-li:mb-4 prose-li:pl-2",
-    "prose-img:rounded-[3rem] prose-img:shadow-premium prose-img:my-16 prose-img:border prose-img:border-slate-100",
-    "prose-blockquote:border-l-primary prose-blockquote:bg-slate-50 prose-blockquote:py-10 prose-blockquote:px-12 prose-blockquote:rounded-[2.5rem] prose-blockquote:italic prose-blockquote:text-slate-700 prose-blockquote:my-16 prose-blockquote:border-y prose-blockquote:border-r prose-blockquote:border-slate-100",
-    "prose-strong:text-slate-900 prose-strong:font-black",
+    "prose prose-slate max-w-none font-inter", 
+    "prose-headings:font-bold prose-headings:text-slate-900 prose-headings:tracking-tight", // Removed uppercase and tracking-tighter
+    "prose-h1:text-4xl md:prose-h1:text-5xl prose-h1:mb-12",
+    "prose-h2:text-2xl md:prose-h2:text-3xl prose-h2:mt-16 prose-h2:mb-6 prose-h2:border-none prose-h2:pl-0", // Removed border and padding
+    "prose-h3:text-xl md:prose-h3:text-2xl prose-h3:mt-10 prose-h3:mb-4",
+    "prose-p:text-lg md:prose-p:text-xl prose-p:leading-relaxed prose-p:text-slate-600 prose-p:mb-8", // Changed leading and removed font-medium for cleaner look
+    "prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-semibold transition-all",
+    "prose-ul:my-8 prose-ul:list-disc prose-li:text-slate-600 prose-li:leading-relaxed prose-li:mb-2",
+    "prose-img:rounded-2xl prose-img:shadow-lg prose-img:my-12 prose-img:border prose-img:border-slate-100",
+    "prose-blockquote:border-l-primary/30 prose-blockquote:bg-slate-50/50 prose-blockquote:py-8 prose-blockquote:px-10 prose-blockquote:rounded-2xl prose-blockquote:italic prose-blockquote:text-slate-700 prose-blockquote:my-12",
+    "prose-strong:text-slate-900 prose-strong:font-bold", // Softened from font-black
     "prose-code:text-primary prose-code:bg-primary/5 prose-code:px-2 prose-code:py-0.5 prose-code:rounded-md",
-    "prose-pre:bg-slate-50 prose-pre:border prose-pre:border-slate-100 prose-pre:rounded-3xl prose-pre:shadow-sm",
-    "px-4 md:px-0", // Mobile padding
+    "prose-pre:bg-slate-50 prose-pre:border prose-pre:border-slate-100 prose-pre:rounded-2xl prose-pre:shadow-sm",
+    "px-4 md:px-0",
     className
   );
 
