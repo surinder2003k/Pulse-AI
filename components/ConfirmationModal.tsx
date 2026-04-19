@@ -21,6 +21,7 @@ interface ConfirmationModalProps {
   confirmLabel?: string;
   cancelLabel?: string;
   variant?: "danger" | "primary";
+  icon?: React.ReactNode;
 }
 
 export function ConfirmationModal({
@@ -32,6 +33,7 @@ export function ConfirmationModal({
   confirmLabel = "Confirm",
   cancelLabel = "Cancel",
   variant = "danger",
+  icon,
 }: ConfirmationModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -41,7 +43,7 @@ export function ConfirmationModal({
             "h-14 w-14 rounded-2xl flex items-center justify-center mx-auto mb-2",
             variant === "danger" ? "bg-red-50 text-red-500" : "bg-primary/5 text-primary"
           )}>
-            {variant === "danger" ? <AlertTriangle className="h-7 w-7" /> : <ShieldCheck className="h-7 w-7" />}
+            {icon ? icon : (variant === "danger" ? <AlertTriangle className="h-7 w-7" /> : <ShieldCheck className="h-7 w-7" />)}
           </div>
           <DialogTitle className="text-2xl font-black text-center text-slate-900 uppercase tracking-tight">
             {title}

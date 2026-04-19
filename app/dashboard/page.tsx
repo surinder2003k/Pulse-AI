@@ -410,9 +410,9 @@ export default function DashboardOverview() {
         onConfirm={confirmDeleteUser}
         title="Purge User Entity"
         description="This action will permanently purge this user identity from the global matrix. This cannot be undone."
-        confirmText="Confirm Purge"
-        cancelText="Cancel Operation"
-        variant="destructive"
+        confirmLabel="Confirm Purge"
+        cancelLabel="Cancel Operation"
+        variant="danger"
         icon={<CircleAlert className="h-6 w-6 text-red-500" />}
       />
     </div>
