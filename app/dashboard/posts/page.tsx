@@ -365,7 +365,7 @@ export default function DashboardPostsPage() {
             </TableBody>
           </Table>
         </div>
-      </main>
+      </div>
 
       <ConfirmationModal
         isOpen={modalConfig.isOpen}
