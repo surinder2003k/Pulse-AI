@@ -21,6 +21,7 @@ export type AdminUser = {
   email: string;
   role: string;
   created_at: string;
+  joined?: string;
 };
 
 export default function AdminUserList({ 
