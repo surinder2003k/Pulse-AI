@@ -52,11 +52,21 @@ export default function MarkdownRenderer({ content, className }: MarkdownRendere
     // Ensure headings have proper newlines before them
     text = text.replace(/([^\n])(\n?)(#{1,6}\s)/g, '$1\n\n$3');
     
-    // 5. Hardened Fix for Standalone Bold titles that should be headers
-    // Handles whitespace around the bold markers and ensures it's on its own line
-    text = text.replace(/^\s*(\*\*)([^\n\*]+)(\*\*)\s*$/gm, '### $2');
+    // 5. HARDENED: Bold headers that are followed by the paragraph text
+    // Example: "** Introduction ** Having a blog..." -> "### Introduction\n\nHaving a blog..."
+    // This regex catches bold text at the start of a line and pulls the rest of the line down
+    text = text.replace(/^\s*(\*\*)([^\n\*:]+)(\*\*)\s*(:?)\s*(.*)$/gm, (match, b1, title, b2, colon, rest) => {
+       if (rest.trim()) {
+           return `### ${title.trim()}\n\n${rest.trim()}`;
+       }
+       return `### ${title.trim()}`;
+    });
 
-    // 6. Ensure double newlines for paragraphs (ReactMarkdown requirement)
+    // 6. HARDENED: Numbered list style headers (e.g. "1/ Introduction" or "1. Introduction")
+    // If it's a short line starting with a number and slash/dot, it's likely a title
+    text = text.replace(/^\s*(\d+\s*[\/\.]\s*)([A-Z][^\n]{3,40})$/gm, '### $2');
+
+    // 7. Ensure double newlines for paragraphs (ReactMarkdown requirement)
     // Convert single newlines that aren't parts of lists or headers into double newlines
     text = text.replace(/([^\n])\n([^\n#\-*>\d])/g, '$1\n\n$2');
 
