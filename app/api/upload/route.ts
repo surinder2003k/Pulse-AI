@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import imagekit from "@/lib/imagekit";
 import { currentUser } from "@clerk/nextjs/server";
 
 export async function POST(req: Request) {
@@ -18,48 +17,27 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    console.log(`Uploading file: ${file.name}, size: ${file.size} bytes`);
+    console.log(`Uploading file to ImageKit: ${file.name}, size: ${file.size} bytes`);
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Ensure we have a valid absolute path to the public/uploads directory
-    const uploadsDir = path.resolve(process.cwd(), "public", "uploads");
+    // Upload to ImageKit
+    const result = await imagekit.upload({
+      file: buffer,
+      fileName: `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`,
+      folder: "/pulse_ai_thumbnails",
+      useUniqueFileName: true,
+    });
     
-    try {
-      await mkdir(uploadsDir, { recursive: true });
-    } catch (mkdirError: any) {
-      console.error("Directory Creation Failed:", mkdirError.message);
-      return NextResponse.json({ 
-        error: "Server storage initialization failed", 
-        details: mkdirError.message 
-      }, { status: 500 });
-    }
+    console.log(`Success: File uploaded to ImageKit: ${result.url}`);
 
-    // Sanitize filename to avoid path traversal or Windows invalid chars
-    const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
-    const filename = `${Date.now()}-${sanitizedName}`;
-    const filePath = path.join(uploadsDir, filename);
-
-    try {
-      await writeFile(filePath, buffer);
-    } catch (writeError: any) {
-      console.error("File Write Failed:", writeError.message);
-      return NextResponse.json({ 
-        error: "Failed to save file to server", 
-        details: writeError.message 
-      }, { status: 500 });
-    }
-
-    const url = `/uploads/${filename}`;
-    console.log(`Success: File uploaded to ${url}`);
-
-    return NextResponse.json({ url });
+    return NextResponse.json({ url: result.url });
   } catch (error: any) {
     console.error("Critical Upload Error:", error);
     return NextResponse.json({ 
       error: "Upload failed", 
-      details: error.message || "An unexpected error occurred"
+      details: error.message || "An unexpected error occurred during ImageKit upload"
     }, { status: 500 });
   }
 }
