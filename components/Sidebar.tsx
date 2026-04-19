@@ -51,6 +51,7 @@ export default function Sidebar() {
               <Link
                 key={item.href}
                 href={item.href}
+                title={`Navigate to ${item.name}`}
                 className={cn(
                   "flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-500 group relative overflow-hidden text-[12px] font-black uppercase tracking-[0.15em] leading-none",
                   isActive 
@@ -89,6 +90,7 @@ export default function Sidebar() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  title={`Open ${item.name}`}
                   className={cn(
                     "flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-500 group relative overflow-hidden text-[12px] font-black uppercase tracking-[0.15em] leading-none",
                     isActive 

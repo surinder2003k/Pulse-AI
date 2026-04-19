@@ -29,6 +29,8 @@ interface Post {
   feature_image_url?: string;
 }
 
+import { ConfirmationModal } from "@/components/ConfirmationModal";
+
 export default function DashboardPostsPage() {
   const { user } = useUser();
   const [posts, setPosts] = useState<Post[]>([]);
@@ -37,7 +39,20 @@ export default function DashboardPostsPage() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
-  // Removed PremiumAlert state as per user request
+  // Modal State
+  const [modalConfig, setModalConfig] = useState<{
+    isOpen: boolean;
+    title: string;
+    description: string;
+    onConfirm: () => void;
+    variant: "danger" | "primary";
+  }>({
+    isOpen: false,
+    title: "",
+    description: "",
+    onConfirm: () => {},
+    variant: "danger"
+  });
 
   useEffect(() => {
     if (user) fetchPosts();
@@ -57,11 +72,14 @@ export default function DashboardPostsPage() {
   };
 
   const showAlert = (type: "success" | "error" | "info", title: string, message: string, onConfirm?: () => void) => {
-    // Instead of a custom alert, we just trigger the confirm immediately or show a toast
     if (onConfirm) {
-      if (typeof window !== "undefined" && window.confirm(`${title}: ${message}`)) {
-        onConfirm();
-      }
+      setModalConfig({
+        isOpen: true,
+        title,
+        description: message,
+        onConfirm,
+        variant: type === "error" || title.toLowerCase().includes("delete") || title.toLowerCase().includes("purge") ? "danger" : "primary"
+      });
     } else {
       if (type === "success") toast.success(`${title}: ${message}`);
       else if (type === "error") toast.error(`${title}: ${message}`);
@@ -93,7 +111,7 @@ export default function DashboardPostsPage() {
     showAlert(
       "error", 
       "Execute Bulk Purge?", 
-      `Confirming the permanent deletion of ${selectedIds.size} network assets. This action is irreversible.`,
+      `Are you sure you want to permanently delete these ${selectedIds.size} assets? This operation cannot be undone.`,
       executeBulkDelete
     );
   };
@@ -110,12 +128,12 @@ export default function DashboardPostsPage() {
       if (res.ok) {
         setPosts(prev => prev.filter(p => !selectedIds.has((p._id || p.id) as string)));
         setSelectedIds(new Set());
-        showAlert("success", "Purge Complete", "The selected assets have been scrubbed from the network.");
+        toast.success("Batch assets successfully scrubbed.");
       } else {
-        showAlert("error", "Purge Failed", "Terminal error during bulk deletion command.");
+        toast.error("Bulk purge command failed.");
       }
     } catch {
-      showAlert("error", "Network Error", "Command failed to propagate through the system.");
+      toast.error("Network synchronization failure.");
     } finally {
       setIsBulkDeleting(false);
     }
@@ -125,7 +143,7 @@ export default function DashboardPostsPage() {
     showAlert(
       "error", 
       "Delete Asset?", 
-      `Permanently purge "${post.title}"?`,
+      `Permanently purge "${post.title}" from the neural network?`,
       () => executeSingleDelete(post)
     );
   };
@@ -142,12 +160,12 @@ export default function DashboardPostsPage() {
         const newSelected = new Set(selectedIds);
         newSelected.delete(postId);
         setSelectedIds(newSelected);
-        showAlert("success", "Purged", "The story has been eliminated.");
+        toast.success("Asset successfully eliminated.");
       } else {
-        showAlert("error", "Purge Error", "Failed to delete the individual asset.");
+        toast.error("Elimination sequence failed.");
       }
     } catch {
-      showAlert("error", "Interface Error", "Could not complete the delete request.");
+      toast.error("Interface link lost.");
     } finally {
       setActionLoading(null);
     }
@@ -347,7 +365,16 @@ export default function DashboardPostsPage() {
             </TableBody>
           </Table>
         </div>
-      </div>
+      </main>
+
+      <ConfirmationModal
+        isOpen={modalConfig.isOpen}
+        onClose={() => setModalConfig({ ...modalConfig, isOpen: false })}
+        onConfirm={modalConfig.onConfirm}
+        title={modalConfig.title}
+        description={modalConfig.description}
+        variant={modalConfig.variant}
+      />
     </div>
   );
 }

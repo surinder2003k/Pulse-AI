@@ -8,14 +8,12 @@ import { LayoutDashboard, PenSquare, Menu, X, Zap, ChevronRight } from "lucide-r
 import { useState, useEffect } from "react";
 import Logo from "./Logo";
 import { cn, ADMIN_EMAIL } from "@/lib/utils";
-import { useSound } from "./SoundProvider";
 
 export default function Navbar() {
   const { isSignedIn, user } = useUser();
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { playSound } = useSound();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,10 +31,6 @@ export default function Navbar() {
     { name: "Intelligence", href: "/blog" },
     { name: "About Us", href: "/about" },
   ];
-
-  const playHoverSound = (path: string) => {
-    playSound(path, 0.2);
-  };
 
   return (
     <nav className={cn(
@@ -66,7 +60,6 @@ export default function Navbar() {
           <Link 
             href="/" 
             className="relative z-50 group"
-            onMouseEnter={() => playHoverSound('/sounds/anime-ahh.mp3')}
             title="Pulse AI - Home"
           >
             <Logo size="sm" playSoundOnHover={false} />
@@ -214,6 +207,7 @@ export default function Navbar() {
                       <Link
                         key={link.name}
                         href={link.href}
+                        title={`Navigate to ${link.name}`}
                         onClick={() => setIsMobileMenuOpen(false)}
                         className="flex items-center justify-between group"
                       >
@@ -226,6 +220,7 @@ export default function Navbar() {
                     {isSignedIn && (
                       <Link
                         href="/dashboard"
+                        title="Open Administrative Terminal"
                         onClick={() => setIsMobileMenuOpen(false)}
                         className="flex items-center justify-between group"
                       >
@@ -246,6 +241,7 @@ export default function Navbar() {
                     </h4>
                     <Link
                       href="/dashboard/create"
+                      title="Access AI Generation Tool"
                       onClick={() => setIsMobileMenuOpen(false)}
                       className="flex items-center justify-between group"
                     >

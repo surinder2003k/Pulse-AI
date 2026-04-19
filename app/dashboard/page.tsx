@@ -20,13 +20,15 @@ import {
   Zap,
   Trash2,
   Lock,
-  Shield
+  Shield,
+  CircleAlert
 } from "lucide-react";
 
 import Link from "next/link";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
 import { cn, ADMIN_EMAIL } from "@/lib/utils";
+import { ConfirmationModal } from "@/components/ConfirmationModal";
 
 export default function DashboardOverview() {
   const { user: clerkUser } = useUser();
@@ -46,6 +48,10 @@ export default function DashboardOverview() {
   const [userList, setUserList] = useState<any[]>([]);
   const [isAutomating, setIsAutomating] = useState(false);
   const [automationProgress, setAutomationProgress] = useState(0);
+
+  // Modal State
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     async function initDashboard() {
@@ -124,13 +130,18 @@ export default function DashboardOverview() {
   };
 
   const handleDeleteUser = async (userId: string) => {
-    if (!confirm("Are you sure you want to purge this asset from the network?")) return;
+    setUserToDelete(userId);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDeleteUser = async () => {
+    if (!userToDelete) return;
     
-    setActionLoading(userId);
+    setActionLoading(userToDelete);
     const toastId = toast.loading("Purging asset from matrix...");
 
     try {
-      const res = await fetch(`/api/admin/users?userId=${userId}`, {
+      const res = await fetch(`/api/admin/users?userId=${userToDelete}`, {
         method: "DELETE"
       });
       const data = await res.json();
@@ -143,6 +154,8 @@ export default function DashboardOverview() {
       toast.error(error.message, { id: toastId });
     } finally {
       setActionLoading(null);
+      setIsDeleteModalOpen(false);
+      setUserToDelete(null);
     }
   };
 
@@ -167,14 +180,6 @@ export default function DashboardOverview() {
       setIsAutomating(false);
       setAutomationProgress(0);
     }
-  };
-
-  const playHoverSound = (path: string) => {
-    try {
-      const audio = new Audio(path);
-      audio.volume = 0.3;
-      audio.play().catch(() => {});
-    } catch (e) {}
   };
 
   if (isLoading) {
@@ -213,7 +218,6 @@ export default function DashboardOverview() {
           {isAdmin && (
             <Button 
               onClick={handleRunAutomation}
-              onMouseEnter={() => playHoverSound('/sounds/fahhhhhhhhhhhhhh.mp3')}
               disabled={isAutomating}
               className="h-14 px-10 rounded-2xl bg-white hover:bg-slate-50 text-gray-900 border border-slate-200 shadow-sm transition-all font-black uppercase tracking-widest text-[11px] flex gap-3 group active:scale-95"
             >
@@ -399,6 +403,18 @@ export default function DashboardOverview() {
            </div>
         </div>
       )}
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={confirmDeleteUser}
+        title="Purge User Entity"
+        description="This action will permanently purge this user identity from the global matrix. This cannot be undone."
+        confirmText="Confirm Purge"
+        cancelText="Cancel Operation"
+        variant="destructive"
+        icon={<CircleAlert className="h-6 w-6 text-red-500" />}
+      />
     </div>
   );
 }

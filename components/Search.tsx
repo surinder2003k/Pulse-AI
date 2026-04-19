@@ -12,15 +12,19 @@ export default function Search() {
   const [isPending, startTransition] = useTransition();
 
   const handleSearch = (term: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (term) {
-      params.set("q", term);
-    } else {
-      params.delete("q");
-    }
-    
     startTransition(() => {
-      router.push(`/blog?${params.toString()}`);
+      const params = new URLSearchParams(searchParams.toString());
+      if (term) {
+        params.set("q", term);
+      } else {
+        params.delete("q");
+      }
+      
+      const timeoutId = setTimeout(() => {
+        router.push(`/blog?${params.toString()}`);
+      }, 500);
+      
+      return () => clearTimeout(timeoutId);
     });
   };
 

@@ -21,10 +21,6 @@ export default function Celebration({ trigger }: { trigger: boolean }) {
       }));
       setFlowers(newFlowers);
 
-      const audio = new Audio("/sounds/romanceeeeeeeeeeeeee.mp3");
-      audio.volume = 0.5;
-      audio.play().catch(e => console.warn("Audio play failed:", e));
-
       const timer = setTimeout(() => {
         setFlowers([]);
       }, 7000);

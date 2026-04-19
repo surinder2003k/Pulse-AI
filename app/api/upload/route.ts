@@ -22,6 +22,15 @@ export async function POST(req: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
+    // Check if ImageKit is initialized
+    if (!imagekit) {
+      console.error("Upload Error: ImageKit not initialized. Check environment variables.");
+      return NextResponse.json({ 
+        error: "Server configuration error", 
+        details: "ImageKit keys are missing from environment variables."
+      }, { status: 500 });
+    }
+
     // Upload to ImageKit
     const result = await imagekit.upload({
       file: buffer,

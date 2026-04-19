@@ -106,13 +106,7 @@ export default function EditPostPage({ params }: EditPostPageProps) {
     setAlert({ isVisible: true, type, title, message });
   };
 
-  const playHoverSound = (soundPath: string) => {
-    try {
-      const audio = new Audio(soundPath);
-      audio.volume = 0.4;
-      audio.play().catch(() => {});
-    } catch (e) {}
-  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -335,7 +329,6 @@ export default function EditPostPage({ params }: EditPostPageProps) {
                   <Button 
                     type="submit"
                     disabled={isPublishing} 
-                    onMouseEnter={() => playHoverSound('/sounds/ek-jhaat-bhar-ka-aadmi.mp3')}
                     className="bg-primary hover:bg-primary/90 text-white min-w-[200px] h-14 shadow-glow-red border-none font-black uppercase italic tracking-widest text-xs transition-all active:scale-95 rounded-2xl"
                   >
                     {isPublishing ? (

@@ -82,7 +82,10 @@ export default function CreatePostPage() {
       if (!res.ok) throw new Error(data.error || "Synthesis failed");
       
       const getCaseInsensitive = (obj: any, keys: string[]): string => {
-        const lowerObj = Object.fromEntries(Object.entries(obj).map(([k, v]) => [k.toLowerCase(), v]));
+        if (!obj) return "";
+        // Support nested 'post' or 'data' objects if AI returns them
+        const baseObj = obj.post || obj.data || obj;
+        const lowerObj = Object.fromEntries(Object.entries(baseObj).map(([k, v]) => [k.toLowerCase(), v]));
         for (const key of keys) {
           const val = lowerObj[key.toLowerCase()];
           if (val !== undefined && val !== null) return String(val);
@@ -90,8 +93,11 @@ export default function CreatePostPage() {
         return "";
       };
 
+      const baseData = data.post || data.data || data;
+
       setGeneratedPostId(data._id || null);
-      setFormData({
+      setFormData(prev => ({
+        ...prev,
         title: getCaseInsensitive(data, ['title', 'headline', 'name', 'editorial_headline']),
         slug: data.slug || getCaseInsensitive(data, ['slug', 'permalink']),
         excerpt: getCaseInsensitive(data, ['excerpt', 'description', 'summary', 'meta_description', 'hook']),
@@ -106,7 +112,7 @@ export default function CreatePostPage() {
         metaDescription: getCaseInsensitive(data, ['meta_description', 'metaDescription', 'seo_description', 'excerpt']),
         featureImage: data.feature_image_url || getCaseInsensitive(data, ['featureImage', 'image', 'feature_image', 'thumbnail']),
         featureImageAlt: data.feature_image_alt || getCaseInsensitive(data, ['image_alt', 'featureImageAlt', 'alt_text', 'title'])
-      });
+      }));
       toast.dismiss(toastId);
       showAlert("success", "Synthesis Successful", "High-fidelity content and metadata have been populated.");
     } catch (error: any) {
@@ -143,10 +149,6 @@ export default function CreatePostPage() {
     
     if (missingFields.length > 0) {
       toast.error(`MISSING FIELDS: ${missingFields.join(" AND ")} REQUIRED.`);
-      try {
-        const audio = new Audio("/sounds/aisa-mat-karo-meri-jaan.mp3");
-        audio.play().catch(err => console.log("Audio playback failed:", err));
-      } catch (e) {}
       return;
     }
     
@@ -182,10 +184,10 @@ export default function CreatePostPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#F8FAFC]">
-      <main className="flex-1 flex flex-col xl:flex-row overflow-hidden max-w-[1600px] mx-auto w-full p-4 lg:p-10 gap-8">
+      <main className="flex-1 flex flex-col lg:flex-row max-w-[1600px] mx-auto w-full p-4 md:p-6 lg:p-10 gap-8">
         
         {/* Left Side: Editor (70%) */}
-        <div className="flex-1 w-full flex flex-col">
+        <div className="flex-1 w-full flex flex-col min-w-0">
           {/* Header Area */}
           <div className="mb-10 animate-in fade-in slide-in-from-top-4 duration-500">
             <div className="flex items-center gap-2 mb-4">
@@ -197,7 +199,7 @@ export default function CreatePostPage() {
             
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
               <div>
-                <h1 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 uppercase leading-none">
+                <h1 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tighter text-slate-900 uppercase leading-none">
                   CREATE <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-orange-600 italic">POST</span>
                 </h1>
                 <p className="text-sm font-medium text-slate-500 mt-3 max-w-xl">
@@ -305,7 +307,7 @@ export default function CreatePostPage() {
         </div>
 
         {/* Right Side: Tools (30%) */}
-        <div className="w-full xl:w-[400px] flex flex-col gap-6 shrink-0 mt-8 xl:mt-0 overflow-y-auto custom-scrollbar xl:pb-20">
+        <div className="w-full lg:w-[380px] xl:w-[450px] flex flex-col gap-6 shrink-0 mt-8 lg:mt-0 lg:pb-20">
           
           {/* Visual Asset Panel */}
           <div className="bg-white rounded-[2rem] border border-slate-200 p-8 shadow-sm">
@@ -403,7 +405,7 @@ export default function CreatePostPage() {
            <div className="relative p-1 rounded-[2rem] bg-gradient-to-br from-primary/5 to-orange-50/30 border border-primary/10 overflow-hidden shadow-sm">
             <div className="absolute inset-0 bg-white/40 backdrop-blur-sm"></div>
             
-            <div className="absolute -top-10 -right-10 opacity-10">
+            <div className="absolute -top-10 -right-10 opacity-5">
               <Zap className="h-40 w-40 text-primary" />
             </div>
 

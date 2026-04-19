@@ -22,12 +22,13 @@ export default function PostCard({ post, index = 0 }: PostCardProps) {
       viewport={{ once: true }}
       className="group relative"
     >
-      <Link href={`/blog/${post.slug}`} className="block">
+      <Link href={`/blog/${post.slug}`} className="block" title={`Read full report: ${post.title}`}>
         <div className="relative overflow-hidden rounded-3xl bg-gray-100 border border-gray-200 shadow-sm aspect-[4/3] transition-all duration-500 group-hover:border-primary/30 group-hover:shadow-md">
           {/* Main Image */}
           <img
             src={post.feature_image_url || "https://images.unsplash.com/photo-1677442136019-21780ecad995"}
             alt={post.title}
+            title={post.title}
             className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
           />
           

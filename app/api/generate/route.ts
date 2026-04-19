@@ -70,13 +70,13 @@ export async function POST(req: Request) {
     Every field MUST be populated. Do not leave any string empty.
 
     {
-      "title": "Editorial Headline",
+      "title": "A precise and punchy headline for the article",
       "meta_title": "SEO Optimized Title (60 chars max)",
       "meta_description": "Compelling Meta Description (155 chars max)",
       "focus_keyword": "Target Keyword",
       "seoKeywords": "3-5 related keywords, comma separated",
       "content": "Full Markdown content starting with ## Introduction",
-      "excerpt": "A short 2-sentence captivating summary",
+      "excerpt": "A short 2-sentence captivating summary of the article",
       "category": "Technology, Business, News, or Intelligence",
       "tags": ["Tag1", "Tag2"],
       "imageSearchKeyword": "Thumbnail search query",
