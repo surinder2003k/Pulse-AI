@@ -26,7 +26,6 @@ import { useRouter } from "next/navigation";
 import PremiumAlert from "@/components/PremiumAlert";
 import Dropzone from "@/components/Dropzone";
 import RichTextEditor from "@/components/RichTextEditor";
-import RichTextEditor from "@/components/RichTextEditor";
 
 export default function CreatePostPage() {
   const router = useRouter();
