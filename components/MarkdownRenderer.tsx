@@ -2,17 +2,11 @@
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import parse from "html-react-parser";
 import { cn } from "@/lib/utils";
 
 interface MarkdownRendererProps {
   content: string;
   className?: string;
-}
-
-// Support for mixed content (some AI tags + Markdown)
-function containsHtml(content: string): boolean {
-  return /<\/?(?:p|div|h[1-6]|ul|ol|li|article|section|blockquote)[\s>]/i.test(content);
 }
 
 export default function MarkdownRenderer({ content, className }: MarkdownRendererProps) {
