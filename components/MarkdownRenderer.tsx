@@ -43,6 +43,14 @@ export default function MarkdownRenderer({ content, className }: MarkdownRendere
     text = text.replace(/\r\n/g, '\n');
 
     // 3. Hot-Swap common HTML tags to Markdown for compatible rendering
+    // Convert HTML images to Markdown bridge
+    text = text.replace(/<img\s+[^>]*?src=["'](.*?)["'][^>]*?alt=["'](.*?)["'].*?>/gi, (match, src, alt) => {
+        return `\n![${alt}](${src.replace(/&amp;/g, '&')})\n`;
+    });
+    text = text.replace(/<img\s+[^>]*?alt=["'](.*?)["'][^>]*?src=["'](.*?)["'].*?>/gi, (match, alt, src) => {
+        return `\n![${alt}](${src.replace(/&amp;/g, '&')})\n`;
+    });
+    
     text = text.replace(/<(b|strong).*?>(.*?)<\/\1>/gi, '**$2**');
     text = text.replace(/<(i|em).*?>(.*?)<\/\1>/gi, '*$2*');
     text = text.replace(/<a\s+href=["'](.*?)["'].*?>(.*?)<\/a>/gi, '[$2]($1)');
@@ -51,6 +59,10 @@ export default function MarkdownRenderer({ content, className }: MarkdownRendere
     text = text.replace(/<h([1-6]).*?>(.*?)<\/h\1>/gi, (match, level, content) => {
       return '\n' + '#'.repeat(level) + ' ' + content + '\n';
     });
+
+    // 3.5 Strip internal AI metadata labels (e.g., "Asset 01 // Narrative Context")
+    text = text.replace(/^\s*Asset \d+ \/\/ .*$/gm, '');
+    text = text.replace(/\[Asset \d+\]/g, '');
 
     // 4. Resolve "Stuck" formatting: Heading detection
     // Ensure headings have proper newlines before them
