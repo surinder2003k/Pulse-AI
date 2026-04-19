@@ -3,15 +3,24 @@
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useRef } from "react";
+import { useSound } from "./SoundProvider";
 
 interface LogoProps {
   className?: string;
   size?: "sm" | "md" | "lg" | "xl";
   showText?: boolean;
   playSoundOnHover?: boolean;
+  hoverSoundSrc?: string;
 }
 
-export default function Logo({ className, size = "md", showText = true, playSoundOnHover = false }: LogoProps) {
+export default function Logo({ 
+  className, 
+  size = "md", 
+  showText = true, 
+  playSoundOnHover = false,
+  hoverSoundSrc = "/sounds/anime-ahh.mp3"
+}: LogoProps) {
+  const { playSound } = useSound();
 
 
   const sizes = {
@@ -30,8 +39,9 @@ export default function Logo({ className, size = "md", showText = true, playSoun
 
   return (
     <div 
-      className={cn("flex items-center gap-4 select-none group leading-none", className)}
+      className={cn("flex items-center gap-4 select-none group leading-none cursor-pointer", className)}
       title="Pulse AI - Future Intelligence Platform"
+      onMouseEnter={() => playSoundOnHover && playSound(hoverSoundSrc, 0.3)}
     >
       <div className={cn("relative flex items-center justify-center", sizes[size])}>
         {/* Diamond Shape */}

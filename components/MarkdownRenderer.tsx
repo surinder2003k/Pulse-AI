@@ -11,19 +11,19 @@ interface MarkdownRendererProps {
 
 export default function MarkdownRenderer({ content, className }: MarkdownRendererProps) {
   const proseClasses = cn(
-    "prose prose-slate max-w-none prose-invert font-inter", // Use prose-invert for dark or prose-prose for light? Actually, site is light-ish with dark text?
-    "prose-headings:font-black prose-headings:tracking-tighter prose-headings:uppercase prose-headings:text-gray-900",
+    "prose prose-slate max-w-none font-inter", // Removed prose-invert for white background contrast
+    "prose-headings:font-black prose-headings:tracking-tighter prose-headings:uppercase prose-headings:text-slate-900",
     "prose-h1:text-4xl md:prose-h1:text-6xl prose-h1:leading-none prose-h1:mb-12",
-    "prose-h2:text-2xl md:prose-h2:text-4xl prose-h2:mt-20 prose-h2:mb-8 prose-h2:border-l-[6px] prose-h2:border-primary prose-h2:pl-8",
-    "prose-h3:text-xl md:prose-h3:text-2xl prose-h3:mt-12 prose-h3:mb-6",
-    "prose-p:text-lg md:prose-p:text-xl prose-p:leading-[1.8] prose-p:text-gray-600 prose-p:mb-10 prose-p:font-medium",
+    "prose-h2:text-2xl md:prose-h2:text-4xl prose-h2:mt-20 prose-h2:mb-8 prose-h2:border-l-[6px] prose-h2:border-primary prose-h2:pl-8 prose-h2:text-slate-900",
+    "prose-h3:text-xl md:prose-h3:text-2xl prose-h3:mt-12 prose-h3:mb-6 prose-h3:text-slate-900",
+    "prose-p:text-lg md:prose-p:text-xl prose-p:leading-[1.8] prose-p:text-slate-600 prose-p:mb-10 prose-p:font-medium",
     "prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-black transition-all",
-    "prose-ul:my-10 prose-ul:list-disc prose-li:text-gray-600 prose-li:leading-relaxed prose-li:mb-4 prose-li:pl-2",
-    "prose-img:rounded-[3rem] prose-img:shadow-premium prose-img:my-16 prose-img:border prose-img:border-gray-100",
-    "prose-blockquote:border-l-primary prose-blockquote:bg-slate-50 prose-blockquote:py-10 prose-blockquote:px-12 prose-blockquote:rounded-[2.5rem] prose-blockquote:italic prose-blockquote:text-gray-700 prose-blockquote:my-16 prose-blockquote:border-y prose-blockquote:border-r prose-blockquote:border-gray-100",
-    "prose-strong:text-gray-900 prose-strong:font-black",
+    "prose-ul:my-10 prose-ul:list-disc prose-li:text-slate-600 prose-li:leading-relaxed prose-li:mb-4 prose-li:pl-2",
+    "prose-img:rounded-[3rem] prose-img:shadow-premium prose-img:my-16 prose-img:border prose-img:border-slate-100",
+    "prose-blockquote:border-l-primary prose-blockquote:bg-slate-50 prose-blockquote:py-10 prose-blockquote:px-12 prose-blockquote:rounded-[2.5rem] prose-blockquote:italic prose-blockquote:text-slate-700 prose-blockquote:my-16 prose-blockquote:border-y prose-blockquote:border-r prose-blockquote:border-slate-100",
+    "prose-strong:text-slate-900 prose-strong:font-black",
     "prose-code:text-primary prose-code:bg-primary/5 prose-code:px-2 prose-code:py-0.5 prose-code:rounded-md",
-    "prose-pre:bg-gray-50 prose-pre:border prose-pre:border-gray-100 prose-pre:rounded-3xl prose-pre:shadow-sm",
+    "prose-pre:bg-slate-50 prose-pre:border prose-pre:border-slate-100 prose-pre:rounded-3xl prose-pre:shadow-sm",
     "px-4 md:px-0", // Mobile padding
     className
   );
@@ -48,13 +48,17 @@ export default function MarkdownRenderer({ content, className }: MarkdownRendere
       return '\n' + '#'.repeat(level) + ' ' + content + '\n';
     });
 
-    // 4. Resolve "Stuck" formatting: Case where AI says **Title** on its own line
-    // Ensure headings have proper newlines
+    // 4. Resolve "Stuck" formatting: Heading detection
+    // Ensure headings have proper newlines before them
     text = text.replace(/([^\n])(\n?)(#{1,6}\s)/g, '$1\n\n$3');
     
-    // 5. Special Fix for Bold titles that should be headers
-    // If a line starts and ends with ** and has no punctuation at the end, make it an H3
-    text = text.replace(/^(\*\*)([^\n\*]+)(\*\*)$/gm, '### $2');
+    // 5. Hardened Fix for Standalone Bold titles that should be headers
+    // Handles whitespace around the bold markers and ensures it's on its own line
+    text = text.replace(/^\s*(\*\*)([^\n\*]+)(\*\*)\s*$/gm, '### $2');
+
+    // 6. Ensure double newlines for paragraphs (ReactMarkdown requirement)
+    // Convert single newlines that aren't parts of lists or headers into double newlines
+    text = text.replace(/([^\n])\n([^\n#\-*>\d])/g, '$1\n\n$2');
 
     return text;
   };

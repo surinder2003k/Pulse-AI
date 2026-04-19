@@ -65,7 +65,7 @@ export default function Navbar() {
             title="Pulse AI - Home"
             onClick={() => playSound("/sounds/romanceeeeeeeeeeeeee.mp3", 0.4)}
           >
-            <Logo size="sm" playSoundOnHover={false} />
+            <Logo size="sm" playSoundOnHover={true} />
           </Link>
 
           {/* Desktop Navigation */}

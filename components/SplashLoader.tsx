@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Zap } from "lucide-react";
+import Logo from "./Logo";
 
 export default function SplashLoader() {
   const [show, setShow] = useState(false);
@@ -34,37 +34,34 @@ export default function SplashLoader() {
           }}
           className="fixed inset-0 z-[9999] flex items-center justify-center bg-white"
         >
-          <div className="flex flex-col items-center gap-8">
+          <div className="flex flex-col items-center gap-10">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ 
-                scale: [0.8, 1.1, 1], 
-                opacity: 1,
-                rotate: [0, -5, 5, 0]
+                scale: [0.8, 1.05, 1], 
+                opacity: 1
               }}
               transition={{ duration: 1, ease: "easeOut" }}
               className="relative"
             >
-              <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150 animate-pulse" />
-              <div className="relative bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-2xl">
-                <Zap className="w-16 h-16 text-primary fill-primary" />
-              </div>
+              <div className="absolute inset-0 bg-primary/20 blur-[80px] rounded-full scale-150 animate-pulse" />
+              <Logo size="xl" showText={false} />
             </motion.div>
 
             <div className="flex flex-col items-center">
-              <motion.h2 
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.5, duration: 0.8 }}
-                className="text-4xl font-black italic tracking-tighter text-gray-900"
+              <motion.div 
+                 initial={{ y: 20, opacity: 0 }}
+                 animate={{ y: 0, opacity: 1 }}
+                 transition={{ delay: 0.5, duration: 0.8 }}
               >
-                PULSE <span className="text-primary">AI</span>
-              </motion.h2>
+                  <Logo size="md" showText={true} />
+              </motion.div>
+              
               <motion.div 
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
                 transition={{ delay: 0.8, duration: 1 }}
-                className="h-[2px] bg-primary/20 mt-2 rounded-full overflow-hidden"
+                className="h-[2px] bg-primary/20 mt-6 rounded-full overflow-hidden w-40"
               >
                 <div className="h-full bg-primary animate-shimmer w-full" />
               </motion.div>
