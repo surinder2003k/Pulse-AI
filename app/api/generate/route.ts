@@ -183,7 +183,13 @@ export async function POST(req: Request) {
       });
 
       console.log("Generation Success! Post deployed as draft:", newPost.slug);
-      return NextResponse.json(newPost);
+      return NextResponse.json({
+        ...postData,
+        _id: newPost._id,
+        feature_image_url: featureImage,
+        feature_image_alt: postData.image_alt || postData.title,
+        content: postData.content
+      });
     } catch (dbError: any) {
       console.warn("Local Registry Save Failed:", dbError.message);
       return NextResponse.json({
