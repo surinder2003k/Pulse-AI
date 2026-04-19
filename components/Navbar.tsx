@@ -6,10 +6,12 @@ import { UserButton, SignInButton, SignUpButton, useUser } from "@clerk/nextjs";
 import { motion, AnimatePresence } from "framer-motion";
 import { LayoutDashboard, PenSquare, Menu, X, Zap, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useSound } from "./SoundProvider";
 import Logo from "./Logo";
 import { cn, ADMIN_EMAIL } from "@/lib/utils";
 
 export default function Navbar() {
+  const { playSound } = useSound();
   const { isSignedIn, user } = useUser();
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -61,6 +63,7 @@ export default function Navbar() {
             href="/" 
             className="relative z-50 group"
             title="Pulse AI - Home"
+            onClick={() => playSound("/sounds/romanceeeeeeeeeeeeee.mp3", 0.4)}
           >
             <Logo size="sm" playSoundOnHover={false} />
           </Link>
@@ -75,6 +78,7 @@ export default function Navbar() {
                     key={link.name}
                     href={link.href}
                     title={`View ${link.name}`}
+                    onClick={() => playSound("/sounds/anime-ahh.mp3", 0.3)}
                     className={cn(
                       "text-xs font-semibold uppercase tracking-widest transition-all relative group py-2",
                       isActive ? "text-primary" : "text-gray-500 hover:text-gray-900"
@@ -95,7 +99,12 @@ export default function Navbar() {
             <div className="flex items-center gap-6">
               {isSignedIn ? (
                 <div className="flex items-center gap-6">
-                  <Link href="/dashboard" title="Access Dashboard" className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-all group">
+                  <Link 
+                    href="/dashboard" 
+                    title="Access Dashboard" 
+                    onClick={() => playSound("/sounds/wow-kya-ladka-hai-very-handsome-boy.mp3", 0.3)}
+                    className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-all group"
+                  >
                     <LayoutDashboard className="w-4 h-4 text-primary group-hover:scale-110 transition-transform" />
                     Terminal
                   </Link>

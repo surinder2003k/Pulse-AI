@@ -17,31 +17,25 @@ function containsHtml(content: string): boolean {
 
 export default function MarkdownRenderer({ content, className }: MarkdownRendererProps) {
   const proseClasses = cn(
-    "prose prose-red max-w-none",
-    "prose-headings:scroll-mt-20 prose-headings:font-bold prose-headings:tracking-tight",
-    "prose-h1:text-4xl md:prose-h1:text-5xl prose-h1:mb-8 prose-h1:text-gray-900 prose-h1:leading-tight",
-    "prose-h2:text-2xl md:prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:text-gray-900 prose-h2:border-l-4 prose-h2:border-primary prose-h2:pl-6",
-    "prose-h3:text-xl md:prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4 prose-h3:text-gray-900",
-    "prose-p:text-base md:prose-p:text-lg prose-p:leading-[1.8] prose-p:text-gray-600 prose-p:mb-6 prose-p:font-medium",
-    "prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-bold prose-a:transition-all",
-    "prose-ul:my-6 prose-ul:list-disc prose-li:text-gray-600 prose-li:leading-relaxed prose-li:mb-2 prose-li:pl-2",
-    "prose-ol:my-6 prose-ol:list-decimal prose-li:marker:text-primary prose-li:marker:font-bold",
-    "prose-img:rounded-3xl prose-img:shadow-sm prose-img:my-12 prose-img:border prose-img:border-gray-200",
-    "prose-blockquote:border-l-primary prose-blockquote:bg-gray-50 prose-blockquote:py-6 prose-blockquote:px-8 prose-blockquote:rounded-2xl prose-blockquote:italic prose-blockquote:text-gray-700 prose-blockquote:my-10 prose-blockquote:border-y prose-blockquote:border-r prose-blockquote:border-gray-200",
-    "prose-strong:text-gray-900 prose-strong:font-bold",
-    "prose-table:border-collapse prose-table:w-full prose-table:my-12",
-    "prose-thead:bg-gray-50 prose-thead:text-gray-900 prose-thead:font-bold prose-thead:uppercase prose-thead:tracking-wider",
-    "prose-th:px-6 prose-th:py-4 prose-th:border prose-th:border-gray-200",
-    "prose-td:px-6 prose-td:py-4 prose-td:border prose-td:border-gray-200 prose-td:text-gray-600",
-    "prose-code:text-primary prose-code:bg-primary/5 prose-code:px-2 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none",
-    "prose-pre:bg-gray-100 prose-pre:border prose-pre:border-gray-200 prose-pre:rounded-2xl prose-pre:shadow-sm",
+    "prose prose-slate max-w-none prose-invert font-inter", // Use prose-invert for dark or prose-prose for light? Actually, site is light-ish with dark text?
+    "prose-headings:font-black prose-headings:tracking-tighter prose-headings:uppercase prose-headings:text-gray-900",
+    "prose-h1:text-4xl md:prose-h1:text-6xl prose-h1:leading-none prose-h1:mb-12",
+    "prose-h2:text-2xl md:prose-h2:text-4xl prose-h2:mt-20 prose-h2:mb-8 prose-h2:border-l-[6px] prose-h2:border-primary prose-h2:pl-8",
+    "prose-h3:text-xl md:prose-h3:text-2xl prose-h3:mt-12 prose-h3:mb-6",
+    "prose-p:text-lg md:prose-p:text-xl prose-p:leading-[1.8] prose-p:text-gray-600 prose-p:mb-10 prose-p:font-medium",
+    "prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-black transition-all",
+    "prose-ul:my-10 prose-ul:list-disc prose-li:text-gray-600 prose-li:leading-relaxed prose-li:mb-4 prose-li:pl-2",
+    "prose-img:rounded-[3rem] prose-img:shadow-premium prose-img:my-16 prose-img:border prose-img:border-gray-100",
+    "prose-blockquote:border-l-primary prose-blockquote:bg-slate-50 prose-blockquote:py-10 prose-blockquote:px-12 prose-blockquote:rounded-[2.5rem] prose-blockquote:italic prose-blockquote:text-gray-700 prose-blockquote:my-16 prose-blockquote:border-y prose-blockquote:border-r prose-blockquote:border-gray-100",
+    "prose-strong:text-gray-900 prose-strong:font-black",
+    "prose-code:text-primary prose-code:bg-primary/5 prose-code:px-2 prose-code:py-0.5 prose-code:rounded-md",
+    "prose-pre:bg-gray-50 prose-pre:border prose-pre:border-gray-100 prose-pre:rounded-3xl prose-pre:shadow-sm",
+    "px-4 md:px-0", // Mobile padding
     className
   );
 
-  // Robust normalization for AI-generated text
-  const cleanContent = (raw: string, isHtml: boolean) => {
+  const cleanContent = (raw: string) => {
     if (!raw) return "";
-    
     let text = raw.trim();
 
     // 1. Remove common AI conversational fluff
@@ -50,50 +44,34 @@ export default function MarkdownRenderer({ content, className }: MarkdownRendere
     // 2. Normalize line endings
     text = text.replace(/\r\n/g, '\n');
 
-    // Only perform character translations if it's NOT a full HTML document
-    if (!isHtml) {
-      // 3. TRANSLATE HTML tags to Markdown (Hot-Swap Fix)
-      text = text.replace(/<(b|strong).*?>(.*?)<\/\1>/gi, '**$2**');
-      text = text.replace(/<(i|em).*?>(.*?)<\/\1>/gi, '*$2*');
-      text = text.replace(/<a\s+href=["'](.*?)["'].*?>(.*?)<\/a>/gi, '[$2]($1)');
+    // 3. Hot-Swap common HTML tags to Markdown for compatible rendering
+    text = text.replace(/<(b|strong).*?>(.*?)<\/\1>/gi, '**$2**');
+    text = text.replace(/<(i|em).*?>(.*?)<\/\1>/gi, '*$2*');
+    text = text.replace(/<a\s+href=["'](.*?)["'].*?>(.*?)<\/a>/gi, '[$2]($1)');
+    text = text.replace(/<br\s*\/?>/gi, '\n');
+    text = text.replace(/<p.*?>(.*?)<\/p>/gi, '$1\n\n');
+    text = text.replace(/<h([1-6]).*?>(.*?)<\/h\1>/gi, (match, level, content) => {
+      return '\n' + '#'.repeat(level) + ' ' + content + '\n';
+    });
 
-      // 4. Force a double newline before every header if not present
-      text = text.replace(/([^\n])(\n?)(#{1,6}\s)/g, '$1\n\n$3');
-      // 5. Ensure EVERY header has a space
-      text = text.replace(/\n(#{1,6})([^\s#])/g, '\n$1 $2');
-    } else {
-      // 3. TRANSLATE basic Markdown back to HTML for broken old posts that mix HTML figures with Markdown
-      text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-      text = text.replace(/(?<!\w)\*(.*?)\*(?!\w)/g, '<em>$1</em>');
-      text = text.replace(/^###\s+(.*)$/gm, '<h3>$1</h3>');
-      text = text.replace(/^##\s+(.*)$/gm, '<h2>$1</h2>');
-      text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" />');
-      text = text.replace(/(?<!\!)\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
-      if (!/<\/?(?:p|div|ul|ol|li|br)[\s>]/i.test(text)) {
-        text = text.replace(/\n\n/g, '<br/><br/>');
-      }
-    }
-
-    // Global domain guard for staging
-    text = text.replace(/xylos-ai\.com/gi, 'xylosai.vercel.app');
+    // 4. Resolve "Stuck" formatting: Case where AI says **Title** on its own line
+    // Ensure headings have proper newlines
+    text = text.replace(/([^\n])(\n?)(#{1,6}\s)/g, '$1\n\n$3');
+    
+    // 5. Special Fix for Bold titles that should be headers
+    // If a line starts and ends with ** and has no punctuation at the end, make it an H3
+    text = text.replace(/^(\*\*)([^\n\*]+)(\*\*)$/gm, '### $2');
 
     return text;
   };
 
-  const isHtml = containsHtml(content);
-  const processedContent = cleanContent(content, isHtml);
+  const processedContent = cleanContent(content);
 
   return (
-    <div className={cn(proseClasses, "rich-text-output")}>
-      {isHtml ? (
-        <div className="html-content-wrapper">
-          {parse(processedContent)}
-        </div>
-      ) : (
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-          {processedContent}
-        </ReactMarkdown>
-      )}
+    <div className={proseClasses}>
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+        {processedContent}
+      </ReactMarkdown>
     </div>
   );
 }

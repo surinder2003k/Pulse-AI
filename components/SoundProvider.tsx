@@ -11,6 +11,40 @@ const SoundContext = createContext<SoundContextType | undefined>(undefined);
 
 export function SoundProvider({ children }: { children: React.ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const isUnlockedRef = useRef(false);
+
+  useEffect(() => {
+    // Single reusable audio element
+    if (!audioRef.current) {
+      const audio = new Audio();
+      audio.preload = "auto";
+      audioRef.current = audio;
+    }
+
+    // Interaction handler to unlock audio for mobile
+    const unlock = () => {
+      if (audioRef.current && !isUnlockedRef.current) {
+        // Play a silent buffer to unlock the audio context
+        audioRef.current.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=";
+        const playPromise = audioRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            isUnlockedRef.current = true;
+            window.removeEventListener("touchstart", unlock);
+            window.removeEventListener("click", unlock);
+          }).catch(() => {});
+        }
+      }
+    };
+
+    window.addEventListener("touchstart", unlock);
+    window.addEventListener("click", unlock);
+
+    return () => {
+      window.removeEventListener("touchstart", unlock);
+      window.removeEventListener("click", unlock);
+    };
+  }, []);
 
   const stopSound = () => {
     if (audioRef.current) {
@@ -20,23 +54,21 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
   };
 
   const playSound = (src: string, volume: number = 0.5) => {
+    if (!audioRef.current) return;
+    
     try {
-      // Stop current sound before playing new one
       stopSound();
-
-      const audio = new Audio(src);
-      audio.volume = volume;
-      audioRef.current = audio;
+      audioRef.current.src = src;
+      audioRef.current.volume = volume;
       
-      const playPromise = audio.play();
-      
+      const playPromise = audioRef.current.play();
       if (playPromise !== undefined) {
         playPromise.catch((error) => {
-          console.warn("Audio playback interrupted or blocked:", error);
+          console.warn("Audio sync failed or engine locked:", error);
         });
       }
     } catch (error) {
-      console.error("Failed to play sound:", error);
+      console.error("Critical Audio System Failure:", error);
     }
   };
 

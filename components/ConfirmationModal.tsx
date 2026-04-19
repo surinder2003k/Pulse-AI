@@ -37,7 +37,7 @@ export function ConfirmationModal({
 }: ConfirmationModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px] rounded-[2rem] border-slate-200 shadow-2xl p-8 gap-6 animate-in fade-in zoom-in-95 duration-300">
+      <DialogContent className="sm:max-w-[425px] fixed top-10 left-[50%] translate-x-[-50%] translate-y-0 rounded-[2rem] border-slate-200 shadow-2xl p-8 gap-6 animate-in slide-in-from-top-12 fade-in zoom-in-95 duration-500">
         <DialogHeader className="space-y-4">
           <div className={cn(
             "h-14 w-14 rounded-2xl flex items-center justify-center mx-auto mb-2",

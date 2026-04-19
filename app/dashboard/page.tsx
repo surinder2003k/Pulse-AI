@@ -301,12 +301,11 @@ export default function DashboardOverview() {
                       const isTargetSuperAdmin = usr.email === ADMIN_EMAIL;
                       const isTargetSelf = usr.id === clerkUser?.id;
                       
-                      // Only super admin can manage others. Cannot manage self or other super admins (though there should only be one).
                       const canManage = isCurrentUserSuperAdmin && !isTargetSelf && !isTargetSuperAdmin;
                       
                       return (
-                        <tr key={i} className="group hover:bg-slate-50/50 transition-all">
-                          <td className="px-12 py-10">
+                        <tr key={i} className="group hover:bg-slate-50/50 transition-all border-b border-slate-100 last:border-0 md:table-row flex flex-col p-6 md:p-0">
+                          <td className="md:px-12 md:py-10 py-4">
                             <div className="flex items-center gap-5">
                               <div className="h-12 w-12 rounded-2xl bg-slate-50 flex items-center justify-center border border-slate-100 shadow-sm group-hover:border-primary/30 transition-all duration-500">
                                 <span className="text-primary font-black uppercase tracking-tighter text-sm">{usr.name.charAt(0)}</span>
@@ -319,44 +318,53 @@ export default function DashboardOverview() {
                               </div>
                             </div>
                           </td>
-                          <td className="px-12 py-10">
-                            <span className="text-xs font-bold text-slate-500 font-mono tracking-tight">{usr.email}</span>
+                          <td className="md:px-12 md:py-10 py-2">
+                             <div className="md:hidden text-[9px] font-black uppercase text-slate-400 tracking-widest mb-1">Contact</div>
+                             <span className="text-xs font-bold text-slate-500 font-mono tracking-tight">{usr.email}</span>
                           </td>
-                          <td className="px-12 py-10 text-center">
-                            <Badge className={cn(
-                              "text-[10px] font-black uppercase border-none px-4 py-1.5 rounded-full shadow-skeuo-button transition-all",
-                              usr.role === "admin" ? "bg-red-600 text-white shadow-[0_0_15px_rgba(220,38,38,0.4)]" : "bg-slate-200 text-slate-600"
-                            )}>
-                              {usr.role === "admin" && <Shield className="h-3 w-3 mr-2" />}
-                              {usr.role === "admin" ? "ADMIN CLEARANCE" : "STANDARD USER"}
-                            </Badge>
+                          <td className="md:px-12 md:py-10 py-6 text-left md:text-center">
+                            <div className="md:hidden text-[9px] font-black uppercase text-slate-400 tracking-widest mb-2">Access Level</div>
+                            {isTargetSuperAdmin ? (
+                              <Badge className="bg-black text-white shadow-[0_0_20px_rgba(0,0,0,0.3)] border-none px-5 py-2 rounded-full font-black text-[10px] uppercase tracking-[0.2em] flex items-center gap-2 w-fit md:mx-auto">
+                                <Shield className="h-3 w-3 text-primary animate-pulse" />
+                                Matrix Root
+                              </Badge>
+                            ) : (
+                              <Badge className={cn(
+                                "text-[10px] font-black uppercase border-none px-4 py-1.5 rounded-full shadow-skeuo-button transition-all w-fit md:mx-auto",
+                                usr.role === "admin" ? "bg-red-600 text-white shadow-[0_0_15px_rgba(220,38,38,0.4)]" : "bg-slate-200 text-slate-600"
+                              )}>
+                                {usr.role === "admin" && <Shield className="h-3 w-3 mr-2" />}
+                                {usr.role === "admin" ? "ADMIN ACCESS" : "STANDARD USER"}
+                              </Badge>
+                            )}
                           </td>
-                          <td className="px-12 py-10 text-center">
+                          <td className="md:px-12 md:py-10 py-2 text-left md:text-center md:table-cell hidden">
                             <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">{usr.joined}</span>
                           </td>
-                          <td className="px-12 py-10 text-right">
+                          <td className="md:px-12 md:py-10 py-4 text-right">
                             <div className="flex justify-end gap-3 opacity-40 group-hover:opacity-100 transition-all">
                               {canManage ? (
                                 <div className="flex gap-2">
                                   <button 
                                     onClick={() => handleUpdateRole(usr.id, usr.role)}
                                     disabled={actionLoading === usr.id}
-                                    className="h-10 w-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm active:scale-95 disabled:opacity-50"
-                                    title={usr.role === 'admin' ? "Demote to User" : "Promote to Admin"}
+                                    className="h-12 w-12 md:h-10 md:w-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm active:scale-95 disabled:opacity-50"
+                                    title={usr.role === 'admin' ? "Protocol: Lower to User" : "Protocol: Elevate to Admin"}
                                   >
                                     {actionLoading === usr.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-5 w-5" />}
                                   </button>
                                   <button 
                                     onClick={() => handleDeleteUser(usr.id)}
                                     disabled={actionLoading === usr.id}
-                                    className="h-10 w-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all shadow-sm active:scale-95 disabled:opacity-50"
-                                    title="Purge Asset"
+                                    className="h-12 w-12 md:h-10 md:w-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all shadow-sm active:scale-95 disabled:opacity-50"
+                                    title="Protocol: Purge Entity"
                                   >
                                     {actionLoading === usr.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-5 w-5" />}
                                   </button>
                                 </div>
                               ) : (
-                                <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 border border-slate-100 font-black text-[9px] uppercase tracking-tighter" title={isTargetSelf ? "Self-management restricted" : "Root access protected"}>
+                                <div className="h-12 w-12 md:h-10 md:w-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 border border-slate-100 font-black text-[9px] uppercase tracking-tighter" title={isTargetSelf ? "Personal override restricted" : "Root access protected"}>
                                   <Lock className="h-4 w-4" />
                                 </div>
                               )}
