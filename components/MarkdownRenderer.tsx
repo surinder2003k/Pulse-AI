@@ -12,7 +12,7 @@ interface MarkdownRendererProps {
 
 // Support for mixed content (some AI tags + Markdown)
 function containsHtml(content: string): boolean {
-  return /<[a-z][\s\S]*>/i.test(content);
+  return /<\/?(?:p|div|h[1-6]|ul|ol|li|article|section|blockquote)[\s>]/i.test(content);
 }
 
 export default function MarkdownRenderer({ content, className }: MarkdownRendererProps) {
@@ -47,8 +47,8 @@ export default function MarkdownRenderer({ content, className }: MarkdownRendere
     // 1. Remove common AI conversational fluff
     text = text.replace(/^(Here is|Sure,|In this article|Today we will|This blog post).*\n/i, "");
 
-    // 2. STRIP leading indentation (VITAL for Markdown detection)
-    text = text.split('\n').map(line => line.trimStart()).join('\n');
+    // 2. Normalize line endings
+    text = text.replace(/\r\n/g, '\n');
 
     // Only perform character translations if it's NOT a full HTML document
     if (!isHtml) {
@@ -67,7 +67,11 @@ export default function MarkdownRenderer({ content, className }: MarkdownRendere
       text = text.replace(/(?<!\w)\*(.*?)\*(?!\w)/g, '<em>$1</em>');
       text = text.replace(/^###\s+(.*)$/gm, '<h3>$1</h3>');
       text = text.replace(/^##\s+(.*)$/gm, '<h2>$1</h2>');
-      text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+      text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" />');
+      text = text.replace(/(?<!\!)\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+      if (!/<\/?(?:p|div|ul|ol|li|br)[\s>]/i.test(text)) {
+        text = text.replace(/\n\n/g, '<br/><br/>');
+      }
     }
 
     // Global domain guard for staging

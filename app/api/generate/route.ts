@@ -56,37 +56,34 @@ export async function POST(req: Request) {
     console.log("Step 2: Generating content directly from user prompt...");
     let postData: any;
 
-    const directPrompt = `You are an elite technical editorial architect for Pulse AI. Write a definitive, high-end editorial piece based on: "${userPrompt}"
+    const directPrompt = `You are a high-end SEO editorial architect for Pulse AI. 
+    Write a premium, definitive report based on: "${userPrompt}"
     
-    CRITICAL REQUIREMENTS:
-    1. EXHAUSTIVE CONTENT: Approx 1200-1800 words. Deep analysis, tactical insights, and visionary perspective.
-    2. METADATA MASTERY: Every JSON field MUST be filled with premium, punchy, and SEO-optimized text. No field should be empty.
-    3. SEARCH COMPLIANCE: Use focus_keyword naturally in headers and first paragraph.
+    CRITICAL INSTRUCTIONS:
+    1. WORD COUNT: 1200-1800 words. Deep analysis, no filler.
+    2. MARKDOWN ONLY: Use ## and ### headers. NEVER use HTML tags like <h2> or <p>.
+    3. MEDIA: Keep the [[BODY_IMAGE_1]] and [[BODY_IMAGE_2]] placeholders exactly as they are on their own lines.
+    4. LINKS: ${linksContext}
     
-    FORMATTING:
-    - Content MUST be in pure MARKDOWN (##, ###, **, *, -, etc). 
-    - NEVER use HTML tags (no <h2>, <p>, etc.).
-    - Insert [[BODY_IMAGE_1]] and [[BODY_IMAGE_2]] at strategic mid-points on their own lines.
-    
-    STRICT JSON SCHEMA:
-    {
-      "title": "Editorial Headline (Punchy, All Caps Style)",
-      "meta_title": "SEO Title | Maximum 60 Chars",
-      "meta_description": "Engaging Search Snippet | Maximum 160 Chars",
-      "focus_keyword": "Primary SEO Keyword",
-      "seoKeywords": "4-5 targeting keywords, comma separated",
-      "content": "Full Markdown content starting with ## Introduction",
-      "excerpt": "Compelling 2-sentence hook for the feed",
-      "category": "Technology, Business, News, or Intelligence",
-      "tags": ["Tag1", "Tag2", "Tag3"],
-      "imageSearchKeyword": "Vivid 2-word keyword for thumbnail image",
-      "bodyImageKeyword1": "Contextual keyword for body visual 1",
-      "bodyImageKeyword2": "Contextual keyword for body visual 2",
-      "image_alt": "Descriptive accessibility text for all visual assets"
-    }
+    OUTPUT SCHEMA:
+    You MUST return ONLY a SINGLE valid JSON object. Do not include markdown blocks or any text outside the JSON.
+    Every field MUST be populated. Do not leave any string empty.
 
-    ${linksContext}
-    Return ONLY JSON. No conversational filler.`;
+    {
+      "title": "Editorial Headline",
+      "meta_title": "SEO Optimized Title (60 chars max)",
+      "meta_description": "Compelling Meta Description (155 chars max)",
+      "focus_keyword": "Target Keyword",
+      "seoKeywords": "3-5 related keywords, comma separated",
+      "content": "Full Markdown content starting with ## Introduction",
+      "excerpt": "A short 2-sentence captivating summary",
+      "category": "Technology, Business, News, or Intelligence",
+      "tags": ["Tag1", "Tag2"],
+      "imageSearchKeyword": "Thumbnail search query",
+      "bodyImageKeyword1": "Body image 1 query",
+      "bodyImageKeyword2": "Body image 2 query",
+      "image_alt": "Alt text for images"
+    }`;
 
     try {
       console.log("Attempting generation...");

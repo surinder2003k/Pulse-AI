@@ -12,7 +12,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { formatDate, cn } from "@/lib/utils";
 import { toast } from "sonner";
-import PremiumAlert from "@/components/PremiumAlert";
 
 interface Post {
   _id?: string;
@@ -38,19 +37,7 @@ export default function DashboardPostsPage() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
-  // Alert State
-  const [alert, setAlert] = useState<{
-    isVisible: boolean;
-    type: "success" | "error" | "info";
-    title: string;
-    message: string;
-    onConfirm?: () => void;
-  }>({
-    isVisible: false,
-    type: "success",
-    title: "",
-    message: ""
-  });
+  // Removed PremiumAlert state as per user request
 
   useEffect(() => {
     if (user) fetchPosts();
@@ -70,7 +57,16 @@ export default function DashboardPostsPage() {
   };
 
   const showAlert = (type: "success" | "error" | "info", title: string, message: string, onConfirm?: () => void) => {
-    setAlert({ isVisible: true, type, title, message, onConfirm });
+    // Instead of a custom alert, we just trigger the confirm immediately or show a toast
+    if (onConfirm) {
+      if (typeof window !== "undefined" && window.confirm(`${title}: ${message}`)) {
+        onConfirm();
+      }
+    } else {
+      if (type === "success") toast.success(`${title}: ${message}`);
+      else if (type === "error") toast.error(`${title}: ${message}`);
+      else toast.info(`${title}: ${message}`);
+    }
   };
 
   const toggleSelect = (id: string) => {
@@ -185,18 +181,7 @@ export default function DashboardPostsPage() {
     }
   };
 
-  return (
-    <div className="space-y-12 pb-20 p-6 md:p-10">
-      <PremiumAlert 
-        isVisible={alert.isVisible}
-        type={alert.type}
-        title={alert.title}
-        message={alert.message}
-        onClose={() => setAlert(prev => ({ ...prev, isVisible: false }))}
-        onConfirm={alert.onConfirm}
-      />
-
-      {/* Page Header */}
+    <div className="space-y-6 pb-20 p-4 md:p-6 w-full">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-200 pb-8">
         <div>
           <h1 className="text-4xl md:text-5xl font-black tracking-tight uppercase leading-none text-slate-900">Content <span className="text-primary">Library</span></h1>
@@ -226,13 +211,13 @@ export default function DashboardPostsPage() {
       </div>
 
       {/* Asset Table */}
-      <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
-        <div className="w-full">
+      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden w-full">
+        <div className="w-full overflow-x-auto custom-scrollbar">
           <Table className="w-full">
             <TableHeader className="border-b border-slate-100 bg-slate-50/50">
               <TableRow className="border-none hover:bg-transparent uppercase tracking-[0.1em] text-[9px] font-bold text-slate-500">
-                <TableHead className="hidden sm:table-cell w-10 py-3 pl-4 text-center">#</TableHead>
-                <TableHead className="hidden sm:table-cell w-10 py-3 px-2">
+                <TableHead className="hidden sm:table-cell w-8 py-3 pl-2 text-center">#</TableHead>
+                <TableHead className="hidden sm:table-cell w-8 py-3 px-1">
                   <input 
                     type="checkbox" 
                     checked={selectedIds.size === posts.length && posts.length > 0} 
@@ -240,11 +225,11 @@ export default function DashboardPostsPage() {
                     className="h-3.5 w-3.5 rounded border-slate-300 bg-white appearance-none cursor-pointer checked:bg-primary checked:border-primary transition-all"
                   />
                 </TableHead>
-                <TableHead className="py-3 pl-4">Asset Identity</TableHead>
-                <TableHead className="py-3 hidden md:table-cell">Category</TableHead>
-                <TableHead className="py-3 hidden sm:table-cell text-center">Status</TableHead>
-                <TableHead className="py-3 hidden lg:table-cell text-right pr-6">Timestamp</TableHead>
-                <TableHead className="text-right pr-4 py-3">Control</TableHead>
+                <TableHead className="py-3 pl-2 max-w-[200px]">Asset Identity</TableHead>
+                <TableHead className="py-3 hidden md:table-cell w-24">Category</TableHead>
+                <TableHead className="py-3 hidden sm:table-cell text-center w-24">Status</TableHead>
+                <TableHead className="py-3 hidden lg:table-cell text-right pr-4 w-32">Timestamp</TableHead>
+                <TableHead className="text-right pr-2 py-3 w-32">Control</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -296,8 +281,8 @@ export default function DashboardPostsPage() {
                             />
                           </div>
                           <div className="flex flex-col min-w-0">
-                             <span className="font-bold text-sm tracking-tight text-slate-900 truncate max-w-[150px] md:max-w-xs">{post.title}</span>
-                             <span className="text-[9px] font-medium text-slate-400 truncate uppercase tracking-wider">{post.slug}</span>
+                             <span className="font-bold text-sm tracking-tight text-slate-900 truncate max-w-[180px] sm:max-w-[250px] md:max-w-[350px] lg:max-w-[450px] xl:max-w-[500px]">{post.title}</span>
+                             <span className="text-[9px] font-medium text-slate-400 truncate uppercase tracking-wider max-w-[180px] sm:max-w-[250px] md:max-w-[350px] lg:max-w-[450px] xl:max-w-[500px]">{post.slug}</span>
                           </div>
                         </div>
                       </TableCell>
@@ -320,7 +305,7 @@ export default function DashboardPostsPage() {
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell className="hidden lg:table-cell py-4 text-[9px] text-slate-400 font-medium uppercase tracking-tight text-right pr-6">
+                      <TableCell className="hidden lg:table-cell py-4 text-[9px] text-slate-400 font-medium uppercase tracking-tight text-right pr-4">
                          {formatDate((post.createdAt || post.published_at || post.created_at || "") as string)}
                       </TableCell>
                       <TableCell className="text-right pr-4 py-4 whitespace-nowrap">
@@ -347,7 +332,7 @@ export default function DashboardPostsPage() {
                           <Button
                             variant="ghost" 
                             size="icon"
-                            className="h-7 w-7 rounded-md text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all"
+                            className="h-7 w-7 rounded-md text-red-400 hover:text-red-500 hover:bg-red-50 transition-all"
                             onClick={() => handleDeleteClick(post)}
                             disabled={isDeleting || isTogglingStatus}
                           >

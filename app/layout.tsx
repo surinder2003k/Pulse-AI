@@ -21,6 +21,8 @@ export const metadata: Metadata = {
     "Skeuomorphic design", "Premium tech blog", "Digital magazine", "Global Sports"
   ],
   category: "technology",
+  authors: [{ name: "Pulse AI Editorial Team", url: "https://pulse-blog-ai.vercel.app" }],
+  publisher: "Pulse AI",
   robots: {
     index: true,
     follow: true,

@@ -71,7 +71,7 @@ export default async function HomePage() {
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">
               Latest Stories
             </h2>
-            <Link href="/blog" className="text-sm font-semibold text-primary flex items-center gap-2 hover:translate-x-2 transition-all px-6 py-2.5 rounded-full border border-primary/20 bg-primary/5 hover:bg-primary/10">
+            <Link href="/blog" title="Access Intelligence Archive" className="text-sm font-semibold text-primary flex items-center gap-2 hover:translate-x-2 transition-all px-6 py-2.5 rounded-full border border-primary/20 bg-primary/5 hover:bg-primary/10">
                Access Intelligence Archive <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
@@ -100,7 +100,7 @@ export default async function HomePage() {
               </p>
             </div>
             <div className="pt-6 flex justify-center">
-              <Link href="/sign-up" className="bg-primary hover:bg-primary/90 text-white px-10 md:px-12 py-4 rounded-full text-sm font-bold tracking-widest uppercase transition-all shadow-md hover:shadow-lg">
+              <Link href="/sign-up" title="Join the Pulse AI Network" className="bg-primary hover:bg-primary/90 text-white px-10 md:px-12 py-4 rounded-full text-sm font-bold tracking-widest uppercase transition-all shadow-md hover:shadow-lg">
                 Join the Network
               </Link>
             </div>
@@ -129,7 +129,7 @@ export default async function HomePage() {
                   { name: "Terminal", href: "/admin" },
                   { name: "Partner Site", href: "https://xylos-ai-agency.vercel.app/" }
                 ].map(link => (
-                  <Link key={link.name} href={link.href} target={link.name === "Partner Site" ? "_blank" : undefined} className="text-sm font-semibold tracking-wider text-gray-500 hover:text-gray-900 transition-colors duration-300">
+                  <Link key={link.name} href={link.href} target={link.name === "Partner Site" ? "_blank" : undefined} title={link.name} className="text-sm font-semibold tracking-wider text-gray-500 hover:text-gray-900 transition-colors duration-300">
                     {link.name}
                   </Link>
                 ))}

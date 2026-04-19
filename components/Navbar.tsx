@@ -26,6 +26,8 @@ export default function Navbar() {
   }, []);
 
   const isAdmin = user?.primaryEmailAddress?.emailAddress === ADMIN_EMAIL;
+  const isDashboard = pathname?.startsWith("/dashboard");
+  const forceScrolledStyle = isScrolled || isDashboard;
 
   const navLinks = [
     { name: "Intelligence", href: "/blog" },
@@ -38,19 +40,19 @@ export default function Navbar() {
 
   return (
     <nav className={cn(
-      "fixed top-0 left-0 right-0 z-50 transition-all duration-700",
-      isScrolled ? "py-3 px-6 md:px-10" : "py-6 px-6 md:px-10"
+      "fixed top-0 left-0 right-0 z-[60] transition-all duration-700",
+      forceScrolledStyle ? "py-3 px-6 md:px-10" : "py-6 px-6 md:px-10"
     )}>
       <div className="container mx-auto">
         <div className={cn(
           "relative flex items-center justify-between p-4 px-6 md:px-10 rounded-2xl transition-all duration-700 overflow-hidden",
-          isScrolled 
+          forceScrolledStyle 
             ? "bg-white/90 backdrop-blur-xl shadow-premium border-gray-200 border scale-[1.01]" 
             : "bg-transparent border-transparent"
         )}>
           {/* Inner Light reflection effect for scrolled state */}
           <AnimatePresence>
-            {isScrolled && (
+            {forceScrolledStyle && (
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -65,6 +67,7 @@ export default function Navbar() {
             href="/" 
             className="relative z-50 group"
             onMouseEnter={() => playHoverSound('/sounds/anime-ahh.mp3')}
+            title="Pulse AI - Home"
           >
             <Logo size="sm" playSoundOnHover={false} />
           </Link>
@@ -78,6 +81,7 @@ export default function Navbar() {
                   <Link
                     key={link.name}
                     href={link.href}
+                    title={`View ${link.name}`}
                     className={cn(
                       "text-xs font-semibold uppercase tracking-widest transition-all relative group py-2",
                       isActive ? "text-primary" : "text-gray-500 hover:text-gray-900"
@@ -98,12 +102,12 @@ export default function Navbar() {
             <div className="flex items-center gap-6">
               {isSignedIn ? (
                 <div className="flex items-center gap-6">
-                  <Link href="/dashboard" className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-all group">
+                  <Link href="/dashboard" title="Access Dashboard" className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-all group">
                     <LayoutDashboard className="w-4 h-4 text-primary group-hover:scale-110 transition-transform" />
                     Terminal
                   </Link>
                   {isAdmin && (
-                    <Link href="/dashboard/create" className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-primary hover:text-primary/80 transition-all group">
+                    <Link href="/dashboard/create" title="Create New Post" className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-primary hover:text-primary/80 transition-all group">
                       <Zap className="w-4 h-4 fill-primary group-hover:scale-110 transition-transform" />
                       Initiate
                     </Link>
