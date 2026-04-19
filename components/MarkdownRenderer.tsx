@@ -19,7 +19,7 @@ export default function MarkdownRenderer({ content, className }: MarkdownRendere
     "prose-p:text-lg md:prose-p:text-xl prose-p:leading-relaxed prose-p:text-slate-600 prose-p:mb-8", // Changed leading and removed font-medium for cleaner look
     "prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-semibold transition-all",
     "prose-ul:my-8 prose-ul:list-disc prose-li:text-slate-600 prose-li:leading-relaxed prose-li:mb-2",
-    "prose-img:rounded-2xl prose-img:shadow-lg prose-img:my-12 prose-img:border prose-img:border-slate-100",
+    "prose-img:rounded-2xl prose-img:shadow-lg prose-img:my-12 prose-img:border prose-img:border-slate-100 prose-img:mx-auto prose-img:block prose-img:w-full", // Combined block and full-width to fix alignment
     "prose-blockquote:border-l-primary/30 prose-blockquote:bg-slate-50/50 prose-blockquote:py-8 prose-blockquote:px-10 prose-blockquote:rounded-2xl prose-blockquote:italic prose-blockquote:text-slate-700 prose-blockquote:my-12",
     "prose-strong:text-slate-900 prose-strong:font-bold", // Softened from font-black
     "prose-code:text-primary prose-code:bg-primary/5 prose-code:px-2 prose-code:py-0.5 prose-code:rounded-md",
@@ -52,7 +52,11 @@ export default function MarkdownRenderer({ content, className }: MarkdownRendere
     // Ensure headings have proper newlines before them
     text = text.replace(/([^\n])(\n?)(#{1,6}\s)/g, '$1\n\n$3');
     
-    // 5. HARDENED: Bold headers that are followed by the paragraph text
+    // 5. HARDENED: Headers merged with paragraph text on same line
+    // e.g. "## Introduction This is a paragraph..."
+    text = text.replace(/^\s*(#{1,6})\s*([^\n#\n]+?)\s+([A-Z]{1}[a-z]+.*)$/gm, '$1 $2\n\n$3');
+
+    // 6. HARDENED: Bold headers that are followed by the paragraph text
     // Example: "** Introduction ** Having a blog..." -> "### Introduction\n\nHaving a blog..."
     // This regex catches bold text at the start of a line and pulls the rest of the line down
     text = text.replace(/^\s*(\*\*)([^\n\*:]+)(\*\*)\s*(:?)\s*(.*)$/gm, (match, b1, title, b2, colon, rest) => {
@@ -62,11 +66,11 @@ export default function MarkdownRenderer({ content, className }: MarkdownRendere
        return `### ${title.trim()}`;
     });
 
-    // 6. HARDENED: Numbered list style headers (e.g. "1/ Introduction" or "1. Introduction")
+    // 7. HARDENED: Numbered list style headers (e.g. "1/ Introduction" or "1. Introduction")
     // If it's a short line starting with a number and slash/dot, it's likely a title
     text = text.replace(/^\s*(\d+\s*[\/\.]\s*)([A-Z][^\n]{3,40})$/gm, '### $2');
 
-    // 7. Ensure double newlines for paragraphs (ReactMarkdown requirement)
+    // 8. Ensure double newlines for paragraphs (ReactMarkdown requirement)
     // Convert single newlines that aren't parts of lists or headers into double newlines
     text = text.replace(/([^\n])\n([^\n#\-*>\d])/g, '$1\n\n$2');
 
