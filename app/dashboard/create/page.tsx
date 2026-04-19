@@ -79,30 +79,31 @@ export default function CreatePostPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Synthesis failed");
       
-      const getCaseInsensitive = (obj: any, keys: string[]) => {
+      const getCaseInsensitive = (obj: any, keys: string[]): string => {
         const lowerObj = Object.fromEntries(Object.entries(obj).map(([k, v]) => [k.toLowerCase(), v]));
         for (const key of keys) {
-          if (lowerObj[key.toLowerCase()]) return lowerObj[key.toLowerCase()];
+          const val = lowerObj[key.toLowerCase()];
+          if (val !== undefined && val !== null) return String(val);
         }
-        return undefined;
+        return "";
       };
 
       setGeneratedPostId(data._id || null);
       setFormData({
-        title: getCaseInsensitive(data, ['title', 'headline', 'name', 'editorial_headline']) || "",
-        slug: data.slug || getCaseInsensitive(data, ['slug', 'permalink']) || "",
-        excerpt: getCaseInsensitive(data, ['excerpt', 'description', 'summary', 'meta_description', 'hook']) || "",
-        content: getCaseInsensitive(data, ['content', 'body', 'article', 'text', 'markdown_content']) || "",
+        title: getCaseInsensitive(data, ['title', 'headline', 'name', 'editorial_headline']),
+        slug: data.slug || getCaseInsensitive(data, ['slug', 'permalink']),
+        excerpt: getCaseInsensitive(data, ['excerpt', 'description', 'summary', 'meta_description', 'hook']),
+        content: getCaseInsensitive(data, ['content', 'body', 'article', 'text', 'markdown_content']),
         category: getCaseInsensitive(data, ['category', 'field', 'domain']) || "Technology",
         tags: Array.isArray(getCaseInsensitive(data, ['tags'])) 
-                ? getCaseInsensitive(data, ['tags']).join(", ") 
-                : (getCaseInsensitive(data, ['tags']) || ""),
-        seoKeywords: getCaseInsensitive(data, ['seoKeywords', 'meta_keywords', 'keywords', 'seo_keywords']) || "",
-        focusKeyword: getCaseInsensitive(data, ['focus_keyword', 'focusKeyword', 'keyword', 'focus']) || "",
-        metaTitle: getCaseInsensitive(data, ['meta_title', 'metaTitle', 'seo_title', 'title']) || "",
-        metaDescription: getCaseInsensitive(data, ['meta_description', 'metaDescription', 'seo_description', 'excerpt']) || "",
-        featureImage: data.feature_image_url || getCaseInsensitive(data, ['featureImage', 'image', 'feature_image', 'thumbnail']) || "",
-        featureImageAlt: data.feature_image_alt || getCaseInsensitive(data, ['image_alt', 'featureImageAlt', 'alt_text', 'title']) || ""
+                ? (getCaseInsensitive(data, ['tags']) as any).join(", ") 
+                : getCaseInsensitive(data, ['tags']),
+        seoKeywords: getCaseInsensitive(data, ['seoKeywords', 'meta_keywords', 'keywords', 'seo_keywords']),
+        focusKeyword: getCaseInsensitive(data, ['focus_keyword', 'focusKeyword', 'keyword', 'focus']),
+        metaTitle: getCaseInsensitive(data, ['meta_title', 'metaTitle', 'seo_title', 'title']),
+        metaDescription: getCaseInsensitive(data, ['meta_description', 'metaDescription', 'seo_description', 'excerpt']),
+        featureImage: data.feature_image_url || getCaseInsensitive(data, ['featureImage', 'image', 'feature_image', 'thumbnail']),
+        featureImageAlt: data.feature_image_alt || getCaseInsensitive(data, ['image_alt', 'featureImageAlt', 'alt_text', 'title'])
       });
       toast.dismiss(toastId);
       showAlert("success", "Synthesis Successful", "High-fidelity content and metadata have been populated.");
