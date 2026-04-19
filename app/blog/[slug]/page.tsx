@@ -119,7 +119,7 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
       {/* Background Decor */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] -z-10 opacity-50" />
       
-      <article className="max-w-4xl mx-auto pb-40 pt-32 px-6 relative z-10">
+      <article className="max-w-5xl mx-auto w-full pb-40 pt-32 px-6 relative z-10">
         <Link href="/blog" className="inline-flex items-center gap-3 text-gray-500 hover:text-gray-900 transition-all mb-16 group font-bold uppercase tracking-widest text-xs shadow-sm bg-gray-50 px-8 py-3 rounded-full border border-gray-200">
           <ChevronLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" /> Back to Articles
         </Link>

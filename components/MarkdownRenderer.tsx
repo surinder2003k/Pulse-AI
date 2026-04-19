@@ -30,7 +30,11 @@ export default function MarkdownRenderer({ content, className }: MarkdownRendere
 
   const cleanContent = (raw: string) => {
     if (!raw) return "";
-    let text = raw.trim();
+    
+    // 0. Deep Sanitization: Remove zero-width characters and common entities that break Markdown
+    let text = raw.trim()
+      .replace(/[\u200B-\u200D\uFEFF]/g, "")
+      .replace(/&nbsp;/g, " ");
 
     // 1. Remove common AI conversational fluff
     text = text.replace(/^(Here is|Sure,|In this article|Today we will|This blog post).*\n/i, "");
@@ -53,8 +57,8 @@ export default function MarkdownRenderer({ content, className }: MarkdownRendere
     text = text.replace(/([^\n])(\n?)(#{1,6}\s)/g, '$1\n\n$3');
     
     // 5. HARDENED: Headers merged with paragraph text on same line
-    // e.g. "## Introduction This is a paragraph..."
-    text = text.replace(/^\s*(#{1,6})\s*([^\n#\n]+?)\s+([A-Z]{1}[a-z]+.*)$/gm, '$1 $2\n\n$3');
+    // Now even more aggressive to catch any character after a header
+    text = text.replace(/^\s*(#{1,6})\s*([^\n#\n]+?)\s+([^\n]+)$/gm, '$1 $2\n\n$3');
 
     // 6. HARDENED: Bold headers that are followed by the paragraph text
     // Example: "** Introduction ** Having a blog..." -> "### Introduction\n\nHaving a blog..."
