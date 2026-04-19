@@ -22,14 +22,13 @@ import {
   Settings,
   Database
 } from "lucide-react";
-import Link from "next/link";
-import { toast } from "sonner";
-import { Progress } from "@/components/ui/progress";
-import { cn, ADMIN_EMAIL } from "@/lib/utils";
+import AdminUserList, { AdminUser } from "@/components/AdminUserList";
 
 export default function AdminDashboard() {
-  const { user } = useUser();
+  const { user: currentUserData } = useUser();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [users, setUsers] = useState<AdminUser[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(true);
   const [stats, setStats] = useState({
     totalUsers: 3,
     systemPosts: 38,
@@ -40,13 +39,28 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function checkAuth() {
-      const res = await fetch("/api/auth/status");
-      const data = await res.json();
-      setIsAdmin(data.isAdmin);
-      setLoading(false);
+    async function fetchData() {
+      try {
+        const [authRes, usersRes] = await Promise.all([
+          fetch("/api/auth/status"),
+          fetch("/api/admin/users")
+        ]);
+        
+        const authData = await authRes.json();
+        setIsAdmin(authData.isAdmin);
+        
+        if (usersRes.ok) {
+          const userData = await usersRes.json();
+          setUsers(userData);
+        }
+      } catch (err) {
+        console.error("Failed to fetch admin data:", err);
+      } finally {
+        setLoadingUsers(false);
+        setLoading(false);
+      }
     }
-    checkAuth();
+    fetchData();
   }, []);
 
   if (loading) return null;
@@ -168,6 +182,30 @@ export default function AdminDashboard() {
                </Link>
             </CardContent>
          </Card>
+      </div>
+
+      {/* User Registry Section */}
+      <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+        <div className="flex items-center gap-3">
+          <div className="h-[1px] flex-1 bg-slate-200" />
+          <div className="flex items-center gap-2">
+            <Users className="h-4 w-4 text-primary" />
+            <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">User Registry</h2>
+          </div>
+          <div className="h-[1px] flex-1 bg-slate-200" />
+        </div>
+
+        {loadingUsers ? (
+          <div className="flex flex-col items-center justify-center py-20 gap-4">
+             <Loader2 className="h-10 w-10 text-primary animate-spin" />
+             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300">Synchronizing User Matrix...</p>
+          </div>
+        ) : (
+          <AdminUserList 
+            initialUsers={users} 
+            currentUserId={currentUserData?.id} 
+          />
+        )}
       </div>
     </div>
   );

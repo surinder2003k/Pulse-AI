@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,40 +12,39 @@ import {
   Tag, 
   Layout, 
   BrainCircuit,
-  MessageSquareShare,
   Search,
-  Trash2,
   Zap,
   ShieldCheck,
-  X
+  X,
+  ChevronRight,
+  Settings,
+  Globe,
+  Pen
 } from "lucide-react";
-import { useEffect } from "react";
-// @ts-ignore
-import anime from "animejs";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import PremiumAlert from "@/components/PremiumAlert";
-
 import Dropzone from "@/components/Dropzone";
 import RichTextEditor from "@/components/RichTextEditor";
+import { useSound } from "@/components/SoundProvider";
 
 export default function CreatePostPage() {
   const router = useRouter();
+  const { playSound } = useSound();
   const [isGenerating, setIsGenerating] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [prompt, setPrompt] = useState("");
-  
   const [generatedPostId, setGeneratedPostId] = useState<string | null>(null);
   const [imageSearchQuery, setImageSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [isSearchingImage, setIsSearchingImage] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [activeTab, setActiveTab] = useState<"assistant" | "metadata" | "image">("assistant");
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Alert State
   const [alert, setAlert] = useState<{
     isVisible: boolean;
     type: "success" | "error" | "info";
@@ -77,75 +75,56 @@ export default function CreatePostPage() {
     setAlert({ isVisible: true, type, title, message });
   };
 
-  const playHoverSound = (soundPath: string) => {
-    try {
-      const audio = new Audio(soundPath);
-      audio.volume = 0.4;
-      audio.play().catch(() => {});
-    } catch (e) {}
-  };
-
-  const [generationStep, setGenerationStep] = useState<string>("");
-
   const handleGenerate = async () => {
-    if (!prompt) return toast.error("Please enter a topic first.");
+    if (!prompt) return toast.error("PROMPT REQUIRED FOR SYNTHESIS.");
     setIsGenerating(true);
-    setGenerationStep("Analyzing Topic...");
-    const toastId = toast.loading("AI is generating content...");
+    const toastId = toast.loading("AI NEURAL SYNTHESIS IN PROGRESS...");
     
     try {
-      setTimeout(() => setGenerationStep("Drafting Editorial Content..."), 2000);
-      setTimeout(() => setGenerationStep("Synthesizing SEO Metadata..."), 5000);
-      setTimeout(() => setGenerationStep("Fetching Visual Assets..."), 8000);
-
       const res = await fetch("/api/generate", { 
         method: "POST",
         body: JSON.stringify({ prompt })
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Generation failed");
+      if (!res.ok) throw new Error(data.error || "Synthesis failed");
       
-      setGenerationStep("Populating Terminal...");
       setGeneratedPostId(data._id || null);
       setFormData({
-        title: data.title,
-        excerpt: data.excerpt,
-        content: data.content,
-        category: data.category,
-        tags: Array.isArray(data.tags) ? data.tags.join(", ") : data.tags,
+        title: data.title || "",
+        excerpt: data.excerpt || "",
+        content: data.content || "",
+        category: data.category || "Technology",
+        tags: Array.isArray(data.tags) ? data.tags.join(", ") : (data.tags || ""),
         seoKeywords: data.seoKeywords || data.meta_keywords || "",
         focusKeyword: data.focus_keyword || "",
-        metaTitle: data.meta_title || "",
-        metaDescription: data.meta_description || "",
+        metaTitle: data.meta_title || data.metaTitle || "",
+        metaDescription: data.meta_description || data.metaDescription || "",
         featureImage: data.feature_image_url || data.featureImage || "",
         featureImageAlt: data.feature_image_alt || data.image_alt || data.title || ""
       });
       toast.dismiss(toastId);
-      showAlert("success", "Synthesis Complete", "AI has successfully generated the high-end editorial draft.");
+      playSound('/sounds/ek-jhaat-bhar-ka-aadmi.mp3', 0.5);
+      showAlert("success", "Synthesis Successful", "High-fidelity content and metadata have been populated.");
     } catch (error: any) {
       toast.dismiss(toastId);
-      showAlert("error", "Error", error.message);
+      showAlert("error", "Neural Override", error.message);
     } finally {
       setIsGenerating(false);
-      setGenerationStep("");
     }
   };
 
   const handleImageSearch = async () => {
-    if (!imageSearchQuery) return toast.error("Search term required.");
+    if (!imageSearchQuery) return toast.error("SEARCH PARAMETER REQUIRED.");
     setIsSearchingImage(true);
     
     try {
       const res = await fetch(`/api/images/search?q=${encodeURIComponent(imageSearchQuery)}`);
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Image lookup failed");
+      if (!res.ok) throw new Error(data.error || "Asset lookup failed");
       
       setSearchResults(data.urls || []);
-      if (!data.urls || data.urls.length === 0) {
-        toast.info("No images found for this query.");
-      }
     } catch (error: any) {
-      showAlert("error", "Error", error.message);
+      showAlert("error", "Lookup Error", error.message);
     } finally {
       setIsSearchingImage(false);
     }
@@ -153,7 +132,7 @@ export default function CreatePostPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title) return toast.error("Title is required.");
+    if (!formData.title) return toast.error("IDENTITY (TITLE) IS REQUIRED.");
     setIsPublishing(true);
     
     try {
@@ -172,19 +151,19 @@ export default function CreatePostPage() {
         body: JSON.stringify(postPayload)
       });
       
-      if (!res.ok) throw new Error("Failed to save post.");
+      if (!res.ok) throw new Error("Post deployment failed.");
 
-      showAlert("success", "Protocol Success", "Asset successfully deployed to the network matrix.");
+      showAlert("success", "Deployment Complete", "Asset successfully integrated into the network.");
       setTimeout(() => router.push("/dashboard/posts"), 2000);
     } catch (error: any) {
-      showAlert("error", "Error", error.message);
+      showAlert("error", "Deployment Error", error.message);
     } finally {
       setIsPublishing(false);
     }
   };
 
   return (
-    <div className="container mx-auto max-w-6xl py-12 px-6">
+    <div className="flex flex-col min-h-screen bg-[#F8FAFC]">
       <PremiumAlert 
         isVisible={alert.isVisible}
         type={alert.type}
@@ -193,307 +172,265 @@ export default function CreatePostPage() {
         onClose={() => setAlert(prev => ({ ...prev, isVisible: false }))}
       />
 
-      <div className="mb-10 relative">
-        <div className="absolute -left-6 top-1/2 -translate-y-1/2 w-1 h-12 bg-primary rounded-full shadow-glow-red" />
-        <h1 className="text-4xl font-black tracking-tighter uppercase italic text-gray-900">
-          Tactical <span className="text-slate-300">Workspace</span>
-        </h1>
-        <p className="text-slate-400 mt-2 font-mono text-xs uppercase tracking-[0.2em]">
-          Protocol: Content Generation // Status: Ready
-        </p>
-      </div>
+      {/* Header Bar */}
+      <header className="sticky top-0 z-30 bg-white border-b border-slate-200 px-8 h-18 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="p-2 bg-primary/5 rounded-lg border border-primary/10">
+            <Pen className="h-4 w-4 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-sm font-black uppercase tracking-[0.2em] text-slate-900 leading-none">Intelligence Forge</h1>
+            <p className="text-[9px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Post Construction Terminal</p>
+          </div>
+        </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-8">
-          <Card className="bg-white border-slate-200 shadow-sm overflow-hidden rounded-[3rem]">
-            <div className="h-1 bg-gradient-to-r from-primary/50 via-primary to-primary/50" />
-            <CardHeader className="bg-slate-50/50 py-5 border-b border-slate-100">
-              <div className="flex items-center gap-3">
-                <Layout className="h-4 w-4 text-primary" />
-                <CardTitle className="text-xs font-black uppercase tracking-widest italic text-gray-900">Draft Core</CardTitle>
+        <div className="flex items-center gap-3">
+          <Button 
+            variant="ghost" 
+            onClick={() => router.back()}
+            className="h-10 px-5 text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-slate-900 rounded-lg"
+          >
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleSubmit} 
+            disabled={isPublishing} 
+            className="h-10 px-8 bg-primary hover:bg-primary/90 text-white text-[10px] font-bold uppercase tracking-widest rounded-lg shadow-sm"
+          >
+            {isPublishing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4 mr-2" />}
+            Deploy Post
+          </Button>
+        </div>
+      </header>
+
+      <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        {/* Left Side: Editor (70%) */}
+        <div className="flex-1 overflow-y-auto p-10 lg:p-14 custom-scrollbar lg:border-r border-slate-200">
+          <div className="max-w-4xl mx-auto space-y-12">
+            <div className="space-y-4">
+               <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Main Identity (Title)</label>
+               <Input 
+                 placeholder="ENTER HEADLINE..." 
+                 value={formData.title}
+                 onChange={(e) => setFormData({...formData, title: e.target.value})}
+                 className="h-16 text-3xl font-black bg-transparent border-none px-0 focus-visible:ring-0 placeholder:text-slate-200 uppercase"
+               />
+               <div className="h-[1px] w-full bg-slate-100" />
+            </div>
+
+            <div className="space-y-4">
+               <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Contextual Excerpt</label>
+               <Textarea 
+                 placeholder="BRIEF SUMMARY..." 
+                 value={formData.excerpt}
+                 onChange={(e) => setFormData({...formData, excerpt: e.target.value})}
+                 className="min-h-[100px] text-lg font-medium bg-transparent border-none px-0 focus-visible:ring-0 placeholder:text-slate-200 resize-none"
+               />
+            </div>
+
+            <div className="space-y-6">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Intel Manuscript</label>
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                {mounted ? (
+                  <RichTextEditor 
+                    value={formData.content}
+                    onChange={(val) => setFormData({...formData, content: val})}
+                  />
+                ) : (
+                  <div className="h-96 w-full bg-slate-50 animate-pulse" />
+                )}
               </div>
-            </CardHeader>
-            <CardContent className="p-8 md:p-10">
-              <form onSubmit={handleSubmit} className="space-y-10">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Editorial Title</label>
-                    <span className="text-[10px] font-mono text-primary/60 italic">01 // IDENTITY</span>
-                  </div>
-                  <Input 
-                    placeholder="ENTER HEADLINE..." 
-                    value={formData.title}
-                    onChange={(e) => setFormData({...formData, title: e.target.value})}
-                    className="h-16 text-2xl font-black italic bg-slate-50 border-slate-100 focus:border-primary/50 focus:bg-white transition-all placeholder:text-slate-300 uppercase rounded-2xl"
-                  />
-                </div>
+            </div>
+          </div>
+        </div>
 
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Narrative Excerpt</label>
-                    <span className="text-[10px] font-mono text-primary/60 italic">02 // CONTEXT</span>
-                  </div>
-                  <Textarea 
-                    placeholder="BRIEF SUMMARY..." 
-                    value={formData.excerpt}
-                    onChange={(e) => setFormData({...formData, excerpt: e.target.value})}
-                    className="min-h-[120px] bg-slate-50 border-slate-100 focus:border-primary/50 focus:bg-white transition-all placeholder:text-slate-300 italic text-sm rounded-2xl p-6"
-                  />
+        {/* Right Side: Assistant & Metadata (30%) */}
+        <div className="w-full lg:w-[420px] bg-white overflow-y-auto p-8 custom-scrollbar">
+          <div className="space-y-10">
+            {/* Tabs */}
+            <div className="flex p-1 bg-slate-100 rounded-lg">
+              {(['assistant', 'metadata', 'image'] as const).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`flex-1 py-2 text-[9px] font-black uppercase tracking-widest rounded-md transition-all ${activeTab === tab ? 'bg-white shadow-sm text-primary' : 'text-slate-400 hover:text-slate-600'}`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+
+            {/* Neural Assistant Tab */}
+            {activeTab === 'assistant' && (
+              <div className="space-y-6 animate-in fade-in slide-in-from-right-2 duration-300">
+                <div className="p-6 bg-primary/[0.03] rounded-2xl border border-primary/10 space-y-6">
+                   <div className="flex items-center gap-2">
+                     <Sparkles className="h-4 w-4 text-primary" />
+                     <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-900">Neural Synthesis</h3>
+                   </div>
+                   <div className="space-y-3">
+                     <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Topic Blueprint</label>
+                     <Textarea 
+                       placeholder="SPECIFY RESEARCH TOPIC..." 
+                       value={prompt}
+                       onChange={(e) => setPrompt(e.target.value)}
+                       className="min-h-[160px] bg-white border-slate-200 rounded-xl text-xs font-medium placeholder:text-slate-300 uppercase p-4 focus:border-primary/50 transition-all"
+                     />
+                   </div>
+                   <Button 
+                     onClick={handleGenerate}
+                     disabled={isGenerating}
+                     className="w-full h-12 bg-primary hover:bg-primary/90 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-xl shadow-sm transition-all active:scale-95"
+                   >
+                     {isGenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <BrainCircuit className="h-4 w-4 mr-2" />}
+                     Synthesize Asset
+                   </Button>
                 </div>
 
                 <div className="space-y-6 pt-6 border-t border-slate-100">
-                  <div className="flex items-center justify-between mb-4">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Manuscript Body</label>
-                    <span className="text-[10px] font-mono text-primary/60 italic">03 // INTEL</span>
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="h-4 w-4 text-slate-400" />
+                    <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-900">Classification</h3>
                   </div>
-                  
-                  <div className="bg-white rounded-3xl border border-slate-200 p-1 shadow-sm overflow-hidden">
-                    {mounted ? (
-                      <RichTextEditor 
-                        value={formData.content}
-                        onChange={(val) => setFormData({...formData, content: val})}
-                      />
-                    ) : (
-                      <div className="h-96 w-full bg-slate-50 animate-pulse rounded-2xl border border-slate-100" />
-                    )}
-                  </div>
-                </div>
-
-                {/* WordPress Style SEO Section */}
-                <div className="space-y-8 pt-10 border-t border-slate-100">
-                   <div className="flex items-center gap-3">
-                      <div className="p-2 bg-primary/5 rounded-xl border border-primary/10">
-                        <Search className="h-4 w-4 text-primary" />
-                      </div>
-                      <h3 className="text-xs font-black uppercase tracking-widest italic text-gray-900">SEO Infrastructure</h3>
-                   </div>
-
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <div className="space-y-3">
-                        <label className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Meta Title</label>
-                        <Input 
-                          placeholder="GOOGLE HEADLINE..." 
-                          value={formData.metaTitle}
-                          onChange={(e) => setFormData({...formData, metaTitle: e.target.value})}
-                          className="h-12 bg-slate-50 border-slate-100 text-xs font-bold uppercase tracking-wider rounded-xl transition-all focus:bg-white"
-                        />
-                      </div>
-                      <div className="space-y-3">
-                        <label className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Focus Keyword</label>
-                        <Input 
-                          placeholder="TARGET KEYWORD..." 
-                          value={formData.focusKeyword}
-                          onChange={(e) => setFormData({...formData, focusKeyword: e.target.value})}
-                          className="h-12 bg-slate-50 border-slate-100 text-xs font-bold uppercase tracking-wider rounded-xl transition-all focus:bg-white"
-                        />
-                      </div>
-                   </div>
-
-                   <div className="space-y-3">
-                      <label className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Meta Description</label>
-                      <Textarea 
-                        placeholder="SEARCH RESULT SNIPPET..." 
-                        value={formData.metaDescription}
-                        onChange={(e) => setFormData({...formData, metaDescription: e.target.value})}
-                        className="min-h-[100px] bg-slate-50 border-slate-100 text-xs font-bold tracking-wider rounded-xl transition-all focus:bg-white p-4"
-                      />
-                   </div>
-
-                   <div className="space-y-3">
-                      <label className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Meta Keywords (Comma Separated)</label>
-                      <Input 
-                        placeholder="AI, TECHNOLOGY, INNOVATION..." 
-                        value={formData.seoKeywords}
-                        onChange={(e) => setFormData({...formData, seoKeywords: e.target.value})}
-                        className="h-12 bg-slate-50 border-slate-100 text-xs font-bold uppercase tracking-wider rounded-xl transition-all focus:bg-white"
-                      />
-                   </div>
-                </div>
-
-                <div className="flex justify-end gap-4 pt-10 border-t border-slate-100">
-                  <Button 
-                    variant="outline" 
-                    type="button"
-                    onClick={() => router.back()}
-                    className="h-14 px-8 bg-transparent border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all font-black uppercase italic tracking-widest text-xs rounded-2xl"
-                  >
-                    Abort
-                  </Button>
-                  <Button 
-                    type="submit"
-                    disabled={isPublishing} 
-                    onMouseEnter={() => playHoverSound('/sounds/ek-jhaat-bhar-ka-aadmi.mp3')}
-                    className="bg-primary hover:bg-primary/90 text-white min-w-[200px] h-14 shadow-glow-red border-none font-black uppercase italic tracking-widest text-xs transition-all active:scale-95 rounded-2xl"
-                  >
-                    {isPublishing ? (
-                      <Loader2 className="animate-spin mr-2 h-4 w-4" />
-                    ) : (
-                      <Send className="mr-2 h-4 w-4" />
-                    )}
-                    Deploy Post
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="space-y-8">
-          {/* AI Helper Card */}
-          <Card className="bg-white border-primary/20 shadow-sm overflow-hidden group rounded-[3rem]">
-            <div className="h-1 bg-primary/10 group-hover:bg-primary transition-colors duration-500" />
-            <CardHeader className="py-5 bg-primary/[0.02] border-b border-primary/5">
-              <div className="flex items-center gap-3">
-                <Sparkles className="h-4 w-4 text-primary animate-pulse" />
-                <CardTitle className="text-xs font-black uppercase tracking-widest italic text-gray-900">Neural Assistant</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent className="p-8 space-y-8">
-              <div className="space-y-4">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60">Topic Prompt</label>
-                <Textarea 
-                  placeholder="WHAT IS THE NEW FRONTIER?" 
-                  value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
-                  className="bg-slate-50 border-slate-100 focus:border-primary/50 focus:bg-white min-h-[140px] text-sm italic placeholder:text-slate-300 uppercase tracking-wider rounded-2xl p-6"
-                />
-              </div>
-              <Button 
-                onClick={handleGenerate}
-                disabled={isGenerating}
-                className="w-full h-14 bg-primary hover:bg-primary/90 text-white shadow-glow-red font-black uppercase italic tracking-widest text-xs transition-all hover:scale-[1.02] active:scale-95 border-none rounded-2xl"
-              >
-                {isGenerating ? (
-                  <Loader2 className="animate-spin mr-2 h-4 w-4" />
-                ) : (
-                  <BrainCircuit className="mr-2 h-4 w-4" />
-                )}
-                Synthesize Draft
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Settings & Image Card */}
-          <Card className="bg-white border-slate-200 shadow-sm rounded-[3rem] overflow-hidden">
-            <CardHeader className="py-5 bg-slate-50/50 border-b border-slate-100">
-              <div className="flex items-center gap-3">
-                <Zap className="h-4 w-4 text-primary" />
-                <CardTitle className="text-xs font-black uppercase tracking-widest italic text-gray-900">Asset Config</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent className="p-8 space-y-10">
-              <div className="space-y-4">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Cover Identity</label>
-                <div className="p-1 bg-slate-50 rounded-3xl border border-slate-100 group hover:border-primary/30 transition-all overflow-hidden">
-                  <Dropzone 
-                    onUpload={(url) => setFormData({...formData, featureImage: url})} 
-                    currentImage={formData.featureImage} 
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Visual Database</label>
-                  {searchResults.length > 0 && (
-                    <button 
-                      onClick={() => setSearchResults([])}
-                      className="text-[9px] font-black uppercase tracking-widest text-primary/60 hover:text-primary transition-colors"
-                    >
-                      Reset
-                    </button>
-                  )}
-                </div>
-                <div className="flex gap-2">
-                  <Input 
-                    placeholder="QUERY ASSETS..." 
-                    value={imageSearchQuery}
-                    onChange={(e) => setImageSearchQuery(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleImageSearch()}
-                    className="flex-1 h-12 bg-slate-50 border-slate-100 uppercase text-xs rounded-xl"
-                  />
-                  <Button 
-                    onClick={handleImageSearch}
-                    disabled={isSearchingImage}
-                    variant="secondary"
-                    className="px-4 h-12 bg-white border-slate-200 hover:border-primary/50 transition-all rounded-xl shadow-sm"
-                  >
-                    {isSearchingImage ? <Loader2 className="h-4 w-4 animate-spin text-primary" /> : <Search className="h-4 w-4 text-primary" />}
-                  </Button>
-                </div>
-
-                {searchResults.length > 0 && (
-                  <div className="grid grid-cols-2 gap-2 mt-4 max-h-[300px] overflow-y-auto p-4 border border-slate-100 rounded-3xl bg-slate-50/50 custom-scrollbar">
-                    {searchResults.map((url, i) => (
-                      <div 
-                        key={i}
-                        onClick={() => {
-                          setFormData({...formData, featureImage: url});
-                          toast.success("Identity Locked.");
-                        }}
-                        className={`relative aspect-video cursor-pointer overflow-hidden rounded-2xl border transition-all group ${formData.featureImage === url ? 'ring-2 ring-primary border-primary' : 'border-slate-200 hover:border-primary/50'}`}
-                      >
-                        <img 
-                          src={url} 
-                          alt={`Result ${i}`} 
-                          className={`object-cover w-full h-full transition-all duration-700
-                            ${formData.featureImage === url ? 'grayscale-0 scale-110' : 'grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110'}
-                          `}
-                        />
-                        <div className={`absolute inset-0 transition-opacity flex items-center justify-center
-                          ${formData.featureImage === url ? 'bg-primary/10 opacity-100' : 'bg-primary/5 opacity-0 group-hover:opacity-100'}
-                        `}>
-                          <span className={`text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-full
-                            ${formData.featureImage === url ? 'bg-primary text-white shadow-glow-red' : 'bg-white text-gray-900 border border-slate-200'}
-                          `}>
-                            {formData.featureImage === url ? 'Active' : 'Deploy'}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              <div className="pt-8 border-t border-slate-100 space-y-6">
-                <div className="flex items-center gap-2 text-primary font-black uppercase tracking-widest text-[10px] italic">
-                  <ShieldCheck className="h-3 w-3" />
-                  Classification
-                </div>
-                
-                <div className="grid grid-cols-1 gap-6">
-                  <div className="space-y-3">
-                    <label className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Category</label>
-                    <div className="relative">
+                  <div className="grid grid-cols-1 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Category</label>
                       <select 
                         value={formData.category}
                         onChange={(e) => setFormData({...formData, category: e.target.value})}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl h-12 px-5 text-xs font-black uppercase italic tracking-widest text-gray-900 focus:border-primary/50 outline-none appearance-none cursor-pointer"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl h-10 px-4 text-[10px] font-bold uppercase tracking-widest text-slate-900 outline-none"
                       >
                         <option>Technology</option>
                         <option>Business</option>
                         <option>Intelligence</option>
                         <option>Future</option>
                       </select>
-                      <div className="absolute right-5 top-1/2 -translate-y-1/2 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[4px] border-t-primary pointer-events-none" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Keywords (CSV)</label>
+                      <Input 
+                        placeholder="TAGS..." 
+                        value={formData.tags}
+                        onChange={(e) => setFormData({...formData, tags: e.target.value})}
+                        className="h-10 bg-slate-50 border-slate-200 rounded-xl text-[10px] font-bold uppercase tracking-widest"
+                      />
                     </div>
                   </div>
+                </div>
+              </div>
+            )}
 
-                  <div className="space-y-3">
-                    <label className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Tags (CSV)</label>
+            {/* Metadata Tab */}
+            {activeTab === 'metadata' && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-right-2 duration-300">
+                <div className="flex items-center gap-2">
+                  <Globe className="h-4 w-4 text-slate-400" />
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-900">SEO Infrastructure</h3>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Meta Title</label>
                     <Input 
-                      placeholder="AI, FUTURE, INTEL..." 
-                      value={formData.tags}
-                      onChange={(e) => setFormData({...formData, tags: e.target.value})}
-                      className="h-12 bg-slate-50 border-slate-100 text-xs uppercase tracking-widest placeholder:text-slate-300 rounded-xl"
+                      placeholder="SEARCH VISIBILITY TITLE..." 
+                      value={formData.metaTitle}
+                      onChange={(e) => setFormData({...formData, metaTitle: e.target.value})}
+                      className="h-10 bg-slate-50 border-slate-200 rounded-xl text-[10px] font-bold uppercase"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Focus Keyword</label>
+                    <Input 
+                      placeholder="PRIMARY TARGET..." 
+                      value={formData.focusKeyword}
+                      onChange={(e) => setFormData({...formData, focusKeyword: e.target.value})}
+                      className="h-10 bg-slate-50 border-slate-200 rounded-xl text-[10px] font-bold uppercase"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Meta Description</label>
+                    <Textarea 
+                      placeholder="SNIPPET..." 
+                      value={formData.metaDescription}
+                      onChange={(e) => setFormData({...formData, metaDescription: e.target.value})}
+                      className="min-h-[80px] bg-slate-50 border-slate-200 rounded-xl text-[10px] font-bold p-3"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">SEO Tags</label>
+                    <Input 
+                      placeholder="SEARCH TERMS..." 
+                      value={formData.seoKeywords}
+                      onChange={(e) => setFormData({...formData, seoKeywords: e.target.value})}
+                      className="h-10 bg-slate-50 border-slate-200 rounded-xl text-[10px] font-bold uppercase"
                     />
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            )}
+
+            {/* Visual Tab */}
+            {activeTab === 'image' && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-right-2 duration-300">
+                <div className="flex items-center gap-2">
+                  <ImageIcon className="h-4 w-4 text-slate-400" />
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-900">Visual Assets</h3>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="space-y-3">
+                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Manual Upload</label>
+                    <div className="bg-white border-2 border-dashed border-slate-200 rounded-2xl overflow-hidden hover:border-primary/30 transition-all">
+                      <Dropzone 
+                        onUpload={(url) => setFormData({...formData, featureImage: url})} 
+                        currentImage={formData.featureImage} 
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Unsplash Search</label>
+                    <div className="flex gap-2">
+                      <Input 
+                        placeholder="SEARCH..." 
+                        value={imageSearchQuery}
+                        onChange={(e) => setImageSearchQuery(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleImageSearch()}
+                        className="h-10 bg-slate-50 border-slate-200 rounded-xl text-[10px] font-bold uppercase"
+                      />
+                      <Button onClick={handleImageSearch} disabled={isSearchingImage} className="h-10 w-10 p-0 bg-white border border-slate-200 hover:border-primary text-primary rounded-xl">
+                        {isSearchingImage ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
+                      </Button>
+                    </div>
+
+                    {searchResults.length > 0 && (
+                      <div className="grid grid-cols-2 gap-2 max-h-[400px] overflow-y-auto custom-scrollbar p-1">
+                        {searchResults.map((url, i) => (
+                          <div 
+                            key={url}
+                            onClick={() => setFormData({...formData, featureImage: url})}
+                            className={`relative aspect-video rounded-lg overflow-hidden cursor-pointer border-2 transition-all ${formData.featureImage === url ? 'border-primary ring-2 ring-primary/20' : 'border-transparent hover:border-slate-300'}`}
+                          >
+                             <img src={url} alt="" className="w-full h-full object-cover" />
+                             {formData.featureImage === url && (
+                               <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                                 <div className="bg-white rounded-full p-1 shadow-sm">
+                                   <Zap className="h-3 w-3 text-primary" />
+                                 </div>
+                               </div>
+                             )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
+

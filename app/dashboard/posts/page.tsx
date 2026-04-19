@@ -197,72 +197,72 @@ export default function DashboardPostsPage() {
       />
 
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 border-b border-slate-200 pb-10">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-200 pb-8">
         <div>
-          <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter uppercase leading-none text-primary">Content <span className="text-slate-300 group-hover:text-gray-900 transition-colors duration-500 italic">Library</span></h1>
-          <div className="flex items-center gap-3 mt-4">
-             <div className="w-8 h-[2px] bg-primary" />
-             <p className="text-slate-400 font-black text-[10px] tracking-[0.6em] uppercase">Network Management Terminal 2.0</p>
+          <h1 className="text-4xl md:text-5xl font-black tracking-tight uppercase leading-none text-slate-900">Content <span className="text-primary">Library</span></h1>
+          <div className="flex items-center gap-2 mt-3">
+             <div className="w-6 h-[2px] bg-primary" />
+             <p className="text-slate-400 font-bold text-[9px] tracking-[0.4em] uppercase">Security Level: Administrative</p>
           </div>
         </div>
         
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           {selectedIds.size > 0 && (
             <Button 
               onClick={handleBulkDelete}
               disabled={isBulkDeleting}
-              className="rounded-2xl h-16 px-10 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] shadow-glow-red transition-all active:scale-95"
+              className="rounded-xl h-12 px-6 bg-primary hover:bg-primary/90 text-white font-bold uppercase tracking-widest text-[9px] shadow-sm transition-all active:scale-95"
             >
               {isBulkDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4 mr-2" />}
-              Execute Purge ({selectedIds.size})
+              Purge ({selectedIds.size})
             </Button>
           )}
           <Link href="/dashboard/create">
-            <Button className="rounded-2xl h-16 px-10 bg-white hover:bg-slate-50 text-gray-900 border border-slate-200 font-black uppercase tracking-widest text-[10px] shadow-sm transition-all active:scale-95">
-              <Plus className="h-5 w-5 mr-3 text-primary" /> Initiate New Asset
+            <Button className="rounded-xl h-12 px-6 bg-white hover:bg-slate-50 text-gray-900 border border-slate-200 font-bold uppercase tracking-widest text-[9px] shadow-sm transition-all active:scale-95">
+              <Plus className="h-4 w-4 mr-2 text-primary" /> New Asset
             </Button>
           </Link>
         </div>
       </div>
 
       {/* Asset Table */}
-      <div className="rounded-[3rem] border border-slate-200 bg-white overflow-hidden shadow-premium">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader className="border-b border-slate-100 bg-slate-50/30">
-              <TableRow className="border-none hover:bg-transparent uppercase tracking-[0.2em] text-[10px] font-bold text-slate-400">
-                <TableHead className="w-12 py-4 pl-8 text-center">#</TableHead>
-                <TableHead className="w-12 py-4 px-2">
+      <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+        <div className="w-full">
+          <Table className="w-full">
+            <TableHeader className="border-b border-slate-100 bg-slate-50/50">
+              <TableRow className="border-none hover:bg-transparent uppercase tracking-[0.1em] text-[9px] font-bold text-slate-500">
+                <TableHead className="hidden sm:table-cell w-10 py-3 pl-4 text-center">#</TableHead>
+                <TableHead className="hidden sm:table-cell w-10 py-3 px-2">
                   <input 
                     type="checkbox" 
                     checked={selectedIds.size === posts.length && posts.length > 0} 
                     onChange={toggleSelectAll}
-                    className="h-4 w-4 rounded border-slate-200 bg-white appearance-none cursor-pointer checked:bg-primary checked:border-primary transition-all relative overflow-hidden"
+                    className="h-3.5 w-3.5 rounded border-slate-300 bg-white appearance-none cursor-pointer checked:bg-primary checked:border-primary transition-all"
                   />
                 </TableHead>
-                <TableHead className="py-4 pl-4">Title / Identity</TableHead>
-                <TableHead className="py-4 hidden md:table-cell">Category</TableHead>
-                <TableHead className="py-4 text-center">Status</TableHead>
-                <TableHead className="py-4 hidden lg:table-cell">Date Logged</TableHead>
-                <TableHead className="text-right pr-8 py-4">Actions</TableHead>
+                <TableHead className="py-3 pl-4">Asset Identity</TableHead>
+                <TableHead className="py-3 hidden md:table-cell">Category</TableHead>
+                <TableHead className="py-3 hidden sm:table-cell text-center">Status</TableHead>
+                <TableHead className="py-3 hidden lg:table-cell text-right pr-6">Timestamp</TableHead>
+                <TableHead className="text-right pr-4 py-3">Control</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading || !user ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-32">
-                     <div className="flex flex-col items-center gap-4 animate-pulse">
-                        <Zap className="h-8 w-8 text-primary animate-bounce shadow-glow-red" />
-                        <span className="font-bold tracking-[0.3em] uppercase text-[10px] text-slate-400">Syncing Network Assets...</span>
+                  <TableCell colSpan={7} className="text-center py-20">
+                     <div className="flex flex-col items-center gap-3">
+                        <Loader2 className="h-6 w-6 text-primary animate-spin" />
+                        <span className="font-bold tracking-[0.2em] uppercase text-[9px] text-slate-400">Syncing...</span>
                      </div>
                   </TableCell>
                 </TableRow>
               ) : posts.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-32">
-                     <div className="max-w-xs mx-auto space-y-3 opacity-20">
-                        <FileText className="h-10 w-10 mx-auto" />
-                        <p className="font-bold uppercase tracking-widest text-[10px]">Library Empty</p>
+                  <TableCell colSpan={7} className="text-center py-20">
+                     <div className="max-w-xs mx-auto space-y-2 opacity-30">
+                        <FileText className="h-8 w-8 mx-auto text-slate-400" />
+                        <p className="font-bold uppercase tracking-widest text-[9px]">Repository Empty</p>
                      </div>
                   </TableCell>
                 </TableRow>
@@ -273,83 +273,85 @@ export default function DashboardPostsPage() {
                   const isDeleting = actionLoading === postId + "_delete";
                   const isTogglingStatus = actionLoading === postId + "_status";
                   return (
-                    <TableRow key={postId} className={`border-none transition-all group ${isSelected ? 'bg-primary/5' : 'hover:bg-slate-50'}`}>
-                      <TableCell className="pl-8 py-3 text-center text-[11px] font-bold text-slate-400">
+                    <TableRow key={postId} className={`border-b border-slate-50 transition-all group ${isSelected ? 'bg-primary/[0.02]' : 'hover:bg-slate-50/50'}`}>
+                      <TableCell className="hidden sm:table-cell pl-4 py-4 text-center text-[10px] font-medium text-slate-400">
                         {index + 1}
                       </TableCell>
-                      <TableCell className="px-2 py-3">
+                      <TableCell className="hidden sm:table-cell px-2 py-4">
                         <input 
                           type="checkbox" 
                           checked={isSelected}
                           onChange={() => toggleSelect(postId)}
-                          className="h-4 w-4 rounded border-slate-200 bg-white appearance-none cursor-pointer checked:bg-primary checked:border-primary transition-all"
+                          className="h-3.5 w-3.5 rounded border-slate-300 bg-white appearance-none cursor-pointer checked:bg-primary checked:border-primary transition-all"
                         />
                       </TableCell>
-                      <TableCell className="py-3 pl-4">
-                        <div className="flex items-center gap-4">
-                          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-slate-100 bg-slate-50 shadow-sm">
+                      <TableCell className="py-4 pl-4 w-full sm:w-auto">
+                        <div className="flex items-center gap-3">
+                          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md border border-slate-200 bg-slate-50">
                             <Image 
                               src={post.feature_image_url || "https://images.unsplash.com/photo-1677442136019-21780ecad995"} 
                               alt={post.title} 
                               fill 
-                              className="object-cover transition-all duration-500 group-hover:scale-110" 
+                              className="object-cover" 
                             />
                           </div>
                           <div className="flex flex-col min-w-0">
-                             <span className="font-bold text-sm tracking-tight text-gray-900 truncate group-hover:text-primary transition-colors">{post.title}</span>
-                             <span className="text-[10px] font-medium text-slate-400 truncate uppercase tracking-wider">{post.slug}</span>
+                             <span className="font-bold text-sm tracking-tight text-slate-900 truncate max-w-[150px] md:max-w-xs">{post.title}</span>
+                             <span className="text-[9px] font-medium text-slate-400 truncate uppercase tracking-wider">{post.slug}</span>
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="hidden md:table-cell py-3">
-                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 py-1 bg-slate-100 rounded-md">
+                      <TableCell className="hidden md:table-cell py-4">
+                        <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest px-2 py-0.5 bg-slate-100 rounded border border-slate-200/50 text-nowrap">
                            {post.category || "General"}
                         </span>
                       </TableCell>
-                      <TableCell className="text-center py-3">
-                        <div className={cn(
-                          "inline-flex h-2 w-2 rounded-full mr-2",
-                          post.status === "published" ? "bg-primary animate-pulse shadow-glow-red" : "bg-slate-300"
-                        )} />
-                        <span className={cn(
-                          "text-[10px] font-bold uppercase tracking-widest",
-                          post.status === "published" ? "text-primary" : "text-slate-400"
-                        )}>
-                          {post.status}
-                        </span>
+                      <TableCell className="hidden sm:table-cell text-center py-4">
+                        <div className="flex items-center justify-center gap-2">
+                          <div className={cn(
+                            "h-1.5 w-1.5 rounded-full",
+                            post.status === "published" ? "bg-primary animate-pulse shadow-[0_0_8px_rgba(255,51,51,0.5)]" : "bg-slate-300"
+                          )} />
+                          <span className={cn(
+                            "text-[9px] font-bold uppercase tracking-widest",
+                            post.status === "published" ? "text-primary" : "text-slate-400"
+                          )}>
+                            {post.status}
+                          </span>
+                        </div>
                       </TableCell>
-                      <TableCell className="hidden lg:table-cell py-3 text-[10px] text-slate-400 font-bold uppercase tracking-tight">
+                      <TableCell className="hidden lg:table-cell py-4 text-[9px] text-slate-400 font-medium uppercase tracking-tight text-right pr-6">
                          {formatDate((post.createdAt || post.published_at || post.created_at || "") as string)}
                       </TableCell>
-                      <TableCell className="text-right pr-8 py-3">
-                        <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <TableCell className="text-right pr-4 py-4 whitespace-nowrap">
+                        <div className="flex items-center justify-end gap-0.5 sm:gap-1">
                           <Link href={`/blog/${post.slug}`} target="_blank">
-                             <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-slate-400 hover:text-gray-900 hover:bg-slate-200 transition-all">
-                                <ExternalLink className="h-4 w-4" />
+                             <Button variant="ghost" size="icon" className="h-7 w-7 rounded-md text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all">
+                                <ExternalLink className="h-3.5 w-3.5" />
                              </Button>
                           </Link>
                           <Link href={`/dashboard/edit/${post.slug}`}>
-                             <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-slate-400 hover:text-gray-900 hover:bg-slate-200 transition-all">
-                                <Pencil className="h-4 w-4" />
+                             <Button variant="ghost" size="icon" className="h-7 w-7 rounded-md text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all">
+                                <Pencil className="h-3.5 w-3.5" />
                              </Button>
                           </Link>
                           <Button
                             variant="ghost" 
                             size="icon"
-                            className="h-8 w-8 rounded-lg text-slate-400 hover:text-primary hover:bg-primary/10 transition-all"
+                            className="h-7 w-7 rounded-md text-slate-400 hover:text-primary hover:bg-primary/5 transition-all"
                             onClick={() => handleToggleStatus(post)}
                             disabled={isTogglingStatus || isDeleting}
                           >
-                            {isTogglingStatus ? <Loader2 className="h-4 w-4 animate-spin" /> : post.status === "published" ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                            {isTogglingStatus ? <Loader2 className="h-3 w-3 animate-spin" /> : post.status === "published" ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
                           </Button>
                           <Button
                             variant="ghost" 
                             size="icon"
-                            className="h-8 w-8 rounded-lg text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all"
+                            className="h-7 w-7 rounded-md text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all"
                             onClick={() => handleDeleteClick(post)}
                             disabled={isDeleting || isTogglingStatus}
                           >
-                            {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                            {isDeleting ? <Loader2 className="h-3 w-3 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
                           </Button>
                         </div>
                       </TableCell>

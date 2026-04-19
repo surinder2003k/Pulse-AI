@@ -40,7 +40,7 @@ export default function InfiniteMarquee({ images, className, speed = "medium" }:
               {/* Telemetry Labels */}
               <div className="absolute bottom-6 left-8 right-8 flex items-center justify-between opacity-0 group-hover/item:opacity-100 transition-all duration-500 translate-y-4 group-hover/item:translate-y-0">
                  <div className="flex flex-col">
-                   <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary italic">Identity Locked</span>
+                   <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary">Identity Locked</span>
                    <span className="text-[9px] font-mono text-white/40 uppercase">Ref: 0{idx + 1}-SQR</span>
                  </div>
                  <div className="h-8 w-8 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center">

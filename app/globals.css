@@ -93,7 +93,7 @@
 }
 
 .rich-text-output blockquote {
-  @apply border-l-4 border-primary bg-primary/5 p-6 md:p-8 rounded-lg italic text-lg text-gray-700 font-medium mb-8;
+  @apply border-l-4 border-primary bg-primary/5 p-6 md:p-8 rounded-lg text-lg text-gray-700 font-medium mb-8;
 }
 
 .rich-text-output ul, .rich-text-output ol {
@@ -105,5 +105,5 @@
 }
 
 .rich-text-output a {
-  @apply text-primary no-underline hover:underline font-semibold transition-all;
+  @apply text-primary no-underline font-semibold transition-all;
 }

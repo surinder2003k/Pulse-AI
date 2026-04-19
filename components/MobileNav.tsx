@@ -55,7 +55,7 @@ export default function MobileNav() {
                   isActive ? "drop-shadow-sm" : ""
                 )}
               />
-              <span className="text-[7px] font-black uppercase tracking-[0.2em] italic">
+              <span className="text-[7px] font-black uppercase tracking-[0.2em]">
                 {item.name}
               </span>
             </Link>

@@ -8,9 +8,18 @@ export default function LoadingScreen() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Check if session has already displayed loading
+    const hasLoaded = sessionStorage.getItem("pulse_ai_loader_displayed");
+    
+    if (hasLoaded) {
+      setLoading(false);
+      return;
+    }
+
     // Only show for some time to give a premium feel
     const timer = setTimeout(() => {
       setLoading(false);
+      sessionStorage.setItem("pulse_ai_loader_displayed", "true");
     }, 1200);
 
     return () => clearTimeout(timer);

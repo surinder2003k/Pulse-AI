@@ -3,6 +3,7 @@ import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Providers } from "../components/Providers";
+import { SoundProvider } from "@/components/SoundProvider";
 import ScrollToTop from "@/components/ScrollToTop";
 import AuthErrorRelay from "@/components/AuthErrorRelay";
 import Script from "next/script";
@@ -117,11 +118,13 @@ export default function RootLayout({
         </noscript>
 
         <ClerkProvider>
-          <Providers>
-            {children}
-            <ScrollToTop />
-            <AuthErrorRelay />
-          </Providers>
+          <SoundProvider>
+            <Providers>
+              {children}
+              <ScrollToTop />
+              <AuthErrorRelay />
+            </Providers>
+          </SoundProvider>
         </ClerkProvider>
       </body>
     </html>

@@ -15,9 +15,6 @@ export default function DashboardLayout({
       <div className="flex-1 flex flex-col relative overflow-hidden">
         <MobileTopHeader />
         <main className="flex-1 p-4 pb-32 md:pb-10 md:p-14 overflow-y-auto custom-scrollbar">
-          <Link href="/" className="relative z-50 group border-none outline-none">
-            <Logo size="sm" playSoundOnHover={true} />
-          </Link>
           {children}
         </main>
       </div>

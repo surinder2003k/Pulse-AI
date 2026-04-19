@@ -77,12 +77,12 @@ export default function Logo({ className, size = "md", showText = true, playSoun
       {showText && (
         <div className="flex flex-col gap-0.5">
           <span className={cn(
-            "font-black tracking-tighter uppercase italic text-gray-900 group-hover:text-primary transition-colors",
+            "font-black tracking-tighter uppercase text-gray-900 group-hover:text-primary transition-colors",
             size === "sm" ? "text-xl" : 
             size === "md" ? "text-3xl" : 
             size === "lg" ? "text-5xl" : "text-7xl"
           )}>
-            Pulse<span className="text-primary italic">AI</span>
+            Pulse<span className="text-primary">AI</span>
           </span>
           {size !== "sm" && (
             <span className={cn(

@@ -8,12 +8,14 @@ import { LayoutDashboard, PenSquare, Menu, X, Zap, ChevronRight } from "lucide-r
 import { useState, useEffect } from "react";
 import Logo from "./Logo";
 import { cn, ADMIN_EMAIL } from "@/lib/utils";
+import { useSound } from "./SoundProvider";
 
 export default function Navbar() {
   const { isSignedIn, user } = useUser();
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { playSound } = useSound();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,6 +25,10 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  if (pathname.startsWith('/dashboard') || pathname.startsWith('/admin')) {
+    return null;
+  }
+
   const isAdmin = user?.primaryEmailAddress?.emailAddress === ADMIN_EMAIL;
 
   const navLinks = [
@@ -31,11 +37,7 @@ export default function Navbar() {
   ];
 
   const playHoverSound = (path: string) => {
-    try {
-      const audio = new Audio(path);
-      audio.volume = 0.2;
-      audio.play().catch(() => {});
-    } catch (e) {}
+    playSound(path, 0.2);
   };
 
   return (
@@ -256,17 +258,7 @@ export default function Navbar() {
                 )}
               </div>
 
-              {/* Exit Network */}
-              {isSignedIn && (
-                <div className="p-8 border-t border-gray-100 mt-auto">
-                   <Link href="/sign-in" className="flex items-center gap-3 text-gray-400 hover:text-red-500 transition-all group">
-                      <div className="h-10 w-10 rounded-xl border border-gray-200 flex items-center justify-center group-hover:border-red-200 group-hover:bg-red-50 transition-all">
-                        <X className="w-5 h-5" />
-                      </div>
-                      <span className="text-[10px] font-black uppercase tracking-[0.3em]">Exit Network</span>
-                   </Link>
-                </div>
-              )}
+
             </motion.div>
           </>
         )}

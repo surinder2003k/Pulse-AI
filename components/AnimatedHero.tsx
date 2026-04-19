@@ -81,9 +81,6 @@ export default function AnimatedHero() {
             <span>Design</span>
             <span className="text-primary relative inline-block leading-tight">
               Intelligence
-              <div className="absolute -bottom-1 left-0 w-full h-[3px] bg-primary/20 rounded-full overflow-hidden">
-                 <div className="h-full w-1/3 bg-primary animate-scan" />
-              </div>
             </span>
           </h1>
         </div>

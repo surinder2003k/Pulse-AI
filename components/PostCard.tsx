@@ -46,10 +46,9 @@ export default function PostCard({ post, index = 0 }: PostCardProps) {
           {/* Bottom Info Floating on Glass */}
           <div className="absolute bottom-6 left-6 right-6">
             <div className="flex items-center gap-3">
-               <div className="h-[2px] w-6 bg-primary transition-all group-hover:w-12" />
-               <span className="text-xs font-bold uppercase tracking-widest text-white/90 group-hover:text-primary transition-colors">
-                 {post.category}
-               </span>
+                <span className="text-xs font-bold uppercase tracking-widest text-white/90 group-hover:text-primary transition-colors">
+                  {post.category}
+                </span>
             </div>
           </div>
         </div>

@@ -157,11 +157,11 @@ export default function AdminUserList({
       <div className="rounded-[2.5rem] border border-white/5 bg-secondary/5 overflow-hidden shadow-skeuo-in">
         <Table>
           <TableHeader className="bg-black/40">
-            <TableRow className="hover:bg-transparent border-white/5 uppercase tracking-[0.4em] text-[10px] font-black italic">
-              <TableHead className="py-8 px-10 text-white/30">Identifier</TableHead>
-              <TableHead className="py-8 text-white/30">Network Node (Email)</TableHead>
-              <TableHead className="py-8 text-white/30">Clearance</TableHead>
-              <TableHead className="py-8 text-white/30">Uplinked</TableHead>
+            <TableRow className="hover:bg-transparent border-white/5 uppercase tracking-[0.4em] text-[10px] font-black">
+              <TableHead className="py-8 px-10 text-white/30 text-left">Identifier</TableHead>
+              <TableHead className="py-8 text-white/30 text-left">Network Node (Email)</TableHead>
+              <TableHead className="py-8 text-white/30 text-left">Clearance</TableHead>
+              <TableHead className="py-8 text-white/30 text-left">Uplinked</TableHead>
               <TableHead className="text-right py-8 px-10 text-white/30">Protocols</TableHead>
             </TableRow>
           </TableHeader>
@@ -173,7 +173,7 @@ export default function AdminUserList({
                     <div className="h-12 w-12 rounded-2xl bg-secondary/20 flex items-center justify-center border border-white/10 shadow-skeuo-button group-hover:bg-primary/10 group-hover:border-primary/20 transition-all">
                       <UserIcon className="h-5 w-5 text-white/40 group-hover:text-primary transition-colors" />
                     </div>
-                    <span className="font-black text-lg text-white group-hover:text-primary transition-colors italic uppercase tracking-tighter">{user.name}</span>
+                    <span className="font-black text-lg text-white group-hover:text-primary transition-colors uppercase tracking-tighter">{user.name}</span>
                   </div>
                 </TableCell>
                 <TableCell className="text-white/40 font-bold text-xs uppercase tracking-widest">{user.email}</TableCell>
@@ -186,8 +186,8 @@ export default function AdminUserList({
                     {user.role}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-[10px] text-white/20 font-black uppercase tracking-tighter italic">
-                  {user.created_at}
+                <TableCell className="text-[10px] text-white/20 font-black uppercase tracking-tighter">
+                  {user.joined}
                 </TableCell>
                 <TableCell className="text-right px-10">
                   <div className="flex items-center justify-end gap-4 opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0 transition-all duration-300">

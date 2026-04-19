@@ -197,7 +197,7 @@ export default function DashboardOverview() {
               <ShieldCheck className="h-7 w-7 text-primary" />
            </div>
            <div className="space-y-1">
-             <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic leading-none text-gray-900">
+             <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase leading-none text-gray-900">
                Operational <span className="text-slate-300 group-hover:text-primary transition-colors duration-500">Core</span>
              </h1>
              <p className="text-[10px] font-mono text-slate-400 uppercase tracking-[0.4em]">Sector: User-Matrix // Status: Active</p>
@@ -205,8 +205,8 @@ export default function DashboardOverview() {
         </div>
         
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-l-[1px] border-slate-200 pl-6 py-2">
-          <p className="text-slate-500 font-black uppercase tracking-[0.2em] text-[10px] max-w-2xl italic">
-            SECURE UPLINK ESTABLISHED // <span className="text-primary italic">{user?.emailAddresses?.[0]?.emailAddress || "GUEST_IDENTITY"}</span> // MONITORING PROTOCOLS...
+          <p className="text-slate-500 font-black uppercase tracking-[0.2em] text-[10px] max-w-2xl">
+            SECURE UPLINK ESTABLISHED // <span className="text-primary">{user?.emailAddresses?.[0]?.emailAddress || "GUEST_IDENTITY"}</span> // MONITORING PROTOCOLS...
           </p>
           
           {isAdmin && (
@@ -214,7 +214,7 @@ export default function DashboardOverview() {
               onClick={handleRunAutomation}
               onMouseEnter={() => playHoverSound('/sounds/fahhhhhhhhhhhhhh.mp3')}
               disabled={isAutomating}
-              className="h-14 px-10 rounded-2xl bg-white hover:bg-slate-50 text-gray-900 border border-slate-200 shadow-sm transition-all font-black uppercase italic tracking-widest text-[11px] flex gap-3 group active:scale-95"
+              className="h-14 px-10 rounded-2xl bg-white hover:bg-slate-50 text-gray-900 border border-slate-200 shadow-sm transition-all font-black uppercase tracking-widest text-[11px] flex gap-3 group active:scale-95"
             >
               {isAutomating ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -232,7 +232,6 @@ export default function DashboardOverview() {
         {[
           { label: "Total Population", value: stats.totalUsers, icon: Users, color: "text-blue-500", bg: "bg-blue-50" },
           { label: "Knowledge Nodes", value: stats.systemPosts, icon: FileText, color: "text-red-500", bg: "bg-red-50" },
-          { label: "Synthesis Rate", value: stats.successRate, icon: Activity, color: "text-green-500", bg: "bg-green-50" },
           { label: "Uplink Health", value: stats.apiHealth, icon: Zap, color: "text-yellow-500", bg: "bg-yellow-50" }
         ].map((item, i) => (
           <Card key={i} className="bg-white border-slate-200 rounded-[3rem] shadow-sm overflow-hidden transition-all hover:scale-[1.02] hover:shadow-premium group cursor-default">
@@ -245,11 +244,11 @@ export default function DashboardOverview() {
                 </div>
               </div>
               <div className="space-y-2">
-                 <p className="text-5xl font-black tracking-tighter text-gray-900 italic transition-all group-hover:text-primary">{item.value}</p>
+                 <p className="text-5xl font-black tracking-tighter text-gray-900 transition-all group-hover:text-primary">{item.value}</p>
                  {item.label === "Knowledge Nodes" && (
                    <div className="pt-4">
                       <Link href="/dashboard/posts">
-                        <Button variant="ghost" className="h-10 w-full rounded-2xl bg-slate-50 text-[9px] font-black uppercase tracking-widest text-slate-500 hover:text-gray-900 hover:bg-slate-100 border border-slate-100 transition-all italic">
+                        <Button variant="ghost" className="h-10 w-full rounded-2xl bg-slate-50 text-[9px] font-black uppercase tracking-widest text-slate-500 hover:text-gray-900 hover:bg-slate-100 border border-slate-100 transition-all">
                           Directory Access
                         </Button>
                       </Link>
@@ -267,10 +266,10 @@ export default function DashboardOverview() {
           <div className="flex items-center gap-4">
              <Users className="h-6 w-6 text-primary" />
              <div className="space-y-1">
-               <h2 className="text-3xl font-black tracking-tighter uppercase italic text-gray-900">Access <span className="text-slate-300">/ Network</span></h2>
+               <h2 className="text-3xl font-black tracking-tighter uppercase text-gray-900">Access <span className="text-slate-300">/ Network</span></h2>
                <p className="text-[9px] font-mono text-slate-400 uppercase tracking-[0.4em]">Protocol: User-Registry // Level: Restricted</p>
              </div>
-             <Badge className="bg-primary/5 text-primary border-primary/20 ml-auto rounded-full px-5 py-2 font-black text-[10px] uppercase tracking-widest backdrop-blur-2xl italic">System_Admin_Session</Badge>
+             <Badge className="bg-primary/5 text-primary border-primary/20 ml-auto rounded-full px-5 py-2 font-black text-[10px] uppercase tracking-widest backdrop-blur-2xl">System_Admin_Session</Badge>
           </div>
 
           <div className="rounded-[4rem] border border-slate-200 bg-white overflow-hidden shadow-premium group min-h-[400px]">
@@ -305,10 +304,10 @@ export default function DashboardOverview() {
                           <td className="px-12 py-10">
                             <div className="flex items-center gap-5">
                               <div className="h-12 w-12 rounded-2xl bg-slate-50 flex items-center justify-center border border-slate-100 shadow-sm group-hover:border-primary/30 transition-all duration-500">
-                                <span className="text-primary font-black uppercase tracking-tighter text-sm italic">{usr.name.charAt(0)}</span>
+                                <span className="text-primary font-black uppercase tracking-tighter text-sm">{usr.name.charAt(0)}</span>
                               </div>
                               <div className="flex flex-col gap-1">
-                                <span className="font-black text-gray-900 uppercase tracking-wider italic text-sm group-hover:text-primary transition-colors">
+                                <span className="font-black text-gray-900 uppercase tracking-wider text-sm group-hover:text-primary transition-colors">
                                   {usr.name} {isTargetSelf && <span className="text-primary lowercase tracking-normal">(you)</span>}
                                 </span>
                                 <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">ID: {usr.id.slice(-6)}</span>
@@ -320,10 +319,11 @@ export default function DashboardOverview() {
                           </td>
                           <td className="px-12 py-10 text-center">
                             <Badge className={cn(
-                              "rounded-full px-5 py-2 text-[10px] font-black uppercase tracking-widest italic transition-all",
-                              usr.role === 'admin' ? "bg-primary text-white" : "bg-slate-100 text-slate-500 border-slate-200"
+                              "text-[10px] font-black uppercase border-none px-4 py-1.5 rounded-full shadow-skeuo-button transition-all",
+                              usr.role === "admin" ? "bg-red-600 text-white shadow-[0_0_15px_rgba(220,38,38,0.4)]" : "bg-slate-200 text-slate-600"
                             )}>
-                              {usr.role}
+                              {usr.role === "admin" && <Shield className="h-3 w-3 mr-2" />}
+                              {usr.role === "admin" ? "ADMIN CLEARANCE" : "STANDARD USER"}
                             </Badge>
                           </td>
                           <td className="px-12 py-10 text-center">
@@ -351,7 +351,7 @@ export default function DashboardOverview() {
                                   </button>
                                 </div>
                               ) : (
-                                <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 border border-slate-100 italic font-black text-[9px] uppercase tracking-tighter" title={isTargetSelf ? "Self-management restricted" : "Root access protected"}>
+                                <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 border border-slate-100 font-black text-[9px] uppercase tracking-tighter" title={isTargetSelf ? "Self-management restricted" : "Root access protected"}>
                                   <Lock className="h-4 w-4" />
                                 </div>
                               )}
@@ -382,12 +382,12 @@ export default function DashboardOverview() {
                     </div>
                  </div>
                  <div className="space-y-2">
-                   <h3 className="text-3xl font-black uppercase tracking-tighter italic text-gray-900">Neural Synthesis</h3>
+                   <h3 className="text-3xl font-black uppercase tracking-tighter text-gray-900">Neural Synthesis</h3>
                    <p className="text-slate-400 font-black uppercase text-[10px] tracking-[0.4em]">Propagating Editorial Matrix...</p>
                  </div>
               </div>
               <div className="space-y-4 relative z-10">
-                 <div className="flex justify-between text-[11px] font-black uppercase tracking-[0.3em] text-primary italic">
+                 <div className="flex justify-between text-[11px] font-black uppercase tracking-[0.3em] text-primary">
                     <span>Synchronizing</span>
                     <span>{automationProgress}%</span>
                  </div>

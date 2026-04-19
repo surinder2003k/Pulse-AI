@@ -126,9 +126,10 @@ export default async function HomePage() {
                   { name: "Intelligence", href: "/dashboard" },
                   { name: "Editorial", href: "/blog" },
                   { name: "Archive", href: "/blog" },
-                  { name: "Terminal", href: "/admin" }
+                  { name: "Terminal", href: "/admin" },
+                  { name: "Partner Site", href: "https://xylos-ai-agency.vercel.app/" }
                 ].map(link => (
-                  <Link key={link.name} href={link.href} className="text-sm font-semibold tracking-wider text-gray-500 hover:text-gray-900 transition-colors duration-300">
+                  <Link key={link.name} href={link.href} target={link.name === "Partner Site" ? "_blank" : undefined} className="text-sm font-semibold tracking-wider text-gray-500 hover:text-gray-900 transition-colors duration-300">
                     {link.name}
                   </Link>
                 ))}

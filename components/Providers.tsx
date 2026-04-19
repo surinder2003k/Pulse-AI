@@ -41,19 +41,17 @@ export function Providers({ children }: { children: React.ReactNode }) {
           expand={true}
           toastOptions={{
             style: {
-              background: 'white',
-              border: '1px solid #FF3333',
-              color: '#0F172A',
-              borderRadius: '1.25rem',
-              boxShadow: '0 20px 25px -5px rgba(255, 51, 51, 0.1)',
-              padding: '1.25rem 2rem',
-              fontSize: '0.75rem',
-              fontWeight: '800',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              fontFamily: 'var(--font-space)'
+              background: '#ffffff',
+              border: '1px solid #e2e8f0',
+              color: '#0f172a',
+              borderRadius: '0.5rem',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+              padding: '1rem',
+              fontSize: '0.875rem',
+              fontWeight: '500',
+              fontFamily: 'var(--font-inter)'
             },
-            className: 'premium-toast',
+            className: '',
           }}
         />
       </ThemeProvider>
