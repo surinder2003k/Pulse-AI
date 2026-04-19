@@ -30,6 +30,13 @@ import RichTextEditor from "@/components/RichTextEditor";
 export default function CreatePostPage() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [prompt, setPrompt] = useState("");
+  const [generatedPostId, setGeneratedPostId] = useState<string | null>(null);
+  const [imageSearchQuery, setImageSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<string[]>([]);
+  const [isSearchingImage, setIsSearchingImage] = useState(false);
 
   useEffect(() => {
     setMounted(true);
