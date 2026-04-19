@@ -130,7 +130,20 @@ export default function CreatePostPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title) return toast.error("TITLE IS REQUIRED.");
+    
+    const missingFields = [];
+    if (!formData.title?.trim()) missingFields.push("TITLE");
+    if (!formData.content?.trim()) missingFields.push("CONTENT");
+    
+    if (missingFields.length > 0) {
+      toast.error(`MISSING FIELDS: ${missingFields.join(" AND ")} REQUIRED.`);
+      try {
+        const audio = new Audio("/sounds/aisa-mat-karo-meri-jaan.mp3");
+        audio.play().catch(err => console.log("Audio playback failed:", err));
+      } catch (e) {}
+      return;
+    }
+    
     setIsPublishing(true);
     
     try {
