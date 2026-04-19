@@ -180,7 +180,7 @@ export default function DashboardPostsPage() {
       setActionLoading(null);
     }
   };
-
+  return (
     <div className="space-y-6 pb-20 p-4 md:p-6 w-full">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-200 pb-8">
         <div>
