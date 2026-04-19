@@ -3,29 +3,33 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Search as SearchIcon, Loader2 } from "lucide-react";
-import { useTransition } from "react";
+import { useTransition, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 export default function Search() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
+  const [query, setQuery] = useState(searchParams.get("q") || "");
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      startTransition(() => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (query) {
+          params.set("q", query);
+        } else {
+          params.delete("q");
+        }
+        router.push(`/blog?${params.toString()}`);
+      });
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [query, router, searchParams]);
 
   const handleSearch = (term: string) => {
-    startTransition(() => {
-      const params = new URLSearchParams(searchParams.toString());
-      if (term) {
-        params.set("q", term);
-      } else {
-        params.delete("q");
-      }
-      
-      const timeoutId = setTimeout(() => {
-        router.push(`/blog?${params.toString()}`);
-      }, 500);
-      
-      return () => clearTimeout(timeoutId);
-    });
+    setQuery(term);
   };
 
   return (
