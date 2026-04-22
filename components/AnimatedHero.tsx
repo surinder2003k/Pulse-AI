@@ -93,7 +93,7 @@ export default function AnimatedHero() {
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 mt-6 z-10 w-full max-w-md sm:max-w-none px-4 sm:px-0">
         <Link href="/dashboard" className="w-full sm:w-auto">
           <button 
-            onMouseEnter={() => playHoverSound('/sounds/fahhhhhhhhhhhhhh.mp3')}
+            onMouseEnter={() => playHoverSound('/sounds/are-baap-re-yaad-aya.mp3')}
             className="hero-btn opacity-0 w-full sm:w-auto group relative overflow-hidden rounded-[2rem] px-10 md:px-14 h-14 md:h-16 text-[11px] font-black uppercase tracking-[0.4em] text-white transition-all bg-primary hover:glow-red-strong shadow-premium hover:scale-[1.05] active:scale-95 flex items-center justify-center gap-4"
           >
             <span className="relative z-10 flex items-center gap-4">

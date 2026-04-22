@@ -53,12 +53,24 @@ export default function MarkdownRenderer({ content, className }: MarkdownRendere
     
     text = text.replace(/<(b|strong).*?>(.*?)<\/\1>/gi, '**$2**');
     text = text.replace(/<(i|em).*?>(.*?)<\/\1>/gi, '*$2*');
+    text = text.replace(/<u>(.*?)<\/u>/gi, '**$1**'); // Convert underline to bold
+    text = text.replace(/<s|strike>(.*?)<\/(s|strike)>/gi, '~~$1~~'); // Strikethrough
     text = text.replace(/<a\s+href=["'](.*?)["'].*?>(.*?)<\/a>/gi, '[$2]($1)');
     text = text.replace(/<br\s*\/?>/gi, '\n');
     text = text.replace(/<p.*?>(.*?)<\/p>/gi, '$1\n\n');
     text = text.replace(/<h([1-6]).*?>(.*?)<\/h\1>/gi, (match, level, content) => {
-      return '\n' + '#'.repeat(level) + ' ' + content + '\n';
+      return '\n\n' + '#'.repeat(level) + ' ' + content + '\n\n';
     });
+    
+    // Rich Text Lists
+    text = text.replace(/<\/?(ul|ol)[^>]*>/gi, '\n\n');
+    text = text.replace(/<li[^>]*>(.*?)<\/li>/gi, '- $1\n');
+
+    // Strip remaining stylistic HTML tags (like Quill's inline spans or divs)
+    text = text.replace(/<\/?span[^>]*>/gi, '');
+    text = text.replace(/<\/?div[^>]*>/gi, '');
+    text = text.replace(/<\/?u>/gi, ''); // Fallback for unmatched <u>
+
 
     // 3.5 Strip internal AI metadata labels (e.g., "Asset 01 // Narrative Context")
     text = text.replace(/^\s*Asset \d+ \/\/ .*$/gm, '');
