@@ -108,41 +108,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 6. Footer Terminal Theme */}
-      <footer className="relative z-10 py-12 md:py-16 border-t border-gray-100 bg-gray-50">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col items-center gap-10">
-             <div className="flex flex-col items-center gap-5">
-                <Logo size="md" />
-                <div className="flex items-center gap-4 text-gray-400">
-                   <div className="w-12 h-[1px] bg-gray-200" />
-                   <p className="text-xs font-semibold uppercase tracking-widest text-gray-500">Pulse AI Protocol 2.0</p>
-                   <div className="w-12 h-[1px] bg-gray-200" />
-                </div>
-             </div>
-             
-             <div className="flex flex-wrap justify-center gap-8 md:gap-14">
-                {[
-                  { name: "Intelligence", href: "/dashboard" },
-                  { name: "Editorial", href: "/blog" },
-                  { name: "Archive", href: "/blog" },
-                  { name: "Terminal", href: "/admin" },
-                  { name: "Partner Site", href: "https://xylos-ai-agency.vercel.app/" }
-                ].map(link => (
-                  <Link key={link.name} href={link.href} target={link.name === "Partner Site" ? "_blank" : undefined} title={link.name} className="text-sm font-semibold tracking-wider text-gray-500 hover:text-gray-900 transition-colors duration-300">
-                    {link.name}
-                  </Link>
-                ))}
-             </div>
-             
-             <div className="text-center pt-8">
-                <span className="text-xs font-semibold uppercase tracking-widest text-gray-400">
-                  © 2024 PULSE AI NETWORK. ALL RIGHTS RESERVED.
-                </span>
-             </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

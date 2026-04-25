@@ -73,6 +73,8 @@ export const viewport = {
   themeColor: "#ffffff",
 };
 
+import Footer from "@/components/Footer";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -88,7 +90,7 @@ export default function RootLayout({
         <meta name="google-adsense-account" content="ca-pub-1636293815318839" />
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1636293815318839" crossOrigin="anonymous"></script>
       </head>
-      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans min-h-screen bg-background text-foreground antialiased`}>
+      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans min-h-screen flex flex-col bg-background text-foreground antialiased`}>
         {/* Google Tag Manager - Integrated via next/script for optimal performance */}
         <Script id="gtm-script" strategy="afterInteractive">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -126,7 +128,10 @@ export default function RootLayout({
           <SoundProvider>
             <Providers>
               <Navbar />
-              {children}
+              <main className="flex-grow">
+                {children}
+              </main>
+              <Footer />
               <ScrollToTop />
               <AuthErrorRelay />
             </Providers>
