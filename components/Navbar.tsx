@@ -101,7 +101,6 @@ export default function Navbar() {
                   <Link 
                     href="/dashboard" 
                     title="Access Dashboard" 
-                    onClick={() => playSound("/sounds/wow-kya-ladka-hai-very-handsome-boy.mp3", 0.3)}
                     className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-all group"
                   >
                     <LayoutDashboard className="w-4 h-4 text-primary group-hover:scale-110 transition-transform" />

@@ -27,7 +27,6 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Dropzone from "@/components/Dropzone";
-import RichTextEditor from "@/components/RichTextEditor";
 
 export default function CreatePostPage() {
   const router = useRouter();
@@ -264,22 +263,21 @@ export default function CreatePostPage() {
               </div>
 
               {/* Content */}
-              <div className="space-y-3 flex-1 flex flex-col">
-                 <div className="flex items-center gap-2">
-                   <span className="text-slate-400 font-mono text-xs font-bold">{'>_'}</span>
-                   <label className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em]">Content</label>
+               <div className="space-y-3 flex-1 flex flex-col">
+                 <div className="flex items-center justify-between">
+                   <div className="flex items-center gap-2">
+                     <span className="text-slate-400 font-mono text-xs font-bold">{'>_'}</span>
+                     <label className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em]">Content (Markdown)</label>
+                   </div>
+                   <span className="text-[8px] bg-primary/10 text-primary px-2 py-0.5 rounded font-bold uppercase tracking-widest">Markdown</span>
                  </div>
-                 <div className="flex-1 bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm flex flex-col min-h-[400px]">
-                   {mounted ? (
-                     <RichTextEditor 
-                       value={formData.content}
-                       onChange={(val) => setFormData({...formData, content: val})}
-                     />
-                   ) : (
-                     <div className="flex-1 w-full bg-slate-50 animate-pulse" />
-                   )}
-                 </div>
-              </div>
+                 <Textarea
+                   placeholder="Write your content in Markdown format... (## Heading, **bold**, - list items)"
+                   value={formData.content}
+                   onChange={(e) => setFormData({...formData, content: e.target.value})}
+                   className="flex-1 min-h-[500px] text-sm font-mono bg-[#F8FAFC] border border-slate-100 rounded-2xl px-6 py-5 focus-visible:ring-1 focus-visible:ring-primary/30 resize-none leading-relaxed"
+                 />
+               </div>
 
               {/* Bottom Readability Bar */}
               <div className="flex items-center justify-between pt-6 border-t border-slate-100">

@@ -20,7 +20,6 @@ import {
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import RichTextEditor from "@/components/RichTextEditor";
 import SEOAnalyzer from "@/components/SEOAnalyzer";
 import PremiumAlert from "@/components/PremiumAlert";
 
@@ -244,14 +243,12 @@ export default function EditPostPage({ params }: EditPostPageProps) {
                   </div>
                   
                   <div className="bg-white rounded-3xl border border-slate-200 p-1 shadow-sm overflow-hidden">
-                    {mounted ? (
-                      <RichTextEditor 
-                        value={formData.content}
-                        onChange={(val) => setFormData({...formData, content: val})}
-                      />
-                    ) : (
-                      <div className="h-96 w-full bg-slate-50 animate-pulse rounded-2xl border border-slate-100" />
-                    )}
+                    <Textarea
+                      placeholder="Write in Markdown... (## Heading, **bold**, - list items)"
+                      value={formData.content}
+                      onChange={(e) => setFormData({...formData, content: e.target.value})}
+                      className="min-h-[500px] w-full bg-slate-50 border-0 text-sm font-mono p-6 focus-visible:ring-1 focus-visible:ring-primary/30 resize-none leading-relaxed rounded-3xl"
+                    />
                   </div>
 
                   <div className="mt-6">
