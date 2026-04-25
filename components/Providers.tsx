@@ -7,7 +7,6 @@ import NextTopLoader from "nextjs-toploader";
 import SplashLoader from "./SplashLoader";
 import ParticleBackground from "./ParticleBackground";
 import Navbar from "./Navbar";
-import SiteLoadSound from "./SiteLoadSound";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);

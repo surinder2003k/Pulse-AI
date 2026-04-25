@@ -63,7 +63,6 @@ export default function Navbar() {
             href="/" 
             className="relative z-50 group"
             title="Pulse AI - Home"
-            onClick={() => playSound("/sounds/romanceeeeeeeeeeeeee.mp3", 0.4)}
           >
             <Logo size="sm" playSoundOnHover={true} />
           </Link>
