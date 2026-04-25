@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
-import { Calendar, Eye, Clock, ArrowRight, Zap, TrendingUp } from "lucide-react";
-import { calculateReadingTime, cn } from "@/lib/utils";
+import { Calendar, ArrowRight, Zap } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface PostCardProps {
   post: any;
@@ -12,7 +12,7 @@ interface PostCardProps {
 }
 
 export default function PostCard({ post, index = 0 }: PostCardProps) {
-  const readingTime = calculateReadingTime(post.content || "");
+
 
   return (
     <motion.div
@@ -64,7 +64,7 @@ export default function PostCard({ post, index = 0 }: PostCardProps) {
                 return !isNaN(date.getTime()) ? format(date, 'MMM dd, yyyy • hh:mm a') : 'N/A';
               })()}
             </span>
-            <span className="flex items-center gap-2 text-primary/80 group-hover:text-primary transition-colors"><Clock className="h-3.5 w-3.5" /> {readingTime}</span>
+
           </div>
 
           <h3 className="text-xl md:text-2xl font-bold text-gray-900 leading-tight tracking-tight group-hover:text-primary transition-colors duration-300 line-clamp-2">

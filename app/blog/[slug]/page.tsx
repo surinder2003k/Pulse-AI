@@ -3,12 +3,12 @@ import Post, { IPost } from "@/models/Post";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { format } from "date-fns";
-import { formatDate, calculateReadingTime } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import ShareButtons from "@/components/ShareButtons";
 import RelatedPosts from "@/components/RelatedPosts";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, User, ChevronLeft, Sparkles, Zap, Pencil } from "lucide-react";
+import { Calendar, User, ChevronLeft, Sparkles, Zap, Pencil } from "lucide-react";
 import Link from "next/link";
 
 import { clerkClient, auth } from "@clerk/nextjs/server";
@@ -111,7 +111,7 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
     }
   }
 
-  const readingTime = calculateReadingTime(post.content);
+
   const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL || ''}/blog/${post.slug}`;
 
   return (
@@ -137,7 +137,6 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
                   return !isNaN(date.getTime()) ? format(date, 'MMM dd, yyyy • hh:mm a') : 'N/A';
                 })()}
               </span>
-              <span className="flex items-center gap-3"><Clock className="h-4 w-4 text-primary" /> {readingTime} READ</span>
             </div>
           </div>
 
