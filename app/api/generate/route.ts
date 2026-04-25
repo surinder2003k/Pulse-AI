@@ -60,7 +60,7 @@ export async function POST(req: Request) {
     Write a premium, definitive report based on: "${userPrompt}"
     
     CRITICAL INSTRUCTIONS:
-    1. WORD COUNT: 1200-1800 words. Deep analysis, no filler.
+    1. WORD COUNT: 1300-1500 words. Deep analysis, no filler.
     2. MARKDOWN ONLY: Use ## and ### headers. NEVER use HTML tags like <h2> or <p>.
     3. MEDIA: Keep the [[BODY_IMAGE_1]] and [[BODY_IMAGE_2]] placeholders exactly as they are on their own lines.
     4. LINKS: ${linksContext}

@@ -87,7 +87,7 @@ export async function GET(req: Request) {
       
       Write a highly optimized, fully SEO-friendly, comprehensive article about this NEW trending ${settings.automationCategory} topic.
       
-      The article MUST be detailed and long-form, approximately 1000 to 1200 words.
+      The article MUST be detailed and long-form, approximately 1300 to 1500 words.
       Use proper headings, bullet points, and structure for readability and SEO ranking.
       
       Format the response STRICTLY as a JSON object with these exact keys:
@@ -96,7 +96,7 @@ export async function GET(req: Request) {
         "meta_title": "A custom SEO title for Google (max 60 chars)",
         "meta_description": "A compelling meta description (max 160 chars)",
         "focus_keyword": "The primary focus keyword for this article",
-        "content": "Full Markdown content (1000-1200 words) discussing the news.",
+        "content": "Full Markdown content (1300-1500 words) discussing the news.",
         "excerpt": "A powerful short summary for cards/previews (max 160 chars)",
         "category": "${settings.automationCategory}",
         "tags": ["trending", "${settings.automationCategory.toLowerCase()}", "seo-tag1", "seo-tag2"],
