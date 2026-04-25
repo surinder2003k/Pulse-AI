@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import mongoose from "mongoose";
+// @ts-ignore
 import nodemailer from "nodemailer";
 
 // Simple Schema for Contacts if it doesn't exist
