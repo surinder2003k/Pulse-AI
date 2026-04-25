@@ -4,7 +4,6 @@ import mongoose from "mongoose";
 // @ts-ignore
 import nodemailer from "nodemailer";
 
-// Simple Schema for Contacts if it doesn't exist
 const ContactSchema = new mongoose.Schema({
   name: String,
   email: String,
@@ -18,74 +17,89 @@ const Contact = mongoose.models.Contact || mongoose.model("Contact", ContactSche
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, email, subject, message } = body;
+    const { name, email, subject, message, isTest } = body;
 
-    if (!name || !email || !message) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    // 1. Save to MongoDB (unless it's a pure test)
+    if (!isTest) {
+      if (!name || !email || !message) {
+        return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+      }
+      await connectDB();
+      const newContact = new Contact({ name, email, subject, message });
+      await newContact.save();
     }
 
-    // 1. Save to MongoDB
-    await connectDB();
-    const newContact = new Contact({ name, email, subject, message });
-    await newContact.save();
-
-    // 2. Setup Nodemailer
+    // 2. Setup Nodemailer with more robust config
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true, // Use SSL
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
     });
 
-    // 3. Email to Admin (You)
-    const adminMailOptions = {
-      from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_USER, // Send to yourself
-      subject: `New Pulse AI Contact: ${subject}`,
+    // 3. Verify connection configuration
+    try {
+      await transporter.verify();
+    } catch (verifyError: any) {
+      console.error("Nodemailer Verify Error:", verifyError);
+      return NextResponse.json({ 
+        success: false, 
+        message: "Email configuration incorrect", 
+        error: verifyError.message 
+      }, { status: 500 });
+    }
+
+    // 4. Send Emails
+    const mailOptions = isTest ? {
+      from: `Pulse AI <${process.env.EMAIL_USER}>`,
+      to: email || "geniecutsai@gmail.com",
+      subject: "Pulse AI - Connection Test",
       html: `
-        <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-          <h2 style="color: #ef4444;">New Transmission Received</h2>
-          <p><strong>From:</strong> ${name} (${email})</p>
-          <p><strong>Subject:</strong> ${subject}</p>
-          <hr />
-          <p><strong>Message:</strong></p>
-          <p style="white-space: pre-wrap;">${message}</p>
+        <div style="font-family: sans-serif; padding: 20px; border: 2px solid #ef4444; border-radius: 15px;">
+          <h1 style="color: #ef4444;">System Test Successful</h1>
+          <p>This is a test transmission from the Pulse AI Network.</p>
+          <p><strong>Timestamp:</strong> ${new Date().toLocaleString()}</p>
+          <p>If you received this, your Email SMTP is working perfectly.</p>
         </div>
-      `,
+      `
+    } : {
+      from: `Pulse AI <${process.env.EMAIL_USER}>`,
+      to: email, // Send confirmation to user
+      subject: `Transmission Received: ${subject}`,
+      html: `
+        <div style="font-family: sans-serif; padding: 30px; border: 1px solid #eee; border-radius: 20px;">
+          <h2 style="color: #000;">Pulse AI Network</h2>
+          <p>Hi ${name},</p>
+          <p>We've received your message regarding <strong>"${subject}"</strong>.</p>
+          <p>Our team will review the data and contact you via this channel.</p>
+          <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
+          <p style="font-size: 11px; color: #999;">REFERENCE_ID: ${Math.random().toString(36).substr(2, 9).toUpperCase()}</p>
+        </div>
+      `
     };
 
-    // 4. Confirmation Email to User
-    const userMailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: `We've received your message - Pulse AI`,
-      html: `
-        <div style="font-family: sans-serif; padding: 30px; border: 1px solid #eee; border-radius: 20px; max-width: 600px; margin: auto;">
-          <h1 style="color: #000; letter-spacing: -1px;">Pulse <span style="color: #ccc;">AI</span></h1>
-          <p style="font-size: 16px; color: #555;">Hi ${name},</p>
-          <p style="font-size: 16px; color: #555;">Thank you for reaching out to Pulse AI. Our editorial board has received your transmission regarding <strong>"${subject}"</strong>.</p>
-          <p style="font-size: 16px; color: #555;">We will review your inquiry and get back to you shortly.</p>
-          <br />
-          <p style="font-size: 12px; color: #aaa; text-transform: uppercase; letter-spacing: 2px;">Pulse AI Protocol 2.0 // Automating Intelligence</p>
-        </div>
-      `,
-    };
+    const adminMailOptions = !isTest ? {
+      from: `Pulse AI Alert <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_USER,
+      subject: `NEW CONTACT: ${name}`,
+      text: `New message from ${name} (${email}):\n\nSubject: ${subject}\n\nMessage: ${message}`
+    } : null;
 
-    // Send both emails
-    await Promise.all([
-      transporter.sendMail(adminMailOptions),
-      transporter.sendMail(userMailOptions)
-    ]);
+    const emailPromises = [transporter.sendMail(mailOptions)];
+    if (adminMailOptions) emailPromises.push(transporter.sendMail(adminMailOptions));
 
-    return NextResponse.json({ success: true, message: "Message sent and emails delivered" });
+    await Promise.all(emailPromises);
+
+    return NextResponse.json({ success: true, message: "Transmission complete" });
   } catch (error: any) {
-    console.error("Contact API Error:", error);
-    // Even if email fails, we saved it to DB, so we return 200 but log error
+    console.error("Critical Contact API Error:", error);
     return NextResponse.json({ 
-      success: true, 
-      message: "Saved to DB, but email failed", 
-      emailError: error.message 
-    });
+      success: false, 
+      message: "Internal transmission failure", 
+      error: error.message 
+    }, { status: 500 });
   }
 }
