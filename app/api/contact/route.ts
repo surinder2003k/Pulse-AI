@@ -19,7 +19,6 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { name, email, subject, message, isTest } = body;
 
-    // 1. Save to MongoDB (unless it's a pure test)
     if (!isTest) {
       if (!name || !email || !message) {
         return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -29,63 +28,95 @@ export async function POST(req: Request) {
       await newContact.save();
     }
 
-    // 2. Setup Nodemailer with more robust config
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 465,
-      secure: true, // Use SSL
+      secure: true,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
     });
 
-    // 3. Verify connection configuration
     try {
       await transporter.verify();
     } catch (verifyError: any) {
       console.error("Nodemailer Verify Error:", verifyError);
-      return NextResponse.json({ 
-        success: false, 
-        message: "Email configuration incorrect", 
-        error: verifyError.message 
-      }, { status: 500 });
+      return NextResponse.json({ success: false, error: verifyError.message }, { status: 500 });
     }
 
-    // 4. Send Emails
-    const mailOptions = isTest ? {
-      from: `Pulse AI <${process.env.EMAIL_USER}>`,
-      to: email || "geniecutsai@gmail.com",
-      subject: "Pulse AI - Connection Test",
-      html: `
-        <div style="font-family: sans-serif; padding: 20px; border: 2px solid #ef4444; border-radius: 15px;">
-          <h1 style="color: #ef4444;">System Test Successful</h1>
-          <p>This is a test transmission from the Pulse AI Network.</p>
-          <p><strong>Timestamp:</strong> ${new Date().toLocaleString()}</p>
-          <p>If you received this, your Email SMTP is working perfectly.</p>
+    // Professional HTML Template for User
+    const userHtml = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <style>
+            .container { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 24px; overflow: hidden; border: 1px solid #e2e8f0; }
+            .header { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 40px 20px; text-align: center; }
+            .logo { color: #ffffff; font-size: 28px; font-weight: 800; letter-spacing: -1px; text-transform: uppercase; margin: 0; }
+            .logo span { color: #94a3b8; }
+            .content { padding: 40px; color: #334155; line-height: 1.6; }
+            .greeting { font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 16px; }
+            .subject-box { background-color: #f8fafc; border-radius: 12px; padding: 16px 20px; border-left: 4px solid #ef4444; margin: 24px 0; }
+            .subject-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #64748b; margin-bottom: 4px; }
+            .subject-text { font-size: 16px; font-weight: 600; color: #0f172a; }
+            .footer { background-color: #f8fafc; padding: 30px; text-align: center; border-top: 1px solid #e2e8f0; }
+            .footer-text { font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; }
+            .btn { display: inline-block; padding: 14px 28px; background-color: #0f172a; color: #ffffff; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 14px; margin-top: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1 class="logo">Pulse <span>AI</span></h1>
+            </div>
+            <div class="content">
+              <div class="greeting">Transmission Logged</div>
+              <p>Hi <b>${name}</b>,</p>
+              <p>We've successfully received your inquiry through our digital channel. Our editorial board and system architects are currently reviewing your request.</p>
+              
+              <div class="subject-box">
+                <div class="subject-label">Asset Classification</div>
+                <div class="subject-text">${subject}</div>
+              </div>
+
+              <p>No further action is required at this time. We will reach out via this email address once the analysis is complete.</p>
+              
+              <a href="https://pulse-blog-ai.vercel.app" class="btn">Return to Network</a>
+            </div>
+            <div class="footer">
+              <div class="footer-text">Pulse AI Protocol 2.0 // Node: Global_Editor</div>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+
+    // Professional HTML Template for Admin
+    const adminHtml = `
+      <div style="font-family: sans-serif; max-width: 600px; border: 1px solid #eee; border-radius: 15px; padding: 30px;">
+        <h2 style="color: #ef4444; text-transform: uppercase; letter-spacing: 2px;">New Contact Alert</h2>
+        <p><b>User:</b> ${name}</p>
+        <p><b>Email:</b> ${email}</p>
+        <p><b>Subject:</b> ${subject}</p>
+        <div style="background: #f4f4f4; padding: 20px; border-radius: 10px; margin-top: 20px;">
+          ${message}
         </div>
-      `
-    } : {
-      from: `Pulse AI <${process.env.EMAIL_USER}>`,
-      to: email, // Send confirmation to user
-      subject: `Transmission Received: ${subject}`,
-      html: `
-        <div style="font-family: sans-serif; padding: 30px; border: 1px solid #eee; border-radius: 20px;">
-          <h2 style="color: #000;">Pulse AI Network</h2>
-          <p>Hi ${name},</p>
-          <p>We've received your message regarding <strong>"${subject}"</strong>.</p>
-          <p>Our team will review the data and contact you via this channel.</p>
-          <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
-          <p style="font-size: 11px; color: #999;">REFERENCE_ID: ${Math.random().toString(36).substr(2, 9).toUpperCase()}</p>
-        </div>
-      `
+      </div>
+    `;
+
+    const mailOptions = {
+      from: `"Pulse AI" <${process.env.EMAIL_USER}>`,
+      to: isTest ? (email || "geniecutsai@gmail.com") : email,
+      subject: isTest ? "Pulse AI | Connection Test" : `Re: ${subject} | Pulse AI`,
+      html: userHtml
     };
 
     const adminMailOptions = !isTest ? {
-      from: `Pulse AI Alert <${process.env.EMAIL_USER}>`,
+      from: `"System Alert" <${process.env.EMAIL_USER}>`,
       to: process.env.EMAIL_USER,
-      subject: `NEW CONTACT: ${name}`,
-      text: `New message from ${name} (${email}):\n\nSubject: ${subject}\n\nMessage: ${message}`
+      subject: `🚨 New Contact: ${name}`,
+      html: adminHtml
     } : null;
 
     const emailPromises = [transporter.sendMail(mailOptions)];
@@ -96,10 +127,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true, message: "Transmission complete" });
   } catch (error: any) {
     console.error("Critical Contact API Error:", error);
-    return NextResponse.json({ 
-      success: false, 
-      message: "Internal transmission failure", 
-      error: error.message 
-    }, { status: 500 });
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
